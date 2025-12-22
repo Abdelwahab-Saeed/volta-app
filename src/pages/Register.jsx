@@ -1,4 +1,41 @@
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
+
+const registerSchema = z.object({
+  fullName: z.string().min(1, "الاسم مطلوب"),
+  email: z.string().email("بريد إلكتروني غير صحيح"),
+  phone: z.string().optional(),
+  password: z.string().min(6, "كلمة المرور يجب أن تكون 6 أحرف على الأقل"),
+  confirmPassword: z.string(),
+  terms: z.boolean().refine(val => val, "يجب الموافقة على الشروط"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "كلمة المرور غير متطابقة",
+  path: ["confirmPassword"],
+})
+
 export default function Register() {
+  const form = useForm({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      fullName: "",
+      email: "",
+      phone: "",
+      password: "",
+      confirmPassword: "",
+      terms: false,
+    },
+  })
+
+  const onSubmit = (values) => {
+    console.log(values)
+    // handle registration
+  }
+
   return (
     <div
       dir="rtl"
@@ -18,87 +55,114 @@ export default function Register() {
           </p>
         </div>
 
-        {/* Form */}
-        <form className="space-y-4">
-          {/* Full Name */}
-          <div>
-            <label className="block text-sm mb-1 text-slate-700">
-              الاسم بالكامل
-            </label>
-            <input
-              type="text"
-              placeholder="الاسم بالكامل"
-              className="w-full rounded border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            {/* Full Name */}
+            <FormField
+              control={form.control}
+              name="fullName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>الاسم بالكامل</FormLabel>
+                  <FormControl>
+                    <Input placeholder="الاسم بالكامل" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          {/* Email */}
-          <div>
-            <label className="block text-sm mb-1 text-slate-700">
-              البريد الإلكتروني
-            </label>
-            <input
-              type="email"
-              placeholder="البريد الإلكتروني"
-              className="w-full rounded border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            {/* Email */}
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>البريد الإلكتروني</FormLabel>
+                  <FormControl>
+                    <Input type="email" placeholder="البريد الإلكتروني" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          {/* Phone */}
-          <div>
-            <label className="block text-sm mb-1 text-slate-700">
-              الهاتف (اختياري)
-            </label>
-            <input
-              type="tel"
-              placeholder="الهاتف"
-              className="w-full rounded border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            {/* Phone */}
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>الهاتف (اختياري)</FormLabel>
+                  <FormControl>
+                    <Input type="tel" placeholder="الهاتف" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          {/* Password */}
-          <div>
-            <label className="block text-sm mb-1 text-slate-700">
-              كلمة المرور
-            </label>
-            <input
-              type="password"
-              placeholder="كلمة المرور"
-              className="w-full rounded border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            {/* Password */}
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>كلمة المرور</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="كلمة المرور" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          {/* Confirm Password */}
-          <div>
-            <label className="block text-sm mb-1 text-slate-700">
-              تأكيد كلمة المرور
-            </label>
-            <input
-              type="password"
-              placeholder="تأكيد كلمة المرور"
-              className="w-full rounded border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            {/* Confirm Password */}
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>تأكيد كلمة المرور</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="تأكيد كلمة المرور" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          {/* Terms */}
-          <div className="flex items-center gap-2 text-sm">
-            <input type="checkbox" className="accent-blue-600" />
-            <span>
-              أوافق على{" "}
-              <a href="#" className="text-blue-600 underline">
-                الشروط وسياسة الخصوصية
-              </a>
-            </span>
-          </div>
+            {/* Terms */}
+            <FormField
+              control={form.control}
+              name="terms"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>
+                      أوافق على{" "}
+                      <a href="#" className="text-blue-600 underline">
+                        الشروط وسياسة الخصوصية
+                      </a>
+                    </FormLabel>
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
+            />
 
-          {/* Submit */}
-          <button
-            type="submit"
-            className="w-full bg-slate-800 hover:bg-slate-900 text-white py-2 rounded transition"
-          >
-            تسجيل
-          </button>
-        </form>
+            {/* Submit */}
+            <Button type="submit" className="w-full">
+              تسجيل
+            </Button>
+          </form>
+        </Form>
 
         {/* Login link */}
         <p className="text-center text-sm mt-5 text-gray-600">

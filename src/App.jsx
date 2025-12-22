@@ -1,19 +1,22 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
-import './App.css';
-import { Routes } from 'react-router-dom';
-import Header from './components/layout/Header';
-import Footer from './components/layout/Footer';
+import './App.css'
+import { Route, Routes } from 'react-router-dom'
+import Header from './components/layout/Header'
+import Register from './pages/Register'
+import Footer from './components/layout/Footer'
 
 function App() {
+
   return (
     <>
       <Header />
-      <Routes></Routes>
-      <Footer />
+      <Routes>
+        <Route path="/" element={<div className="p-4">الصفحة الرئيسية</div>} />
+        <Route path="/register" element={<Register />} />
+        <Footer />
+      </Routes>
     </>
-  );
+
+  )
 }
 
-export default App;
+export default App
