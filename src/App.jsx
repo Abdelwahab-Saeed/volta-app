@@ -12,8 +12,8 @@ function App() {
       <Routes>
         <Route path="/" element={<div className="p-4">الصفحة الرئيسية</div>} />
         <Route path="/register" element={<Register />} />
-        <Footer />
       </Routes>
+      <Footer />
     </>
 
   )
