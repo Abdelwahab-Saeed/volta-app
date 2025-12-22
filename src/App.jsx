@@ -1,9 +1,7 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
-import { Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import Header from './components/layout/Header'
+import Register from './pages/Register'
 
 function App() {
 
@@ -11,9 +9,11 @@ function App() {
     <>
       <Header />
       <Routes>
-
+        <Route path="/" element={<div className="p-4">الصفحة الرئيسية</div>} />
+        <Route path="/register" element={<Register />} />
       </Routes>
     </>
+
   )
 }
 
