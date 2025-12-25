@@ -91,7 +91,7 @@ export default function Header() {
             </div>
             <div className="text-right">
               <p className="text-sm text-primary">مرحباً، زائر</p>
-              <Link to='/register' className="text-sm text-primary">تسجيل الدخول إلى حسابك</Link>
+              <Link to='/login' className="text-sm text-primary">تسجيل الدخول إلى حسابك</Link>
             </div>
             
           </div>
@@ -127,9 +127,9 @@ export default function Header() {
         <div className="flex items-center justify-between">
             <ul className="flex items-center gap-4 lg:gap-7 text-[12px] lg:text-[13px] font-medium py-3 overflow-x-auto no-scrollbar">
             {categories.map((cat, index) => (
-                <li key={index} className="cursor-pointer hover:text-secondary whitespace-nowrap">
+                <Link to='/offers' key={index} className="cursor-pointer hover:text-secondary whitespace-nowrap">
                 {cat}
-                </li>
+                </Link>
             ))}
             </ul>
             <div className="hidden lg:block text-[13px] whitespace-nowrap pr-4">
