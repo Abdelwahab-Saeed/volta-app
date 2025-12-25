@@ -15,6 +15,7 @@ import {
   Handbag
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Link } from "react-router-dom";
 
 const categories = [
   "كمبيوتر وموبايل",
@@ -90,7 +91,7 @@ export default function Header() {
             </div>
             <div className="text-right">
               <p className="text-sm text-primary">مرحباً، زائر</p>
-              <button className="text-sm text-primary">تسجيل الدخول إلى حسابك</button>
+              <Link to='/register' className="text-sm text-primary">تسجيل الدخول إلى حسابك</Link>
             </div>
             
           </div>
