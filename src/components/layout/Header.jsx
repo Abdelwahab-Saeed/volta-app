@@ -10,7 +10,9 @@ import {
   ArrowLeftRight,
   Menu,
   X,
-  PhoneCall
+  PhoneCall,
+  ArrowUpDown,
+  Handbag
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
@@ -62,18 +64,18 @@ export default function Header() {
         </div>
 
         {/* Search Bar (Hidden on small mobile, visible on tablet+) */}
-        <div className="hidden md:flex flex-1 max-w-2xl items-center border-2 border-[#33aadd] rounded-lg overflow-hidden h-10 lg:h-11">
+        <div className="hidden md:flex flex-1 ml-30 items-center border-2 border-secondary rounded-lg overflow-hidden h-10 lg:h-13">
 
           <Input
             type="text"
             placeholder="البحث..."
             className="border-0 focus-visible:ring-0 text-right h-full text-sm"
           />
-          <div className="hidden lg:flex items-center gap-2 px-3 border-l border-gray-200 cursor-pointer text-gray-600">
+          <div className="hidden lg:flex items-center gap-2 px-3 border-l border-gray-200 cursor-pointer text-primary">
             <span className="text-xs whitespace-nowrap">تسوق بالأقسام</span>
             <ChevronDown size={14} />
           </div>
-          <button className="bg-[#33aadd] h-full px-4 flex items-center justify-center text-white">
+          <button className="bg-secondary h-full px-4 flex items-center justify-center text-white">
             <Search size={20} />
           </button>
 
@@ -87,8 +89,8 @@ export default function Header() {
                <User size={20} className="text-gray-600" />
             </div>
             <div className="text-right">
-              <p className="text-[10px] text-gray-500">مرحباً، زائر</p>
-              <button className="text-xs font-bold text-[#1e2749]">تسجيل الدخول إلى حسابك</button>
+              <p className="text-sm text-primary">مرحباً، زائر</p>
+              <button className="text-sm text-primary">تسجيل الدخول إلى حسابك</button>
             </div>
             
           </div>
@@ -96,15 +98,15 @@ export default function Header() {
           {/* Icons */}
           <div className="flex items-center gap-3 md:gap-5">
             <div className="relative cursor-pointer hidden sm:block">
-              <ArrowLeftRight size={20} className="" />
+              <ArrowUpDown size={24} className="" />
               <Badge count={0} />
             </div>
             <div className="relative cursor-pointer">
-              <Heart size={20} className="" />
+              <Heart size={24} className="" />
               <Badge count={0} />
             </div>
             <div className="relative cursor-pointer">
-              <ShoppingCart size={20} className="" />
+              <Handbag size={24} />
               <Badge count={0} />
             </div>
           </div>
@@ -113,9 +115,9 @@ export default function Header() {
 
       {/* --- Mobile Search (Visible only on Mobile) --- */}
       <div className="md:hidden px-4 pb-4">
-        <div className="flex items-center border-2 border-[#33aadd] rounded-lg overflow-hidden h-10">
+        <div className="flex items-center border-2 border-secondary rounded-lg overflow-hidden h-10">
             <Input type="text" placeholder="البحث..." className="border-0 focus-visible:ring-0 text-right" />
-            <button className="bg-[#33aadd] h-full px-4 text-white"><Search size={18}/></button>
+            <button className="bg-secondary h-full px-4 text-white"><Search size={18}/></button>
         </div>
       </div>
 
@@ -124,13 +126,13 @@ export default function Header() {
         <div className="flex items-center justify-between">
             <ul className="flex items-center gap-4 lg:gap-7 text-[12px] lg:text-[13px] font-medium py-3 overflow-x-auto no-scrollbar">
             {categories.map((cat, index) => (
-                <li key={index} className="cursor-pointer hover:text-[#33aadd] whitespace-nowrap">
+                <li key={index} className="cursor-pointer hover:text-secondary whitespace-nowrap">
                 {cat}
                 </li>
             ))}
             </ul>
-            <div className="hidden lg:block text-[13px] whitespace-nowrap border-r border-white/20 pr-4">
-                <span className="text-gray-400 ml-2">الخط الساخن:</span>
+            <div className="hidden lg:block text-[13px] whitespace-nowrap pr-4">
+                <span className="text-white ml-2">الخط الساخن:</span><br/>
                 <span className="font-bold">16105</span>
             </div>
         </div>
@@ -153,13 +155,13 @@ export default function Header() {
 
                 <ul className="space-y-4 overflow-y-auto">
                     {categories.map((cat, index) => (
-                        <li key={index} className="text-gray-700 font-medium hover:text-[#33aadd] cursor-pointer">
+                        <li key={index} className="text-gray-700 font-medium hover:text-secondary cursor-pointer">
                             {cat}
                         </li>
                     ))}
                 </ul>
 
-                <div className="mt-auto pt-6 border-t flex items-center gap-2 text-[#33aadd]">
+                <div className="mt-auto pt-6 border-t flex items-center gap-2 text-secondary">
                     <PhoneCall size={18} />
                     <span className="text-sm font-bold">اتصل بنا: 16105</span>
                 </div>
@@ -173,7 +175,7 @@ export default function Header() {
 // Small helper component for the red/blue badges
 function Badge({ count }) {
   return (
-    <span className="absolute -top-2 -right-2 bg-[#33aadd] text-white text-[9px] w-4 h-4 flex items-center justify-center rounded-full border-2 border-white font-bold">
+    <span className="absolute -top-2 -right-2 bg-secondary text-white text-[9px] w-4 h-4 flex items-center justify-center rounded-full border-2 border-white font-bold">
       {count}
     </span>
   );
