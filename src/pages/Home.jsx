@@ -12,6 +12,7 @@ import CategoryCarousel from '../components/home/CategoryCarousel';
 import FeaturesSection from '../components/home/FeaturesSection';
 import SpecialProducts from '../components/home/SpecialProducts';
 import Products from '../components/home/Products';
+import stabilizer from '../assets/home/stabilizer.png';
 
 const banners = [banner3, banner2, banner1];
 
@@ -41,49 +42,49 @@ const categories = [
 const products = [
   {
     name: 'منتج 1',
-    image: tv,
+    image: stabilizer,
     price: 1000,
   },
   {
     name: 'منتج 2',
-    image: tv,
+    image: stabilizer,
     price: 1000,
     discount: 15,
   },
   {
     name: 'منتج 3',
-    image: tv,
+    image: stabilizer,
     price: 1000,
   },
   {
     name: 'منتج 4',
-    image: tv,
+    image: stabilizer,
     price: 1000,
   },
   {
     name: 'منتج 5',
-    image: tv,
+    image: stabilizer,
     price: 1000,
   },
   {
     name: 'منتج 6',
-    image: tv,
+    image: stabilizer,
     price: 1000,
   },
   {
     name: 'منتج 7',
-    image: tv,
+    image: stabilizer,
     price: 1000,
   },
   {
     name: 'منتج 8',
-    image: tv,
+    image: stabilizer,
     price: 1000,
     discount: 10,
   },
   {
     name: 'منتج 9',
-    image: tv,
+    image: stabilizer,
     price: 1000,
   },
 ];
