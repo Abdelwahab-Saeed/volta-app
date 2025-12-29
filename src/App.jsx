@@ -10,6 +10,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import Offers from './pages/Offers';
 import Comparison from './pages/Comparison';
 import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path='/offers' element={ <Offers /> } />
         <Route path='/comparison' element={ <Comparison /> } />
         <Route path='/cart' element={ <Cart /> } />
+        <Route path='/checkout' element={ <Checkout /> } />
         <Route path='*' element={ <NotFoundPage /> } />
       </Routes>
       <Footer />
