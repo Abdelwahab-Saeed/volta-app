@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import HomeCarousel from '../components/home/HomeCarousel';
 import banner1 from '../assets/home/banner1.jpg';
 import banner2 from '../assets/home/banner2.jpg';
@@ -13,6 +13,8 @@ import FeaturesSection from '../components/home/FeaturesSection';
 import SpecialProducts from '../components/home/SpecialProducts';
 import Products from '../components/home/Products';
 import stabilizer from '../assets/home/stabilizer.png';
+import { getCategories } from '@/api/categories';
+import { getProducts } from '@/api/products.api';
 
 const banners = [banner3, banner2, banner1];
 
@@ -90,6 +92,47 @@ const products = [
 ];
 
 export default function Home() {
+  // API data state
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch categories on mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await getCategories();
+        setCategories(response.data.data || response.data);
+      } catch (err) {
+        console.error('Error fetching categories:', err);
+      }
+    };
+
+    const fetchProducts = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await getProducts();
+        const data = response.data;
+
+        // Handle Laravel pagination response
+        if (data.data) {
+          setProducts(data.data);
+        } else {
+          setProducts(data);
+        }
+      } catch (err) {
+        console.error('Error fetching products:', err);
+        setError('حدث خطأ في تحميل المنتجات');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCategories();
+    fetchProducts();
+  }, []);
+
   return (
     <div className="container mx-auto">
       <HomeCarousel banners={banners} />
