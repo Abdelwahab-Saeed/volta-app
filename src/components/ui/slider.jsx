@@ -7,11 +7,13 @@ const Slider = ({
   min = 0,
   max = 100,
   step = 1,
+  dir = 'ltr',
   className,
   ...props
 }) => {
   const [isDragging, setIsDragging] = useState(null);
   const railRef = useRef(null);
+  const isRtl = dir === 'rtl';
 
   const handleMouseDown = (index) => {
     setIsDragging(index);
@@ -25,7 +27,11 @@ const Slider = ({
     if (isDragging === null || !railRef.current) return;
 
     const rect = railRef.current.getBoundingClientRect();
-    const percentage = (e.clientX - rect.left) / rect.width;
+    let percentage = (e.clientX - rect.left) / rect.width;
+    if (isRtl) {
+      percentage = 1 - percentage;
+    }
+
     const newValue = Math.round((percentage * (max - min) + min) / step) * step;
     const clampedValue = Math.max(min, Math.min(max, newValue));
 
@@ -40,11 +46,15 @@ const Slider = ({
     }
   };
 
-  const getPercentage = (val) => ((val - min) / (max - min)) * 100;
+  const getPercentage = (val) => {
+    const percentage = ((val - min) / (max - min)) * 100;
+    return Math.max(0, Math.min(100, percentage));
+  };
+
 
   return (
     <div
-      className={cn("w-full", className)}
+      className={cn("w-full touch-none select-none flex items-center", className)}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
@@ -56,10 +66,11 @@ const Slider = ({
       >
         {/* Track Active */}
         <div
-          className="absolute h-1.5 bg-blue-500 rounded-full"
+          className="absolute h-1.5 bg-[#31A0D3] rounded-full"
           style={{
-            left: `${getPercentage(value[0])}%`,
-            right: `${100 - getPercentage(value[1])}%`,
+            left: isRtl ? 'auto' : `${getPercentage(value[0])}%`,
+            right: isRtl ? `${getPercentage(value[0])}%` : 'auto',
+            width: `${getPercentage(value[1]) - getPercentage(value[0])}%`,
           }}
         />
 
@@ -67,9 +78,12 @@ const Slider = ({
         {value.map((val, index) => (
           <div
             key={index}
-            className="absolute w-4 h-4 bg-white border-2 border-blue-500 rounded-full transform -translate-x-1/2 -translate-y-1/4 cursor-grab active:cursor-grabbing transition-shadow hover:shadow-lg"
+            className="absolute mt-2 w-5 h-5 bg-[#31A0D3] rounded-full transform -translate-y-1/2 cursor-grab active:cursor-grabbing hover:scale-110 transition-transform shadow-sm"
             style={{
-              left: `${getPercentage(val)}%`,
+              left: isRtl ? 'auto' : `${getPercentage(val)}%`,
+              right: isRtl ? `${getPercentage(val)}%` : 'auto',
+              top: '50%',
+              transform: `translate(${isRtl ? '50%' : '-50%'}, -50%)`
             }}
             onMouseDown={() => handleMouseDown(index)}
           />

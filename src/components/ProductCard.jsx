@@ -1,60 +1,110 @@
 import React from 'react';
-import { Card, CardContent } from './ui/card';
-import { ShoppingCart } from 'lucide-react';
-import { Button } from './ui/button';
+import {
+  Heart,
+  ShoppingCart,
+  Star,
+  Loader2,
+  Check
+} from "lucide-react";
+import {
+  Link
+} from "react-router-dom";
+import { useCart } from "@/context/CartContext";
+import { useState } from "react";
 
-export default function ProductCard({ product }) {
+export default function ProductCard({
+  product
+}) {
+  const { addToCart, isInCart } = useCart();
+  const [addingStr, setAddingStr] = useState(false);
+
+  const isAdded = isInCart(product.id);
+
+  const handleAddToCart = async (e) => {
+    e.preventDefault(); // Prevent navigation if wrapped in Link
+    if (isAdded) return;
+
+    setAddingStr(true);
+    await addToCart(product);
+    setAddingStr(false);
+  };
+
+  if(product.discount > 0) {
+    product.oldPrice = product.price;
+    product.price = Math.round(product.price - (product.price * product.discount / 100));
+  }
+
   return (
-    <Card className="border overflow-hidden hover:shadow-lg transition-shadow relative">
-      <CardContent className="p-0">
+    <div className="group relative bg-white rounded-lg border border-slate-200 hover:shadow-xl transition-all duration-300">
+      {/* Badge */}
+      <div className="absolute top-3 left-3 z-10">
         {product.discount > 0 && (
-          <div className="absolute top-2 right-2 bg-[#0058AB] text-white px-2 py-1 rounded-md text-xs font-bold z-10">
-            {product.discount}%
-          </div>
+          <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
+            -{product.discount}%
+          </span>
         )}
+      </div>
 
+      {/* Action Buttons */}
+      <div className="absolute top-3 right-3 z-10 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <button className="p-2 bg-white rounded-full shadow-md hover:bg-red-50 hover:text-red-500 transition-colors">
+          <Heart size={18} />
+        </button>
+      </div>
+
+      {/* Image */}
+      <Link to={`/products/${product.id}`}>
         <div className="bg-white p-4 flex items-center justify-center aspect-square">
           <img
-            src={product.image}
+            src={`${import.meta.env.VITE_IMAGES_URL}/${product.image}`}
             alt={product.name}
             className="w-full h-full object-contain"
           />
         </div>
+      </Link>
 
-        <div className="p-4 bg-white border-t">
-          <h3 className="text-sm font-medium mb-3 text-start min-h-10 line-clamp-2">
+      {/* Content */}
+      <div className="p-4 border-t border-slate-100">
+        <Link to={`/products/${product.id}`}>
+          <h3 className="text-slate-800 font-bold mb-1 hover:text-primary transition-colors text-lg truncate">
             {product.name}
           </h3>
+        </Link>
+        
 
-          <div className="flex items-center justify-end gap-2 mb-3">
-            {product.discount > 0 ? (
-              <>
-                <span className="text-sm text-muted-foreground line-through">
-                  {product.price} EGP
-                </span>
-                <span className="text-lg font-bold text-red-600">
-                  {(
-                    product.price -
-                    (product.price * product.discount) / 100
-                  ).toFixed(2)}{' '}
-                  EGP
-                </span>
-              </>
-            ) : (
-              <span className="text-lg font-bold text-red-600">
-                {product.price} EGP
-              </span>
+        <div className="mt-3">
+          <div className='my-6 flex items-center'>
+            <p className="text-lg font-semibold text-red-700">EGP {product.price}</p>
+            {product.oldPrice && (
+              <p className="text-md text-slate-400 line-through mr-2">EGP {product.oldPrice}</p>
             )}
           </div>
-
-          <Button className="w-full h-11 bg-[#31A0D3] hover:bg-[#0058AB] text-white">
-            <div className="flex gap-2 justify-center items-center">
-              <ShoppingCart />
-              <span className="text-lg">أضف إلى العربة</span>
-            </div>
-          </Button>
+          <div>
+            <button
+              onClick={handleAddToCart}
+              disabled={addingStr || isAdded}
+              className={`flex items-center justify-center gap-2 w-full h-11 transition-all duration-300 rounded-md text-white ${isAdded
+                  ? "bg-green-500 hover:bg-green-600 cursor-default"
+                  : "bg-[#31A0D3] hover:bg-[#0058AB]"
+                }`}
+            >
+              {addingStr ? (
+                <Loader2 size={20} className="animate-spin" />
+              ) : isAdded ? (
+                <>
+                  <Check size={20} />
+                  <span className="text-lg">تم الإضافة</span>
+                </>
+              ) : (
+                <>
+                  <ShoppingCart size={20} />
+                  <span className="text-lg">أضف إلى العربة</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
