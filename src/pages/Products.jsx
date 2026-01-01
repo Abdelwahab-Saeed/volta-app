@@ -5,70 +5,88 @@ import { useState, useEffect } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Slider } from '@/components/ui/slider';
 import WideProductCard from '@/components/WideProductCard';
-import { getProducts } from '@/api/products.api';
 import { getCategories } from '@/api/categories';
+import { useSearchParams } from 'react-router-dom';
+import useDebounce from '@/hooks/useDebounce';
+import { useProductStore } from '@/stores/useProductStore';
 
 export default function Products() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [sort, setSort] = useState('price_asc');
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [priceRange, setPriceRange] = useState([0, 100000]);
   const [mode, setMode] = useState('grid');
+  const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 500);
 
-  // API data state
-  const [products, setProducts] = useState([]);
+  // Store
+  const { products, pagination, loading, error, fetchProducts } = useProductStore();
   const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pagination, setPagination] = useState(null);
 
-  // Fetch categories on mount
+  // Local state for page to control fetch
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Fetch categories on mount and set initial category from URL
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchCats = async () => {
       try {
         const response = await getCategories();
-        setCategories(response.data.data || response.data);
+        const cats = response.data.data || response.data;
+        setCategories(cats);
+
+        // Sync with URL param
+        const categoryId = searchParams.get('category');
+        if (categoryId) {
+          const cat = cats.find(c => c.id.toString() === categoryId);
+          if (cat) setSelectedCategory(cat);
+        }
       } catch (err) {
         console.error('Error fetching categories:', err);
       }
     };
-    fetchCategories();
-  }, []);
+    fetchCats();
+  }, []); // Run once
 
-  // Fetch products when page or category changes
+  // Update URL when selectedCategory changes
   useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await getProducts(currentPage);
-        const data = response.data;
+    if (selectedCategory) {
+      setSearchParams(params => {
+        params.set('category', selectedCategory.id);
+        return params;
+      });
+    } else {
+      setSearchParams(params => {
+        params.delete('category');
+        return params;
+      });
+    }
+  }, [selectedCategory, setSearchParams]);
 
-        // Handle Laravel pagination response
-        if (data.data) {
-          setProducts(data.data);
-          setPagination({
-            currentPage: data.current_page,
-            lastPage: data.last_page,
-            total: data.total,
-            perPage: data.per_page,
-          });
-        } else {
-          setProducts(data);
-        }
-      } catch (err) {
-        console.error('Error fetching products:', err);
-        setError('حدث خطأ في تحميل المنتجات');
-      } finally {
-        setLoading(false);
-      }
+  // Fetch products when filters change
+  useEffect(() => {
+    const params = {
+      page: currentPage,
+      limit: 12, // Fixed limit or make it dynamic
+      sort: sort === 'price_asc' ? 'asc' : 'desc', // Mapping sort to API expectation
+      min_price: priceRange[0],
+      max_price: priceRange[1],
     };
-    fetchProducts();
-  }, [currentPage, selectedCategory]);
+
+    if (debouncedSearch) {
+      params.search = debouncedSearch;
+    }
+
+    if (selectedCategory) {
+      params.category = selectedCategory.id;
+    }
+
+    fetchProducts(params);
+  }, [currentPage, selectedCategory, sort, priceRange, debouncedSearch, fetchProducts]);
+
 
   const handleCategoryChange = (category) => {
-    setSelectedCategory(category.id === selectedCategory?.id ? null : category);
-    setCurrentPage(1); // Reset to first page when changing category
+    setSelectedCategory(prev => prev?.id === category.id ? null : category);
+    setCurrentPage(1);
   };
 
   const handlePageChange = (page) => {
@@ -101,6 +119,8 @@ export default function Products() {
                 <input
                   type="text"
                   placeholder="بحث"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
                   className="w-full py-3 px-4 pr-11  border-1  text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-400 focus:bg-white transition-all text-right"
                 />
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" />
@@ -142,7 +162,8 @@ export default function Products() {
               <div className="px-1">
                 <Slider
                   value={priceRange}
-                  onValueChange={setPriceRange}
+                  onValueChange={setPriceRange} // This might be too frequent, maybe debounce or use onValueCommit?
+                  onValueCommit={setPriceRange} // Better for fetch trigger
                   min={0}
                   max={100000}
                   step={100}
@@ -195,7 +216,7 @@ export default function Products() {
             <div className="flex gap-4">
               <SortDropdown onChange={setSort} />
               <button className="px-4 py-2 border border-slate-300 bg-slate-50 rounded-lg flex items-center gap-2 hover:bg-slate-100 transition-colors">
-                <span className="font-medium text-slate-700">36</span>
+                <span className="font-medium text-slate-700">{pagination?.total_items || 0}</span>
                 <ChevronDown size={18} className="text-slate-600" />
               </button>
             </div>
@@ -213,19 +234,13 @@ export default function Products() {
           {error && !loading && (
             <div className="text-center py-20">
               <p className="text-red-500 text-lg">{error}</p>
-              <button
-                onClick={() => setCurrentPage(currentPage)}
-                className="mt-4 px-6 py-2 bg-primary text-white rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                إعادة المحاولة
-              </button>
             </div>
           )}
 
           {/* Empty State */}
           {!loading && !error && products.length === 0 && (
             <div className="text-center py-20">
-              <p className="text-slate-500 text-lg">لا توجد منتجات</p>
+              <p className="text-slate-500 text-lg">لا توجد منتجات تطابق بحثك</p>
             </div>
           )}
 
@@ -249,13 +264,13 @@ export default function Products() {
           )}
 
           {/* Pagination */}
-          {pagination && pagination.lastPage > 1 && (
+          {pagination && pagination.total_pages >= 1 && (
             <div className="flex justify-center gap-2 my-8" dir='ltr'>
-              {Array.from({ length: pagination.lastPage }, (_, i) => i + 1).map((page) => (
+              {Array.from({ length: pagination.total_pages }, (_, i) => i + 1).map((page) => (
                 <button
                   key={page}
                   onClick={() => handlePageChange(page)}
-                  className={`w-10 h-10 rounded-lg font-medium transition-colors ${currentPage === page
+                  className={`w-10 h-10 rounded-lg font-medium transition-colors ${pagination.current_page === page
                     ? 'bg-secondary text-white hover:bg-blue-600'
                     : 'border border-slate-300 text-primary hover:bg-slate-50'
                     }`}

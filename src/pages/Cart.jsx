@@ -13,13 +13,13 @@ import { ShoppingCart, Trash2, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useCart } from "@/context/CartContext";
+import { useCartStore } from "@/stores/useCartStore";
 
 export default function Cart() {
-    const { cartItems, addToCart, removeFromCart, fetchCart, updateCartItemQuantity } = useCart();
+    const { cartItems, removeFromCart, fetchCart, updateCartItemQuantity } = useCartStore();
 
     // Calculate totals
-    const subtotal = cartItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+    const subtotal = cartItems.reduce((sum, item) => sum + (item.product.final_price * item.quantity), 0);
     const total = subtotal;
 
     // Update quantity
@@ -72,35 +72,35 @@ export default function Cart() {
                                                         className="w-16 h-16 object-contain"
                                                     />
                                                 </div>
-                                                <span className="font-medium text-primary">{item.product.name}</span>
+                                                <span className="font-medium text-lg text-primary">{item.product.name}</span>
                                             </div>
                                         </TableCell>
-                                        <TableCell className="text-right text-primary">
-                                            EGP{item.product.price}
+                                        <TableCell className="text-right text-primary text-lg">
+                                            EGP{item.product.final_price}
                                         </TableCell>
                                         <TableCell className="text-right">
                                             <div className="inline-flex items-center border border-gray-300 rounded-md">
                                                 <button
                                                     onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                                                    className="px-3 py-2 hover:bg-gray-100 transition-colors"
+                                                    className="text-lg px-3 py-2 hover:bg-gray-100 transition-colors"
                                                     aria-label="تقليل الكمية"
                                                 >
                                                     <Minus className="w-4 h-4" />
                                                 </button>
-                                                <span className="px-4 py-2 min-w-[3rem] text-center border-x border-gray-300">
+                                                <span className="text-lg px-4 py-2 min-w-[3rem] text-center border-x border-gray-300">
                                                     {item.quantity}
                                                 </span>
                                                 <button
                                                     onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                                    className="px-3 py-2 hover:bg-gray-100 transition-colors"
+                                                    className="text-lg px-3 py-2 hover:bg-gray-100 transition-colors"
                                                     aria-label="زيادة الكمية"
                                                 >
                                                     <Plus className="w-4 h-4" />
                                                 </button>
                                             </div>
                                         </TableCell>
-                                        <TableCell className="text-right font-semibold text-primary">
-                                            EGP{(item.product.price * item.quantity).toFixed(2)}
+                                        <TableCell className="text-right font-semibold text-primary text-lg">
+                                            EGP{(item.product.final_price * item.quantity).toFixed(2)}
                                         </TableCell>
                                     </TableRow>
                                 ))}

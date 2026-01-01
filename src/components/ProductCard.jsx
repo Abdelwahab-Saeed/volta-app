@@ -9,17 +9,16 @@ import {
 import {
   Link
 } from "react-router-dom";
-import { useCart } from "@/context/CartContext";
+import { useCartStore } from "@/stores/useCartStore";
 import { useState } from "react";
 
 export default function ProductCard({
   product
 }) {
-  const { addToCart, isInCart } = useCart();
+  const addToCart = useCartStore((state) => state.addToCart);
+  const cartItems = useCartStore((state) => state.cartItems);
+  const isAdded = cartItems.some(item => item.product_id === product.id || item.id === product.id);
   const [addingStr, setAddingStr] = useState(false);
-
-  const isAdded = isInCart(product.id);
-
   const handleAddToCart = async (e) => {
     e.preventDefault(); // Prevent navigation if wrapped in Link
     if (isAdded) return;
@@ -28,11 +27,6 @@ export default function ProductCard({
     await addToCart(product);
     setAddingStr(false);
   };
-
-  if(product.discount > 0) {
-    product.oldPrice = product.price;
-    product.price = Math.round(product.price - (product.price * product.discount / 100));
-  }
 
   return (
     <div className="group relative bg-white rounded-lg border border-slate-200 hover:shadow-xl transition-all duration-300">
@@ -70,13 +64,13 @@ export default function ProductCard({
             {product.name}
           </h3>
         </Link>
-        
+
 
         <div className="mt-3">
           <div className='my-6 flex items-center'>
-            <p className="text-lg font-semibold text-red-700">EGP {product.price}</p>
-            {product.oldPrice && (
-              <p className="text-md text-slate-400 line-through mr-2">EGP {product.oldPrice}</p>
+            <p className="text-lg font-semibold text-red-700">EGP {product.final_price}</p>
+            {product.discount && (
+              <p className="text-md text-slate-400 line-through mr-2">EGP {product.price}</p>
             )}
           </div>
           <div>
@@ -84,8 +78,8 @@ export default function ProductCard({
               onClick={handleAddToCart}
               disabled={addingStr || isAdded}
               className={`flex items-center justify-center gap-2 w-full h-11 transition-all duration-300 rounded-md text-white ${isAdded
-                  ? "bg-green-500 hover:bg-green-600 cursor-default"
-                  : "bg-[#31A0D3] hover:bg-[#0058AB]"
+                ? "bg-green-500 hover:bg-green-600 cursor-default"
+                : "bg-[#31A0D3] hover:bg-[#0058AB]"
                 }`}
             >
               {addingStr ? (

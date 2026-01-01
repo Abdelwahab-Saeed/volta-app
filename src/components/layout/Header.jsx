@@ -17,12 +17,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import { getCategories } from "@/api/categories";
-import { useAuth } from "@/context/AuthContext";
-import { useCart } from "@/context/CartContext";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { useCartStore } from "@/stores/useCartStore";
 
 export default function Header() {
-  const { user } = useAuth();
-  const { cartCount } = useCart();
+  const user = useAuthStore((state) => state.user);
+  const cartCount = useCartStore((state) => state.cartItems.length);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -65,7 +65,9 @@ export default function Header() {
 
         {/* Logo */}
         <div className="w-55">
-          <img src={logo} alt="Volta" className="w-full h-auto" />
+          <Link to='/'>
+            <img src={logo} alt="Volta" className="w-full h-auto" />
+          </Link> 
         </div>
 
         {/* Search Bar (Hidden on small mobile, visible on tablet+) */}

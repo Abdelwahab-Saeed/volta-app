@@ -1,7 +1,9 @@
 import api from './axios';
 
-export const getProducts = (page = 1) =>
-  api.get(`/products?page=${page}`);
+export const getProducts = (params = {}) => {
+  const queryString = new URLSearchParams(params).toString();
+  return api.get(`/products?${queryString}`);
+};
 
 export const getProduct = (id) =>
   api.get(`/products/${id}`);

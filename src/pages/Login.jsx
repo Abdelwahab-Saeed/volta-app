@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/checkbox"
 import { LockKeyhole, UserPlus, Loader2 } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
-import { useAuth } from "@/context/AuthContext"
+import { useAuthStore } from "@/stores/useAuthStore"
 import { useState } from "react"
 
 export const formSchema = z
@@ -52,7 +52,7 @@ export const formSchema = z
 
 
 export default function Login() {
-  const { loginUser } = useAuth();
+  const loginUser = useAuthStore((state) => state.loginUser);
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
 

@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getProduct } from "@/api/products.api";
-import { useCart } from "@/context/CartContext";
+import { useCartStore } from "@/stores/useCartStore";
 
 export default function ProductDetails() {
     const { id } = useParams();
@@ -21,8 +21,9 @@ export default function ProductDetails() {
     const [error, setError] = useState(null);
     const [quantity, setQuantity] = useState(1);
     const [mainImage, setMainImage] = useState("");
-
-    const { addToCart, isInCart } = useCart();
+    const addToCart = useCartStore(state => state.addToCart);
+    const cartItems = useCartStore(state => state.cartItems);
+    const isInCart = (productId) => cartItems.some(item => item.product_id === productId || item.id === productId);
     const [addingStr, setAddingStr] = useState(false);
 
     useEffect(() => {
@@ -159,8 +160,8 @@ export default function ProductDetails() {
                             onClick={handleAddToCart}
                             disabled={addingStr || isAdded}
                             className={`flex-1 h-12 text-lg font-bold transition-all ${isAdded
-                                    ? "bg-green-500 hover:bg-green-600 text-white cursor-default"
-                                    : "bg-[#31A0D3] hover:bg-[#2890C2] text-white"
+                                ? "bg-green-500 hover:bg-green-600 text-white cursor-default"
+                                : "bg-[#31A0D3] hover:bg-[#2890C2] text-white"
                                 }`}
                         >
                             {addingStr ? (

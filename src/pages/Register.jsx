@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/checkbox"
 import { UserPlus, Loader2 } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
-import { useAuth } from "@/context/AuthContext"
+import { useAuthStore } from "@/stores/useAuthStore"
 import { useState } from "react"
 
 export const formSchema = z
@@ -45,7 +45,7 @@ export const formSchema = z
       .email('البريد الإلكتروني غير صحيح')
       .trim(),
 
-    phoneNumber: z
+    phone_number: z
       .string()
       .trim()
       .regex(/^01[0-2,5][0-9]{8}$/, 'رقم الهاتف غير صحيح')
@@ -58,7 +58,7 @@ export const formSchema = z
         'كلمة المرور ضعيفة حيث يجب أن تحتوي على حرف كبير وحرف صغير ورمز خاص'
       ),
 
-    confirmPassword: z.string(),
+    password_confirmation: z.string(),
 
     terms: z
       .boolean()
@@ -66,14 +66,14 @@ export const formSchema = z
         message: 'يجب الموافقة على الشروط والأحكام',
       }),
   })
-  .refine((data) => data.password === data.confirmPassword, {
+  .refine((data) => data.password === data.password_confirmation, {
     message: 'كلمتا المرور غير متطابقتين',
-    path: ['confirmPassword'],
+    path: ['password_confirmation'],
   });
 
 
 export default function Register() {
-  const { registerUser } = useAuth();
+  const registerUser = useAuthStore((state) => state.registerUser);
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -82,9 +82,9 @@ export default function Register() {
     defaultValues: {
       name: '',
       email: '',
-      phoneNumber: '',
+      phone_number: '',
       password: '',
-      confirmPassword: '',
+      password_confirmation: '',
       terms: false,
     }
   })
@@ -92,9 +92,7 @@ export default function Register() {
   async function onSubmit(values) {
     setIsSubmitting(true);
     try {
-      const { confirmPassword, terms, ...registerData } = values;
-      await registerUser(registerData);
-      toast.success('تم إنشاء الحساب بنجاح');
+      await registerUser(values);
       navigate('/');
     } catch (error) {
       console.error("Registration error", error);
@@ -171,10 +169,10 @@ export default function Register() {
                 id="phoneNumber"
                 placeholder="الهاتف"
                 className="mt-1 p-6"
-                {...form.register("phoneNumber")}
+                {...form.register("phone_number")}
               />
               <FieldError className="text-red-500 text-sm mt-1">
-                {form.formState.errors.phoneNumber?.message}
+                {form.formState.errors.phone_number?.message}
               </FieldError>
             </Field>
 
@@ -199,18 +197,18 @@ export default function Register() {
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="confirmPassword" className="text-primary font-medium">
+              <FieldLabel htmlFor="password_confirmation" className="text-primary font-medium">
                 تأكيد كلمة المرور
               </FieldLabel>
               <Input
-                id="confirmPassword"
+                id="password_confirmation"
                 placeholder="تأكيد كلمة المرور"
                 className="mt-1 p-6"
                 type="password"
-                {...form.register("confirmPassword")}
+                {...form.register("password_confirmation")}
               />
               <FieldError className="text-red-500 text-sm mt-1">
-                {form.formState.errors.confirmPassword?.message}
+                {form.formState.errors.password_confirmation?.message}
               </FieldError>
             </Field>
 

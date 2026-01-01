@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { Card, CardContent } from './ui/card';
 import { Button } from '@/components/ui/button';
 import { ShoppingCart, Loader2, Check } from 'lucide-react';
-import { useCart } from "@/context/CartContext";
+import { useCartStore } from "@/stores/useCartStore";
 
 export default function SmallProductCard({ product }) {
-  const { addToCart, isInCart } = useCart();
+  const addToCart = useCartStore((state) => state.addToCart);
+  const cartItems = useCartStore((state) => state.cartItems);
+  const isAdded = cartItems.some(item => item.product_id === product.id || item.id === product.id);
   const [addingStr, setAddingStr] = useState(false);
-
-  const isAdded = isInCart(product.id);
 
   const handleAddToCart = async (e) => {
     e.preventDefault();
@@ -41,8 +41,8 @@ export default function SmallProductCard({ product }) {
           onClick={handleAddToCart}
           disabled={addingStr || isAdded}
           className={`w-full h-10 text-white ${isAdded
-              ? "bg-green-500 hover:bg-green-600 cursor-default"
-              : "bg-[#31A0D3] hover:bg-[#0058AB]"
+            ? "bg-green-500 hover:bg-green-600 cursor-default"
+            : "bg-[#31A0D3] hover:bg-[#0058AB]"
             }`}
         >
           <div className="flex gap-2 justify-center items-center">
