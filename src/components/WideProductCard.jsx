@@ -3,15 +3,15 @@ import { Card, CardContent } from './ui/card';
 import { ShoppingCart } from 'lucide-react';
 import { Button } from './ui/button';
 
-import { useCart } from "@/context/CartContext";
+import { useCartStore } from "@/stores/useCartStore";
 import { Loader2, Check } from "lucide-react";
 import { useState } from "react";
 
 export default function WideProductCard({ product }) {
-  const { addToCart, isInCart } = useCart();
+  const addToCart = useCartStore((state) => state.addToCart);
+  const cartItems = useCartStore((state) => state.cartItems);
+  const isAdded = cartItems.some(item => item.product_id === product.id || item.id === product.id);
   const [addingStr, setAddingStr] = useState(false);
-
-  const isAdded = isInCart(product.id);
 
   const handleAddToCart = async (e) => {
     e.preventDefault();
@@ -61,8 +61,8 @@ export default function WideProductCard({ product }) {
                 onClick={handleAddToCart}
                 disabled={addingStr || isAdded}
                 className={`h-12 px-10 rounded-md transition-colors ${isAdded
-                    ? "bg-green-500 hover:bg-green-600 text-white cursor-default"
-                    : "bg-[#31A0D3] hover:bg-[#2890C2] text-white"
+                  ? "bg-green-500 hover:bg-green-600 text-white cursor-default"
+                  : "bg-[#31A0D3] hover:bg-[#2890C2] text-white"
                   }`}
               >
                 <div className="flex gap-2 items-center">
