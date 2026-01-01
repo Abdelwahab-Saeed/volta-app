@@ -14,6 +14,10 @@ import Offers from './pages/Offers';
 import Comparison from './pages/Comparison';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
+import ProfileLayout from './components/profile/ProfileLayout';
+import Profile from './pages/Profile';
+import Orders from './pages/Orders';
+import Address from './pages/Address';
 
 function App() {
   const checkAuth = useAuthStore((state) => state.checkAuth);
@@ -52,6 +56,11 @@ function App() {
         <Route path='/comparison' element={<Comparison />} />
         <Route path='/cart' element={<Cart />} />
         <Route path='/checkout' element={<Checkout />} />
+        <Route element={<ProfileLayout />}>
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/orders" element={<Orders />} />
+          <Route path="/addresses" element={<Address />} />
+        </Route>
         <Route path='*' element={<NotFoundPage />} />
       </Routes>
       <Footer />
