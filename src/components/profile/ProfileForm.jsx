@@ -1,41 +1,58 @@
 import { SwitchCamera, User } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '../ui/button';
+import { useAuthStore } from '@/stores/useAuthStore';
+import { toast } from 'sonner';
 
 export default function ProfileForm() {
   const [imagePreview, setImagePreview] = useState(null);
+  const { user, updateUserProfile } = useAuthStore();
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
-      fullName: '',
-      birthDate: '',
+      name: '',
+      date_of_birth: '',
       email: '',
-      phone: '',
-      profileImage: null,
+      phone_number: '',
+      image: null,
     },
   });
+
+  useEffect(() => {
+    if (user) {
+      setValue('name', user.name || '');
+      setValue('email', user.email || '');
+      setValue('phone_number', user.phone_number || '');
+      // Format date to YYYY-MM-DD for input type="date"
+      const formattedDate = user.date_of_birth ? user.date_of_birth.split('T')[0] : '';
+      setValue('date_of_birth', formattedDate);
+    }
+  }, [user, setValue]);
 
   const onSubmit = async (data) => {
     try {
       const formData = new FormData();
-      formData.append('fullName', data.fullName);
-      formData.append('birthDate', data.birthDate);
-      formData.append('email', data.email);
-      formData.append('phone', data.phone);
+      // Only append if value exists to support "nullable" and partial updates
+      if (data.name) formData.append('name', data.name);
+      if (data.date_of_birth) formData.append('date_of_birth', data.date_of_birth);
+      if (data.email) formData.append('email', data.email);
+      if (data.phone_number) formData.append('phone_number', data.phone_number);
 
-      if (data.profileImage?.[0]) {
-        formData.append('profileImage', data.profileImage[0]);
+      if (data.image?.[0]) {
+        formData.append('image', data.image[0]);
       }
 
-      // Call your API to update the profile
+      await updateUserProfile(formData);
+      toast.success('تم تحديث الملف الشخصي بنجاح');
     } catch (error) {
       console.error('Error:', error);
-      alert('فشل تحديث الملف الشخصي');
+      toast.error('فشل تحديث الملف الشخصي');
     }
   };
 
@@ -66,23 +83,29 @@ export default function ProfileForm() {
                 alt="Preview"
                 className="w-full h-full object-cover"
               />
+            ) : user?.image ? (
+              <img
+                src={`${import.meta.env.VITE_IMAGES_URL}/${user.image}`}
+                alt={user.name}
+                className="w-full h-full object-cover"
+              />
             ) : (
               <User size={64} />
             )}
           </div>
           <label
-            htmlFor="profileImage"
+            htmlFor="image"
             className="absolute bottom-0 right-0 bg-secondary text-white rounded-full p-2 cursor-pointer hover:bg-opacity-90"
           >
             <SwitchCamera size={20} />
           </label>
           <input
-            id="profileImage"
+            id="image"
             type="file"
             accept="image/*"
-            {...register('profileImage')}
+            {...register('image')}
             onChange={(e) => {
-              register('profileImage').onChange(e);
+              register('image').onChange(e);
               handleImageChange(e);
             }}
             className="hidden"
@@ -99,20 +122,19 @@ export default function ProfileForm() {
           <input
             type="text"
             placeholder="أدخل"
-            {...register('fullName', {
-              required: 'الاسم بالكامل مطلوب',
+            {...register('name', {
+              required: false,
               minLength: {
                 value: 3,
                 message: 'الاسم يجب أن يكون 3 أحرف على الأقل',
               },
             })}
-            className={`w-full p-3 border rounded text-right ${
-              errors.fullName ? 'border-red-500' : 'border-gray-300'
-            }`}
+            className={`w-full p-3 border rounded text-right ${errors.name ? 'border-red-500' : 'border-gray-300'
+              }`}
           />
-          {errors.fullName && (
+          {errors.name && (
             <p className="text-red-500 text-sm mt-1 text-right">
-              {errors.fullName.message}
+              {errors.name.message}
             </p>
           )}
         </div>
@@ -125,15 +147,14 @@ export default function ProfileForm() {
             type="email"
             placeholder="Am1163@gmail.com"
             {...register('email', {
-              required: 'البريد الإلكتروني مطلوب',
+              required: false,
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                 message: 'البريد الإلكتروني غير صحيح',
               },
             })}
-            className={`w-full p-3 border rounded text-right ${
-              errors.email ? 'border-red-500' : 'border-gray-300'
-            }`}
+            className={`w-full p-3 border rounded text-right ${errors.email ? 'border-red-500' : 'border-gray-300'
+              }`}
           />
           {errors.email && (
             <p className="text-red-500 text-sm mt-1 text-right">
@@ -152,16 +173,13 @@ export default function ProfileForm() {
           <input
             type="date"
             placeholder="10/18/2003"
-            {...register('birthDate', {
-              required: 'تاريخ الميلاد مطلوب',
-            })}
-            className={`w-full p-3 border rounded text-right ${
-              errors.birthDate ? 'border-red-500' : 'border-gray-300'
-            }`}
+            {...register('date_of_birth', { required: false })}
+            className={`w-full p-3 border rounded text-right ${errors.date_of_birth ? 'border-red-500' : 'border-gray-300'
+              }`}
           />
-          {errors.birthDate && (
+          {errors.date_of_birth && (
             <p className="text-red-500 text-sm mt-1 text-right">
-              {errors.birthDate.message}
+              {errors.date_of_birth.message}
             </p>
           )}
         </div>
@@ -173,20 +191,19 @@ export default function ProfileForm() {
           <input
             type="tel"
             placeholder="01127574542"
-            {...register('phone', {
-              required: 'رقم الهاتف مطلوب',
+            {...register('phone_number', {
+              required: false,
               pattern: {
                 value: /^[0-9]{11}$/,
                 message: 'رقم الهاتف يجب أن يكون 11 رقم',
               },
             })}
-            className={`w-full p-3 border rounded text-right ${
-              errors.phone ? 'border-red-500' : 'border-gray-300'
-            }`}
+            className={`w-full p-3 border rounded text-right ${errors.phone_number ? 'border-red-500' : 'border-gray-300'
+              }`}
           />
-          {errors.phone && (
+          {errors.phone_number && (
             <p className="text-red-500 text-sm mt-1 text-right">
-              {errors.phone.message}
+              {errors.phone_number.message}
             </p>
           )}
         </div>

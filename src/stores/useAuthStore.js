@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { login, logout, me, register } from '@/api/auth.api';
+import { login, logout, me, register, updateProfile, changePassword } from '@/api/auth.api';
 
 export const useAuthStore = create((set, get) => ({
     user: null,
@@ -64,4 +64,24 @@ export const useAuthStore = create((set, get) => ({
             localStorage.removeItem('token');
         }
     },
+
+    updateUserProfile: async (data) => {
+        try {
+            const response = await updateProfile(data);
+            const userData = response.data.user || response.data; // Adjust based on API response
+            set({ user: userData });
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    changeUserPassword: async (data) => {
+        try {
+            const response = await changePassword(data);
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    }
 }));

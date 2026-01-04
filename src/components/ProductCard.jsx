@@ -17,7 +17,7 @@ export default function ProductCard({
 }) {
   const addToCart = useCartStore((state) => state.addToCart);
   const cartItems = useCartStore((state) => state.cartItems);
-  const isAdded = cartItems.some(item => item.product_id === product.id || item.id === product.id);
+  const isAdded = cartItems.some(item => item.product_id === product.id);
   const [addingStr, setAddingStr] = useState(false);
   const handleAddToCart = async (e) => {
     e.preventDefault(); // Prevent navigation if wrapped in Link

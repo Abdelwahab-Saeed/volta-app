@@ -1,29 +1,34 @@
-import React from 'react';
+import { useEffect } from 'react';
 import OrderCard from '../components/orders/OrderCard';
-import Stabilizer from '../assets/home/stabilizer.png';
+import { useOrderStore } from '@/stores/useOrderStore';
+import { Loader2 } from 'lucide-react';
 
-const orders = [
-  {
-    id: 1,
-    status: 'Delivered',
-    image: Stabilizer,
-    name: 'SVC 5–20 kVA',
-    date: '2024-06-15',
-    price: 20.0,
-    total: 80.0,
-    totalItems: 4,
-  },
-  {
-    id: 2,
-    status: 'Getting Ready',
-    image: Stabilizer,
-    name: 'SVC 10 kVA Stabilizer',
-    date: '2024-06-15',
-    price: 30.0,
-    total: 30.0,
-    totalItems: 1,
-  },
-];
 export default function Orders() {
-  return orders.map((order) => <OrderCard key={order.id} order={order} />);
+  const { orders, fetchOrders, isLoading } = useOrderStore();
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[50vh]">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (orders.length === 0) {
+    return (
+      <div className="text-center py-20 text-gray-500 text-lg">
+        لا توجد طلبات سابقة
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6 container mx-auto px-4 py-8">
+      {orders.map((order) => <OrderCard key={order.id} order={order} />)}
+    </div>
+  );
 }

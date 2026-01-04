@@ -1,0 +1,7 @@
+import api from './axios';
+
+export const checkout = (data) =>
+    api.post('/checkout', data);
+
+export const getOrders = () =>
+    api.get('/orders');

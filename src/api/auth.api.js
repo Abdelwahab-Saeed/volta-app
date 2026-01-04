@@ -17,3 +17,7 @@ export const logout = async () => {
 };
 
 export const me = () => api.get('/me');
+
+export const updateProfile = (data) => api.post('/profile', data);
+
+export const changePassword = (data) => api.post('/change-password', data);

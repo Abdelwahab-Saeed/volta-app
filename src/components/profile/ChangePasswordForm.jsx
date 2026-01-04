@@ -1,33 +1,39 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Eye, EyeOff } from 'lucide-react';
+import { useAuthStore } from '@/stores/useAuthStore';
+import { toast } from 'sonner';
 
 export default function ChangePasswordForm() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { changeUserPassword } = useAuthStore();
 
   const {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
-      currentPassword: '',
-      newPassword: '',
-      confirmPassword: '',
+      current_password: '', // Changed to match API requirement
+      password: '',        // Changed to match API requirement
+      password_confirmation: '', // Changed to match API requirement
     },
   });
 
-  const newPassword = watch('newPassword');
+  const password = watch('password');
 
-  const onSubmit = async () => {
+  const onSubmit = async (data) => {
     try {
-      // Call your API to update the profile
+      await changeUserPassword(data);
+      toast.success('تم تغيير كلمة المرور بنجاح');
+      reset();
     } catch (error) {
       console.error('Error:', error);
-      alert('فشل تغيير كلمة المرور. تأكد من كلمة المرور الحالية');
+      toast.error('فشل تغيير كلمة المرور. تأكد من كلمة المرور الحالية');
     }
   };
 
@@ -46,16 +52,11 @@ export default function ChangePasswordForm() {
           <input
             type={showCurrentPassword ? 'text' : 'password'}
             placeholder="أدخل كلمة المرور الحالية"
-            {...register('currentPassword', {
+            {...register('current_password', {
               required: 'كلمة المرور الحالية مطلوبة',
-              minLength: {
-                value: 6,
-                message: 'كلمة المرور يجب أن تكون 6 أحرف على الأقل',
-              },
             })}
-            className={`w-full p-3 border rounded text-right pr-12 ${
-              errors.currentPassword ? 'border-red-500' : 'border-gray-300'
-            }`}
+            className={`w-full p-3 border rounded text-right pr-12 ${errors.current_password ? 'border-red-500' : 'border-gray-300'
+              }`}
           />
           <button
             type="button"
@@ -65,9 +66,9 @@ export default function ChangePasswordForm() {
             {showCurrentPassword ? <EyeOff size={20} /> : <Eye size={20} />}
           </button>
         </div>
-        {errors.currentPassword && (
+        {errors.current_password && (
           <p className="text-red-500 text-sm mt-1 text-right">
-            {errors.currentPassword.message}
+            {errors.current_password.message}
           </p>
         )}
       </div>
@@ -81,20 +82,19 @@ export default function ChangePasswordForm() {
           <input
             type={showNewPassword ? 'text' : 'password'}
             placeholder="أدخل كلمة المرور الجديدة"
-            {...register('newPassword', {
+            {...register('password', {
               required: 'كلمة المرور الجديدة مطلوبة',
               minLength: {
                 value: 8,
                 message: 'كلمة المرور يجب أن تكون 8 أحرف على الأقل',
               },
-              pattern: {
-                value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-                message: 'كلمة المرور يجب أن تحتوي على حرف كبير وحرف صغير ورقم',
-              },
+              maxLength: {
+                value: 255,
+                message: 'كلمة المرور طويلة جداً'
+              }
             })}
-            className={`w-full p-3 border rounded text-right pr-12 ${
-              errors.newPassword ? 'border-red-500' : 'border-gray-300'
-            }`}
+            className={`w-full p-3 border rounded text-right pr-12 ${errors.password ? 'border-red-500' : 'border-gray-300'
+              }`}
           />
           <button
             type="button"
@@ -104,9 +104,9 @@ export default function ChangePasswordForm() {
             {showNewPassword ? <EyeOff size={20} /> : <Eye size={20} />}
           </button>
         </div>
-        {errors.newPassword && (
+        {errors.password && (
           <p className="text-red-500 text-sm mt-1 text-right">
-            {errors.newPassword.message}
+            {errors.password.message}
           </p>
         )}
       </div>
@@ -120,14 +120,13 @@ export default function ChangePasswordForm() {
           <input
             type={showConfirmPassword ? 'text' : 'password'}
             placeholder="أعد إدخال كلمة المرور الجديدة"
-            {...register('confirmPassword', {
+            {...register('password_confirmation', {
               required: 'تأكيد كلمة المرور مطلوب',
               validate: (value) =>
-                value === newPassword || 'كلمة المرور غير متطابقة',
+                value === password || 'كلمة المرور غير متطابقة',
             })}
-            className={`w-full p-3 border rounded text-right pr-12 ${
-              errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
-            }`}
+            className={`w-full p-3 border rounded text-right pr-12 ${errors.password_confirmation ? 'border-red-500' : 'border-gray-300'
+              }`}
           />
           <button
             type="button"
@@ -137,9 +136,9 @@ export default function ChangePasswordForm() {
             {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
           </button>
         </div>
-        {errors.confirmPassword && (
+        {errors.password_confirmation && (
           <p className="text-red-500 text-sm mt-1 text-right">
-            {errors.confirmPassword.message}
+            {errors.password_confirmation.message}
           </p>
         )}
       </div>

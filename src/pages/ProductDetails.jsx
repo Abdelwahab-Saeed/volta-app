@@ -23,7 +23,7 @@ export default function ProductDetails() {
     const [mainImage, setMainImage] = useState("");
     const addToCart = useCartStore(state => state.addToCart);
     const cartItems = useCartStore(state => state.cartItems);
-    const isInCart = (productId) => cartItems.some(item => item.product_id === productId || item.id === productId);
+    const isInCart = (productId) => cartItems.some(item => item.product_id === productId);
     const [addingStr, setAddingStr] = useState(false);
 
     useEffect(() => {
@@ -122,7 +122,7 @@ export default function ProductDetails() {
 
                     <div className="flex items-end gap-3 pb-6 border-b">
                         <span className="text-4xl font-bold text-secondary">
-                            EGP {product.price}
+                            EGP {product.final_price}
                         </span>
                         {product.oldPrice && (
                             <span className="text-xl text-gray-400 line-through mb-1">

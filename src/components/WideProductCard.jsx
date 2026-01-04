@@ -10,7 +10,7 @@ import { useState } from "react";
 export default function WideProductCard({ product }) {
   const addToCart = useCartStore((state) => state.addToCart);
   const cartItems = useCartStore((state) => state.cartItems);
-  const isAdded = cartItems.some(item => item.product_id === product.id || item.id === product.id);
+  const isAdded = cartItems.some(item => item.product_id === product.id);
   const [addingStr, setAddingStr] = useState(false);
 
   const handleAddToCart = async (e) => {
@@ -90,12 +90,12 @@ export default function WideProductCard({ product }) {
                       EGP{product.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
                     <span className="text-3xl font-bold text-red-600">
-                      EGP{((product.price - (product.price * product.discount) / 100)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      EGP{product.final_price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
                   </>
                 ) : (
                   <span className="text-3xl font-bold text-red-600">
-                    EGP{product.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    EGP{product.final_price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
                 )}
               </div>
