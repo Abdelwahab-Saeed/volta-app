@@ -7,7 +7,7 @@ import { useCartStore } from "@/stores/useCartStore";
 export default function SmallProductCard({ product }) {
   const addToCart = useCartStore((state) => state.addToCart);
   const cartItems = useCartStore((state) => state.cartItems);
-  const isAdded = cartItems.some(item => item.product_id === product.id || item.id === product.id);
+  const isAdded = cartItems.some(item => item.product_id === product.id);
   const [addingStr, setAddingStr] = useState(false);
 
   const handleAddToCart = async (e) => {
@@ -34,7 +34,7 @@ export default function SmallProductCard({ product }) {
         </h3>
         <div className="flex items-center justify-between mb-3">
           <span className="text-lg font-bold text-red-600">
-            {product.price} EGP
+            {product.final_price} EGP
           </span>
         </div>
         <Button
