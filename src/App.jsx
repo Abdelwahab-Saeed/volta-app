@@ -21,6 +21,7 @@ import Profile from './pages/Profile';
 import Orders from './pages/Orders';
 import Address from './pages/Address';
 import Wishlist from './pages/Wishlist';
+import Links from './components/layout/Links';
 
 function App() {
   const checkAuth = useAuthStore((state) => state.checkAuth);
@@ -56,6 +57,7 @@ function App() {
   return (
     <>
       <Header />
+      <Links />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
