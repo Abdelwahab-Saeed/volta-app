@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import {
@@ -8,16 +8,40 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
+import { useAddressStore } from '@/stores/useAddressStore';
+import { toast } from 'sonner';
 
-export default function AddressForm({ open, onClose, onSubmit }) {
+export default function AddressForm({ open, onClose, onSuccess, initialData }) {
+  const { addNewAddress, updateUserAddress } = useAddressStore();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    secondaryPhone: '',
+    recipient_name: '',
+    phone_number: '',
     city: '',
-    area: '',
-    street: '',
+    state: '',
+    address_line_1: '',
   });
+
+  useEffect(() => {
+    if (initialData) {
+      setFormData({
+        recipient_name: initialData.recipient_name || '',
+        phone_number: initialData.phone_number || '',
+        city: initialData.city || '',
+        state: initialData.state || '',
+        address_line_1: initialData.address_line_1 || '',
+      });
+    } else {
+      setFormData({
+        recipient_name: '',
+        phone_number: '',
+        city: '',
+        state: '',
+        address_line_1: '',
+      });
+    }
+  }, [initialData, open]);
+
 
   const handleChange = (e) => {
     setFormData({
@@ -26,24 +50,37 @@ export default function AddressForm({ open, onClose, onSubmit }) {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSelectChange = (name, value) => {
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const newAddress = {
-      id: Date.now(),
-      name: formData.name,
-      secondaryPhone: formData.secondaryPhone,
-      fullAddress: `العنوان: ${formData.city} - ${formData.area} - ${formData.street}`,
-    };
-    onSubmit?.(newAddress);
-    setFormData({
-      name: '',
-      phone: '',
-      secondaryPhone: '',
-      city: '',
-      area: '',
-      street: '',
-    });
-    onClose();
+    setLoading(true);
+
+    try {
+      if (initialData?.id) {
+        await updateUserAddress(initialData.id, {
+          ...formData,
+          country: 'Egypt',
+          zip_code: '',
+        });
+        toast.success('تم تحديث العنوان بنجاح');
+      } else {
+        await addNewAddress({
+          ...formData,
+          country: 'Egypt',
+          zip_code: '',
+        });
+        toast.success('تم حفظ العنوان بنجاح');
+      }
+      onSuccess?.();
+    } catch (error) {
+      console.error("Failed to save address", error);
+      toast.error('فشل حفظ العنوان');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -51,7 +88,7 @@ export default function AddressForm({ open, onClose, onSubmit }) {
       <DialogContent className="max-w-md rounded p-8">
         <DialogHeader>
           <DialogTitle className="text-center text-xl">
-            إضافة عنوان جديد
+            {initialData ? 'تعديل العنوان' : 'إضافة عنوان جديد'}
           </DialogTitle>
         </DialogHeader>
 
@@ -62,8 +99,8 @@ export default function AddressForm({ open, onClose, onSubmit }) {
             </label>
             <input
               type="text"
-              name="name"
-              value={formData.name}
+              name="recipient_name"
+              value={formData.recipient_name}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-cyan-500"
               required
@@ -76,8 +113,8 @@ export default function AddressForm({ open, onClose, onSubmit }) {
             </label>
             <input
               type="tel"
-              name="phone"
-              value={formData.phone}
+              name="phone_number"
+              value={formData.phone_number}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-cyan-500"
               required
@@ -86,27 +123,11 @@ export default function AddressForm({ open, onClose, onSubmit }) {
 
           <div>
             <label className="block text-sm font-medium mb-2 text-right">
-              رقم هاتف احتياطي
-            </label>
-            <input
-              type="tel"
-              name="secondaryPhone"
-              value={formData.secondaryPhone}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-cyan-500"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-2 text-right">
               المحافظة
             </label>
             <Select
-              value={formData.city}
-              onValueChange={(value) =>
-                handleChange({ target: { name: 'city', value } })
-              }
-              className="w-full"
+              value={formData.state}
+              onValueChange={(value) => handleSelectChange('state', value)}
             >
               <SelectTrigger
                 size="lg"
@@ -125,39 +146,29 @@ export default function AddressForm({ open, onClose, onSubmit }) {
 
           <div>
             <label className="block text-sm font-medium mb-2 text-right">
-              المنطقة
+              المدينة / المنطقة
             </label>
-            <Select
-              value={formData.area}
-              onValueChange={(value) =>
-                handleChange({ target: { name: 'area', value } })
-              }
-              className="w-full"
-            >
-              <SelectTrigger
-                size="lg"
-                className="w-full text-right rounded-md py-3"
-              >
-                <SelectValue placeholder="اختر المنطقة" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="صلاح سالم">صلاح سالم</SelectItem>
-                <SelectItem value="عبد السلام عارف">عبد السلام عارف</SelectItem>
-                <SelectItem value="مدينتي">مدينتي</SelectItem>
-                <SelectItem value="التجمع الخامس">التجمع الخامس</SelectItem>
-              </SelectContent>
-            </Select>
+            <input
+              type="text"
+              name="city"
+              value={formData.city}
+              onChange={handleChange}
+              placeholder="مثال: مدينة نصر"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              required
+            />
           </div>
 
           <div>
             <label className="block text-sm font-medium mb-2 text-right">
-              العنوان
+              العنوان بالتفصيل
             </label>
             <input
               type="text"
-              name="street"
-              value={formData.street}
+              name="address_line_1"
+              value={formData.address_line_1}
               onChange={handleChange}
+              placeholder="اسم الشارع - رقم العقار - رقم الشقة"
               className="w-full px-3 py-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-cyan-500"
               required
             />
@@ -167,15 +178,17 @@ export default function AddressForm({ open, onClose, onSubmit }) {
             <Button
               type="button"
               onClick={onClose}
+              disabled={loading}
               className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700"
             >
               إلغاء
             </Button>
             <Button
               type="submit"
+              disabled={loading}
               className="flex-1 bg-cyan-500 hover:bg-cyan-600 text-white"
             >
-              حفظ العنوان
+              {loading ? 'جاري الحفظ...' : 'حفظ العنوان'}
             </Button>
           </div>
         </form>

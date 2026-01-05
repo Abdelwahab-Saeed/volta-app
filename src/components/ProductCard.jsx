@@ -4,21 +4,69 @@ import {
   ShoppingCart,
   Star,
   Loader2,
-  Check
+  Check,
+  ArrowLeftRight
 } from "lucide-react";
 import {
   Link
 } from "react-router-dom";
 import { useCartStore } from "@/stores/useCartStore";
+import { useWishlistStore } from "@/stores/useWishlistStore";
+import { useComparisonStore } from "@/stores/useComparisonStore";
 import { useState } from "react";
+import { useAuthStore } from '@/stores/useAuthStore';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 export default function ProductCard({
   product
 }) {
   const addToCart = useCartStore((state) => state.addToCart);
   const cartItems = useCartStore((state) => state.cartItems);
+  const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
+  const isInWishlist = useWishlistStore((state) => state.isInWishlist(product.id));
+  const addToComparison = useComparisonStore((state) => state.addToComparison);
+  const removeFromComparison = useComparisonStore((state) => state.removeFromComparison);
+  const isInComparison = useComparisonStore((state) => state.isInComparison(product.id));
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+
   const isAdded = cartItems.some(item => item.product_id === product.id);
   const [addingStr, setAddingStr] = useState(false);
+  const navigate = useNavigate();
+
+  const handleWishlistToggle = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isAuthenticated) {
+      toast.error('يرجى تسجيل الدخول أولاً');
+      navigate('/login');
+      return;
+    }
+    try {
+      await toggleWishlist(product);
+    } catch (error) {
+      toast.error('فشل تحديث قائمة الأمنيات');
+    }
+  };
+
+  const handleComparisonToggle = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isAuthenticated) {
+      toast.error('يرجى تسجيل الدخول أولاً');
+      navigate('/login');
+      return;
+    }
+    try {
+      if (isInComparison) {
+        await removeFromComparison(product.id);
+      } else {
+        await addToComparison(product);
+      }
+    } catch (error) {
+      // Errors are handled in the store (toast)
+    }
+  };
   const handleAddToCart = async (e) => {
     e.preventDefault(); // Prevent navigation if wrapped in Link
     if (isAdded) return;
@@ -41,8 +89,19 @@ export default function ProductCard({
 
       {/* Action Buttons */}
       <div className="absolute top-3 right-3 z-10 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <button className="p-2 bg-white rounded-full shadow-md hover:bg-red-50 hover:text-red-500 transition-colors">
-          <Heart size={18} />
+        <button
+          onClick={handleWishlistToggle}
+          className={`p-2 bg-white rounded-full shadow-md transition-colors ${isInWishlist ? 'text-red-500 bg-red-50' : 'hover:bg-red-50 hover:text-red-500'
+            }`}
+        >
+          <Heart size={18} fill={isInWishlist ? "currentColor" : "none"} />
+        </button>
+        <button
+          onClick={handleComparisonToggle}
+          className={`p-2 bg-white rounded-full shadow-md transition-colors ${isInComparison ? 'text-primary bg-blue-50' : 'hover:bg-blue-50 hover:text-primary'
+            }`}
+        >
+          <ArrowLeftRight size={18} />
         </button>
       </div>
 

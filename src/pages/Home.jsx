@@ -134,7 +134,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto px-4 md:px-6 lg:px-8">
       <HomeCarousel banners={banners} />
       <CategoryCarousel categories={categories} />
       <FeaturesSection />

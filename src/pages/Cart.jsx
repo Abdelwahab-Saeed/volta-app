@@ -80,7 +80,7 @@ export default function Cart() {
             <div className="flex flex-col lg:flex-row gap-8 lg:gap-20">
                 {/* Cart Table */}
                 {cartItems.length > 0 ? (
-                    <div className="w-full lg:w-9/12 bg-white shadow-sm overflow-hidden mb-6">
+                    <div className="w-full lg:w-9/12 bg-white shadow-sm overflow-x-auto mb-6">
                         <Table>
                             <TableHeader>
                                 <TableRow className="bg-gray-100 text-xl">

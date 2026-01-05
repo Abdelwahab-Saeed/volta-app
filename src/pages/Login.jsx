@@ -82,16 +82,18 @@ export default function Login() {
 
   return (
     <>
-      <div className="bg-light-background px-40 py-8">
+      <div className="bg-light-background px-4 md:px-10 lg:px-40 py-8 text-right" dir="rtl">
         <div>
-          <h1 className="text-4xl font-bold text-primary mb-4">تسجيل الدخول</h1>
-          <ul className="flex gap-2 text-lg text-primary px-2 list-disc mx-6">
-            <li>الرئيسية تسجيل الدخول</li>
-          </ul>
+          <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4">تسجيل الدخول</h1>
+          <div className="flex gap-2 text-base md:text-lg text-primary">
+            <span>الرئيسية</span>
+            <span>/</span>
+            <span>تسجيل الدخول</span>
+          </div>
         </div>
       </div>
       <Form {...form}>
-        <div className="w-full border-2 my-10 mx-auto flex flex-col justify-center bg-white shadow-2xl py-12 px-4 lg:w-4/12 lg:px-16">
+        <div className="w-full max-w-lg border-2 my-10 mx-auto flex flex-col justify-center bg-white shadow-2xl py-12 px-6 lg:px-16" dir="rtl">
 
           {/* Header Section */}
           <div className="mb-10">
@@ -99,12 +101,12 @@ export default function Login() {
               <LockKeyhole size={24} className="text-secondary font-bold" />
               <h1 className="text-2xl font-bold text-primary mb-2">تسجيل الدخول إلى حسابك</h1>
             </div>
-            <p className="text-primary leading-10 mx-8">
+            <p className="text-primary leading-relaxed opacity-80">
               ستُستخدم بياناتك الشخصية لتحسين تجربتك على الموقع، وتسهيل الوصول إلى حسابك.
             </p>
           </div>
 
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 w-full mx-8 pl-16">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 w-full">
 
             <Field>
               <FieldLabel htmlFor="email" className="text-primary font-medium">

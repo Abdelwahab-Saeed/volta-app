@@ -1,14 +1,59 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from './ui/card';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, Loader2, Check } from 'lucide-react';
+import { ShoppingCart, Loader2, Check, Heart, ArrowLeftRight } from 'lucide-react';
 import { useCartStore } from "@/stores/useCartStore";
+import { useWishlistStore } from "@/stores/useWishlistStore";
+import { useComparisonStore } from "@/stores/useComparisonStore";
+import { useAuthStore } from '@/stores/useAuthStore';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 export default function SmallProductCard({ product }) {
   const addToCart = useCartStore((state) => state.addToCart);
   const cartItems = useCartStore((state) => state.cartItems);
+  const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
+  const isInWishlist = useWishlistStore((state) => state.isInWishlist(product.id));
+  const addToComparison = useComparisonStore((state) => state.addToComparison);
+  const removeFromComparison = useComparisonStore((state) => state.removeFromComparison);
+  const isInComparison = useComparisonStore((state) => state.isInComparison(product.id));
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+
   const isAdded = cartItems.some(item => item.product_id === product.id);
   const [addingStr, setAddingStr] = useState(false);
+  const navigate = useNavigate();
+
+  const handleWishlistToggle = async (e) => {
+    e.preventDefault();
+    if (!isAuthenticated) {
+      toast.error('يرجى تسجيل الدخول أولاً');
+      navigate('/login');
+      return;
+    }
+    try {
+      await toggleWishlist(product);
+    } catch (error) {
+      toast.error('فشل تحديث قائمة الأمنيات');
+    }
+  };
+
+  const handleComparisonToggle = async (e) => {
+    e.preventDefault();
+    if (!isAuthenticated) {
+      toast.error('يرجى تسجيل الدخول أولاً');
+      navigate('/login');
+      return;
+    }
+    try {
+      if (isInComparison) {
+        await removeFromComparison(product.id);
+      } else {
+        await addToComparison(product);
+      }
+    } catch (error) {
+      // Errors handled in store
+    }
+  };
 
   const handleAddToCart = async (e) => {
     e.preventDefault();
@@ -22,7 +67,23 @@ export default function SmallProductCard({ product }) {
   return (
     <Card className="overflow-hidden border">
       <CardContent className="p-4">
-        <div className="mb-4 overflow-hidden border-b">
+        <div className="relative mb-4 overflow-hidden border-b">
+          <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
+            <button
+              onClick={handleWishlistToggle}
+              className={`p-1.5 bg-white/80 backdrop-blur-sm rounded-full shadow-sm transition-colors ${isInWishlist ? 'text-red-500' : 'hover:text-red-500'
+                }`}
+            >
+              <Heart size={14} fill={isInWishlist ? "currentColor" : "none"} />
+            </button>
+            <button
+              onClick={handleComparisonToggle}
+              className={`p-1.5 bg-white/80 backdrop-blur-sm rounded-full shadow-sm transition-colors ${isInComparison ? 'text-primary' : 'hover:text-primary'
+                }`}
+            >
+              <ArrowLeftRight size={14} />
+            </button>
+          </div>
           <img
             src={`${import.meta.env.VITE_IMAGES_URL}/${product.image}`}
             alt={product.name}

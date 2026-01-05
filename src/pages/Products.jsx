@@ -6,7 +6,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Slider } from '@/components/ui/slider';
 import WideProductCard from '@/components/WideProductCard';
 import { getCategories } from '@/api/categories';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import useDebounce from '@/hooks/useDebounce';
 import { useProductStore } from '@/stores/useProductStore';
 
@@ -96,22 +96,21 @@ export default function Products() {
 
   return (
     <>
-      <div className="bg-light-background px-40 py-8">
+      <div className="bg-light-background px-4 md:px-10 lg:px-40 py-8 text-right" dir="rtl">
         <div>
-          <h1 className="text-4xl font-bold text-primary mb-4">
+          <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4">
             {selectedCategory?.name || 'جميع المنتجات'}
           </h1>
-          <div className="flex gap-2 items-baseline text-primary px-2 mx-6">
-            <Square fill='true' size={10} />
-            <span> الرئيسية </span>
-            <Square fill='true' size={10} />
-            <span> المنتجات  </span>
+          <div className="flex gap-2 items-center text-primary text-sm md:text-base">
+            <Link to="/" className="hover:underline">الرئيسية</Link>
+            <Square fill='true' size={8} />
+            <span> المنتجات </span>
           </div>
         </div>
       </div>
-      <div className="flex justify-center px-14 py-12" dir="rtl">
+      <div className="flex flex-col lg:flex-row justify-center px-4 md:px-10 lg:px-20 py-12 gap-8" dir="rtl">
         {/* Filter Sidebar */}
-        <aside className="w-3/12 ml-12">
+        <aside className="w-full lg:w-3/12">
           <div className="bg-white sticky top-4">
             {/* Search Bar */}
             <div className=" pb-4 border-slate-100">
@@ -121,25 +120,25 @@ export default function Products() {
                   placeholder="بحث"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full py-3 px-4 pr-11  border-1  text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-400 focus:bg-white transition-all text-right"
+                  className="w-full py-3 px-4 pr-11 border rounded-lg border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-400 focus:bg-white transition-all text-right"
                 />
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" />
               </div>
             </div>
 
             {/* Categories Section */}
-            <div className="p-6 bg-light-background">
-              <h3 className="text-xl font-bold text-primary border-b-2 pb-6 mb-4">
+            <div className="p-4 md:p-6 bg-light-background rounded-xl">
+              <h3 className="text-lg md:text-xl font-bold text-primary border-b-2 pb-4 mb-4">
                 الفئات
               </h3>
               <div className="space-y-1">
                 {categories.map((category) => (
                   <label
                     key={category.id}
-                    className="flex items-center justify-between py-3 px-3 rounded-lg cursor-pointer transition-all hover:bg-slate-50"
+                    className="flex items-center justify-between py-2 px-2 rounded-lg cursor-pointer transition-all hover:bg-slate-50"
                   >
-                    <span className={`text-lg font-medium transition-colors ${selectedCategory?.id === category.id
-                      ? 'text-primary text-xl'
+                    <span className={`text-base md:text-lg font-medium transition-colors ${selectedCategory?.id === category.id
+                      ? 'text-primary text-lg md:text-xl'
                       : 'text-slate-700'
                       }`}>
                       {category.name}
@@ -155,27 +154,24 @@ export default function Products() {
             </div>
 
             {/* Price Range Section */}
-            <div className="p-6 mt-6 bg-light-background">
-              <h3 className="text-xl font-bold border-b-2 pb-6 text-primary mb-6">
+            <div className="p-4 md:p-6 mt-6 bg-light-background rounded-xl">
+              <h3 className="text-lg md:text-xl font-bold border-b-2 pb-4 text-primary mb-6">
                 السعر
               </h3>
               <div className="px-1">
                 <Slider
                   value={priceRange}
-                  onValueChange={setPriceRange} // This might be too frequent, maybe debounce or use onValueCommit?
-                  onValueCommit={setPriceRange} // Better for fetch trigger
+                  onValueChange={setPriceRange}
+                  onValueCommit={setPriceRange}
                   min={0}
                   max={100000}
                   step={100}
                   dir="rtl"
                   className="mb-6"
                 />
-                <div className="flex items-center justify-between mt-2 text-slate-600 font-medium">
-                  {/* Min Value (Right in RTL) */}
+                <div className="flex items-center justify-between mt-2 text-slate-600 font-medium text-sm md:text-base">
                   <span>EGP{priceRange[0].toLocaleString()}</span>
-                  {/* Separator */}
                   <span>—</span>
-                  {/* Max Value (Left in RTL) */}
                   <span>EGP{priceRange[1].toLocaleString()}</span>
                 </div>
               </div>
@@ -184,8 +180,8 @@ export default function Products() {
         </aside>
 
         {/* Main Content */}
-        <div className="w-9/12">
-          <h2 className="text-3xl mb-4 font-bold text-slate-800">
+        <div className="w-full lg:w-9/12">
+          <h2 className="text-2xl md:text-3xl mb-4 font-bold text-slate-800">
             {selectedCategory?.name || 'جميع المنتجات'}
           </h2>
           <hr className="border-slate-200 mb-4" />

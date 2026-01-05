@@ -1,31 +1,39 @@
 import React, { useState } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { Button } from '../ui/button';
 import { LogOut, MapPinHouse, ShoppingCart, User } from 'lucide-react';
 import ConfirmDialog from '../ConfirmDialog';
+import { useAuthStore } from '@/stores/useAuthStore';
+import { toast } from 'sonner';
 
 export default function ProfileLayout() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const logoutUser = useAuthStore((state) => state.logoutUser);
+  const navigate = useNavigate();
 
-  const handleLogout = () => {
-    // Logic for logging out the user
-    console.log('User logged out');
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      toast.success('تم تسجيل الخروج بنجاح');
+      navigate('/');
+    } catch (error) {
+      toast.error('فشل تسجيل الخروج');
+    }
   };
 
   return (
     <>
-      <div className="container mx-auto flex gap-6 py-8">
+      <div className="container mx-auto flex flex-col lg:flex-row gap-6 py-8 px-4">
         <aside
-          className="lg:w-1/4 h-fit flex flex-col gap-4 py-6 px-2 [box-shadow:0px_10px_27px_0px_#0000001A]"
+          className="w-full lg:w-1/4 h-fit flex flex-col gap-2 md:gap-4 py-6 px-2 [box-shadow:0px_10px_27px_0px_#0000001A]"
           dir="rtl"
         >
           <NavLink
             to="/profile"
             className={({ isActive }) =>
-              `text-xl flex justify-start items-center gap-2 mx-3 p-3 ${
-                isActive
-                  ? 'text-white bg-secondary'
-                  : 'text-primary hover:text-white hover:bg-secondary'
+              `text-xl flex justify-start items-center gap-2 mx-3 p-3 ${isActive
+                ? 'text-white bg-secondary'
+                : 'text-primary hover:text-white hover:bg-secondary'
               }`
             }
           >
@@ -36,10 +44,9 @@ export default function ProfileLayout() {
           <NavLink
             to="/orders"
             className={({ isActive }) =>
-              `text-xl flex justify-start items-center gap-2 mx-3 p-3 ${
-                isActive
-                  ? 'text-white bg-secondary'
-                  : 'text-primary hover:text-white hover:bg-secondary'
+              `text-xl flex justify-start items-center gap-2 mx-3 p-3 ${isActive
+                ? 'text-white bg-secondary'
+                : 'text-primary hover:text-white hover:bg-secondary'
               }`
             }
           >
@@ -50,10 +57,9 @@ export default function ProfileLayout() {
           <NavLink
             to="/addresses"
             className={({ isActive }) =>
-              `text-xl flex justify-start items-center gap-2 mx-3 p-3 ${
-                isActive
-                  ? 'text-white bg-secondary'
-                  : 'text-primary hover:text-white hover:bg-secondary'
+              `text-xl flex justify-start items-center gap-2 mx-3 p-3 ${isActive
+                ? 'text-white bg-secondary'
+                : 'text-primary hover:text-white hover:bg-secondary'
               }`
             }
           >
@@ -69,7 +75,7 @@ export default function ProfileLayout() {
             تسجيل الخروج
           </Button>
         </aside>
-        <div className="lg:w-3/4">
+        <div className="w-full lg:w-3/4">
           <Outlet />
         </div>
       </div>
