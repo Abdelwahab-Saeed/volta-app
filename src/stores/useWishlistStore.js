@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import * as wishlistApi from '../api/wishlist.api';
+import { toast } from 'sonner';
 
 export const useWishlistStore = create((set, get) => ({
     wishlistItems: [],
@@ -28,12 +29,13 @@ export const useWishlistStore = create((set, get) => ({
         }
 
         try {
-            await wishlistApi.toggleWishlist(product.id);
-            // Re-fetch to be sure state is synced with server if needed, 
-            // but usually toggle returns success or new state.
+            const response = await wishlistApi.toggleWishlist(product.id);
+            toast.success(response.data?.message || (isInWishlist ? 'تم الحذف من قائمة الأمنيات' : 'تمت الإضافة لقائمة الأمنيات'));
         } catch (error) {
             // Rollback on error
             set({ wishlistItems });
+            const message = error.response?.data?.message || 'فشل تحديث قائمة الأمنيات';
+            toast.error(message);
             throw error;
         }
     },

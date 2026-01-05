@@ -21,6 +21,10 @@ import Profile from './pages/Profile';
 import Orders from './pages/Orders';
 import Address from './pages/Address';
 import Wishlist from './pages/Wishlist';
+import Links from './components/layout/Links';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+import ProductDetails from './pages/ProductDetails';
+import { Toaster } from "@/components/ui/sonner";
 
 function App() {
   const checkAuth = useAuthStore((state) => state.checkAuth);
@@ -56,24 +60,31 @@ function App() {
   return (
     <>
       <Header />
+      <Links />
       <Routes>
-        <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path='/products' element={<Products />} />
-        <Route path='/offers' element={<Offers />} />
-        <Route path='/comparison' element={<Comparison />} />
-        <Route path='/cart' element={<Cart />} />
-        <Route path='/checkout' element={<Checkout />} />
-        <Route path='/wishlist' element={<Wishlist />} />
-        <Route element={<ProfileLayout />}>
+
+        {/* Protected Routes */}
+        <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+        <Route path='/products' element={<ProtectedRoute><Products /></ProtectedRoute>} />
+        <Route path='/offers' element={<ProtectedRoute><Offers /></ProtectedRoute>} />
+        <Route path='/comparison' element={<ProtectedRoute><Comparison /></ProtectedRoute>} />
+        <Route path='/cart' element={<ProtectedRoute><Cart /></ProtectedRoute>} />
+        <Route path='/checkout' element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+        <Route path='/wishlist' element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
+        <Route path='/product/:id' element={<ProtectedRoute><ProductDetails /></ProtectedRoute>} />
+
+        <Route element={<ProtectedRoute><ProfileLayout /></ProtectedRoute>}>
           <Route path="/profile" element={<Profile />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/addresses" element={<Address />} />
         </Route>
+
         <Route path='*' element={<NotFoundPage />} />
       </Routes>
       <Footer />
+      <Toaster richColors position="top-center" />
     </>
   );
 }

@@ -11,37 +11,51 @@ import {
     Check
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { getProduct } from "@/api/products.api";
 import { useCartStore } from "@/stores/useCartStore";
+import { useProductStore } from "@/stores/useProductStore";
+import { useWishlistStore } from "@/stores/useWishlistStore";
+import { useComparisonStore } from "@/stores/useComparisonStore";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import ProductView from "@/components/product/ProductView";
+import SpecialProducts from "@/components/home/SpecialProducts";
 
 export default function ProductDetails() {
     const { id } = useParams();
-    const [product, setProduct] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+    const { selectedProduct: product, fetchProductById, loading, error, clearSelectedProduct } = useProductStore();
     const [quantity, setQuantity] = useState(1);
     const [mainImage, setMainImage] = useState("");
+
     const addToCart = useCartStore(state => state.addToCart);
     const cartItems = useCartStore(state => state.cartItems);
-    const isInCart = (productId) => cartItems.some(item => item.product_id === productId);
+    const toggleWishlist = useWishlistStore(state => state.toggleWishlist);
+    const isInWishlist = useWishlistStore(state => state.isInWishlist(product?.id));
+    const addToComparison = useComparisonStore(state => state.addToComparison);
+    const isInComparison = useComparisonStore(state => state.isInComparison(product?.id));
+    const isAuthenticated = useAuthStore(state => state.isAuthenticated);
+
     const [addingStr, setAddingStr] = useState(false);
+    const { products: allProducts, fetchProducts } = useProductStore();
 
     useEffect(() => {
-        const fetchProduct = async () => {
-            try {
-                const response = await getProduct(id);
-                const productData = response.data.data || response.data;
-                setProduct(productData);
-                setMainImage(productData.image);
-            } catch (err) {
-                console.error("Error fetching product:", err);
-                setError("فشل تحميل تفاصيل المنتج");
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchProduct();
-    }, [id]);
+        fetchProducts();
+    }, [fetchProducts]);
+
+    const relatedProducts = allProducts.filter(p => p.category_id === product?.category_id && p.id !== product?.id).slice(0, 8);
+
+    useEffect(() => {
+        fetchProductById(id);
+        return () => clearSelectedProduct();
+    }, [id, fetchProductById, clearSelectedProduct]);
+
+    useEffect(() => {
+        if (product) {
+            setMainImage(product.image);
+            setQuantity(product.stock);
+        }
+    }, [product]);
 
     if (loading) {
         return (
@@ -62,7 +76,33 @@ export default function ProductDetails() {
         );
     }
 
-    const isAdded = isInCart(product.id);
+    const isAdded = cartItems.some(item => item.product_id === product.id);
+
+    const handleWishlistToggle = async () => {
+        if (!isAuthenticated) {
+            toast.error('يرجى تسجيل الدخول أولاً');
+            navigate('/login');
+            return;
+        }
+        try {
+            await toggleWishlist(product);
+        } catch (error) {
+            // Handled in store
+        }
+    };
+
+    const handleComparisonToggle = async () => {
+        if (!isAuthenticated) {
+            toast.error('يرجى تسجيل الدخول أولاً');
+            navigate('/login');
+            return;
+        }
+        try {
+            await addToComparison(product);
+        } catch (error) {
+            // Handled in store
+        }
+    };
 
     const handleAddToCart = async () => {
         if (isAdded) return;
@@ -85,107 +125,26 @@ export default function ProductDetails() {
                 <span className="text-gray-900 font-medium truncate max-w-[200px]">{product.name}</span>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                {/* Images Section */}
-                <div className="space-y-4">
-                    <div className="bg-white border rounded-2xl p-8 flex items-center justify-center aspect-square relative overflow-hidden group">
-                        <img
-                            src={import.meta.env.VITE_IMAGES_URL + '/' + mainImage}
-                            alt={product.name}
-                            className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
-                        />
-                        {product.discount > 0 && (
-                            <span className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full font-bold shadow-lg">
-                                -{product.discount}%
-                            </span>
-                        )}
-                    </div>
+            {/* Main Product View */}
+            <ProductView
+                product={product}
+                quantity={quantity}
+                setQuantity={setQuantity}
+                onAddToCart={handleAddToCart}
+                onToggleWishlist={handleWishlistToggle}
+                onToggleComparison={handleComparisonToggle}
+                isInWishlist={isInWishlist}
+                isInComparison={isInComparison}
+                isAdded={isAdded}
+                addingLoading={addingStr}
+            />
+
+            {/* Related Products */}
+            {relatedProducts.length > 0 && (
+                <div className="mt-20">
+                    <SpecialProducts title="منتجات ذات صلة" products={relatedProducts} />
                 </div>
-
-                {/* Info Section */}
-                <div className="flex flex-col gap-6">
-                    <div>
-                        <h1 className="text-3xl font-bold text-[#1e2749] mb-2 leading-relaxed">
-                            {product.name}
-                        </h1>
-                        <div className="flex items-center gap-4 text-sm">
-                            <div className="flex text-yellow-500">
-                                {[...Array(5)].map((_, i) => (
-                                    <Star key={i} size={16} fill="currentColor" />
-                                ))}
-                            </div>
-                            <span className="text-gray-500">(4.5 تقييم)</span>
-                            <span className="text-gray-300">|</span>
-                            <span className="text-green-600 font-medium">متوفر في المخزون</span>
-                        </div>
-                    </div>
-
-                    <div className="flex items-end gap-3 pb-6 border-b">
-                        <span className="text-4xl font-bold text-secondary">
-                            EGP {product.final_price}
-                        </span>
-                        {product.oldPrice && (
-                            <span className="text-xl text-gray-400 line-through mb-1">
-                                EGP {product.oldPrice}
-                            </span>
-                        )}
-                    </div>
-
-                    <p className="text-gray-600 leading-relaxed">
-                        {product.description}
-                    </p>
-
-                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 mt-4">
-                        {/* Quantity */}
-                        <div className="flex items-center border rounded-lg h-12 w-fit">
-                            <button
-                                onClick={decrementQuantity}
-                                className="w-12 h-full flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50"
-                                disabled={isAdded}
-                            >
-                                <Minus size={18} />
-                            </button>
-                            <span className="w-12 text-center font-bold text-lg">{quantity}</span>
-                            <button
-                                onClick={incrementQuantity}
-                                className="w-12 h-full flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50"
-                                disabled={isAdded}
-                            >
-                                <Plus size={18} />
-                            </button>
-                        </div>
-
-                        {/* Add to Cart */}
-                        <Button
-                            onClick={handleAddToCart}
-                            disabled={addingStr || isAdded}
-                            className={`flex-1 h-12 text-lg font-bold transition-all ${isAdded
-                                ? "bg-green-500 hover:bg-green-600 text-white cursor-default"
-                                : "bg-[#31A0D3] hover:bg-[#2890C2] text-white"
-                                }`}
-                        >
-                            {addingStr ? (
-                                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                            ) : isAdded ? (
-                                <>
-                                    <Check className="mr-2 h-5 w-5" />
-                                    تم الإضافة للسلة
-                                </>
-                            ) : (
-                                <>
-                                    <ShoppingCart className="mr-2 h-5 w-5" />
-                                    أضف إلى السلة
-                                </>
-                            )}
-                        </Button>
-
-                        {/* Wishlist */}
-                        <button className="h-12 w-12 border rounded-lg flex items-center justify-center text-gray-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-all">
-                            <Heart size={24} />
-                        </button>
-                    </div>
-                </div>
-            </div>
+            )}
         </div>
     );
 }

@@ -39,12 +39,14 @@ export default function Footer() {
                 الرقمية التي تلبي احتياجات الأفراد والشركات على حد سواء.
               </p>
               <div className="flex flex-row mt-6">
-                <Facebook
-                  className="border rounded cursor-pointer hover:bg-white/10 transition-colors"
-                  fill="white"
-                  size="34"
-                  strokeWidth="0.5"
-                />
+                <a href="https://facebook.com" target="_blank" rel="noreferrer">
+                  <Facebook
+                    className="border rounded cursor-pointer hover:bg-white/10 transition-colors"
+                    fill="white"
+                    size="34"
+                    strokeWidth="0.5"
+                  />
+                </a>
               </div>
             </div>
 
@@ -53,22 +55,22 @@ export default function Footer() {
               <h4 className="text-lg md:text-xl font-semibold mb-6">حسابي</h4>
               <ul className="space-y-3 opacity-80">
                 <li>
-                  <Link to="/" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
+                  <Link to="/orders" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
                     تتبع طلبك
                   </Link>
                 </li>
                 <li>
-                  <Link to="/" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
+                  <Link to="/register" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
                     إنشاء حساب
                   </Link>
                 </li>
                 <li>
-                  <Link to="/" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
+                  <Link to="/orders" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
                     طلباتي
                   </Link>
                 </li>
                 <li>
-                  <Link to="/" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
+                  <Link to="/wishlist" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
                     قائمة الأمنيات
                   </Link>
                 </li>
@@ -80,27 +82,27 @@ export default function Footer() {
               <h4 className="text-lg md:text-xl font-semibold mb-6">حول زيروتك</h4>
               <ul className="space-y-3 opacity-80">
                 <li>
-                  <Link to="/" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
+                  <Link to="/products" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
                     كاميرات لاسلكية
                   </Link>
                 </li>
                 <li>
-                  <Link to="/" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
+                  <Link to="/products" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
                     شاشات
                   </Link>
                 </li>
                 <li>
-                  <Link to="/" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
+                  <Link to="/products" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
                     انتركم
                   </Link>
                 </li>
                 <li>
-                  <Link to="/" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
+                  <Link to="/contact" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
                     تواصل معنا
                   </Link>
                 </li>
                 <li>
-                  <Link to="/" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
+                  <Link to="/privacy-policy" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
                     سياسية الإسترجاع والإستبدال
                   </Link>
                 </li>

@@ -111,7 +111,7 @@ export default function Header() {
         {/* User Actions */}
         <div className="flex items-center gap-3 md:gap-6">
           {/* Welcome/Login (Hidden on Mobile) */}
-          <div className="hidden xl:flex items-center gap-3">
+          <div className="flex items-center gap-3">
             <div className="p-2 rounded-full">
               <User size={20} className="text-gray-600" />
             </div>

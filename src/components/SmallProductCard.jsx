@@ -6,7 +6,7 @@ import { useCartStore } from "@/stores/useCartStore";
 import { useWishlistStore } from "@/stores/useWishlistStore";
 import { useComparisonStore } from "@/stores/useComparisonStore";
 import { useAuthStore } from '@/stores/useAuthStore';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'sonner';
 
 export default function SmallProductCard({ product }) {
@@ -33,7 +33,7 @@ export default function SmallProductCard({ product }) {
     try {
       await toggleWishlist(product);
     } catch (error) {
-      toast.error('فشل تحديث قائمة الأمنيات');
+      // Handled in store
     }
   };
 
@@ -84,15 +84,19 @@ export default function SmallProductCard({ product }) {
               <ArrowLeftRight size={14} />
             </button>
           </div>
-          <img
-            src={`${import.meta.env.VITE_IMAGES_URL}/${product.image}`}
-            alt={product.name}
-            className="w-full h-full object-contain"
-          />
+          <Link to={`/product/${product.id}`}>
+            <img
+              src={`${import.meta.env.VITE_IMAGES_URL}/${product.image}`}
+              alt={product.name}
+              className="w-full h-full object-contain transition-transform hover:scale-110 duration-500"
+            />
+          </Link>
         </div>
-        <h3 className="text-sm font-medium mb-2 line-clamp-2 text-right">
-          {product.name}
-        </h3>
+        <Link to={`/product/${product.id}`}>
+          <h3 className="text-sm font-medium mb-2 line-clamp-2 text-right hover:text-secondary transition-colors">
+            {product.name}
+          </h3>
+        </Link>
         <div className="flex items-center justify-between mb-3">
           <span className="text-lg font-bold text-red-600">
             {product.final_price} EGP

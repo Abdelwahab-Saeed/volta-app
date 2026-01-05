@@ -9,7 +9,7 @@ import { useComparisonStore } from "@/stores/useComparisonStore";
 import { Loader2, Check, Heart, ArrowLeftRight } from "lucide-react";
 import { useState } from "react";
 import { useAuthStore } from '@/stores/useAuthStore';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'sonner';
 
 export default function WideProductCard({ product }) {
@@ -36,7 +36,7 @@ export default function WideProductCard({ product }) {
     try {
       await toggleWishlist(product);
     } catch (error) {
-      toast.error('فشل تحديث قائمة الأمنيات');
+      // Handled in store
     }
   };
 
@@ -73,25 +73,28 @@ export default function WideProductCard({ product }) {
         <div className="flex">
           {/* Image Section - Left Side */}
           <div className="p-8 border-l border-slate-200">
-
-            <img
-              src={`${import.meta.env.VITE_IMAGES_URL}/${product.image}`}
-              alt={product.name}
-              className="object-contain max-h-56 drop-shadow-lg"
-            />
+            <Link to={`/product/${product.id}`}>
+              <img
+                src={`${import.meta.env.VITE_IMAGES_URL}/${product.image}`}
+                alt={product.name}
+                className="object-contain max-h-56 drop-shadow-lg transition-transform hover:scale-105"
+              />
+            </Link>
           </div>
           {/* Content Section - Right Side */}
           <div className="flex-1 p-8 bg-white flex flex-col justify-between">
             {/* Product Title */}
             <div>
               <div className="flex justify-between items-start">
-                <h3 className="text-2xl font-bold text-primary">
-                  {product.name} {product.discount > 0 && (
-                    <span className="bg-secondary text-white px-2 rounded-md text-sm shadow-md mr-2">
-                      {product.discount}%
-                    </span>
-                  )}
-                </h3>
+                <Link to={`/product/${product.id}`}>
+                  <h3 className="text-2xl font-bold text-primary hover:text-secondary transition-colors">
+                    {product.name} {product.discount > 0 && (
+                      <span className="bg-secondary text-white px-2 rounded-md text-sm shadow-md mr-2">
+                        {product.discount}%
+                      </span>
+                    )}
+                  </h3>
+                </Link>
                 <div className="flex gap-2">
                   <button
                     onClick={handleWishlistToggle}

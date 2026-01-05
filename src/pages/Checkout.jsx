@@ -17,6 +17,7 @@ export default function Checkout() {
     const navigate = useNavigate();
     const {
         cartItems,
+        cartLoading,
         coupon,
         discountAmount,
         getCartTotal,
@@ -38,7 +39,14 @@ export default function Checkout() {
         if (cartItems.length === 0) {
             fetchCart();
         }
-    }, []);
+    }, [fetchCart, cartItems.length]);
+
+    // Redirect to home if cart is empty after loading
+    useEffect(() => {
+        if (!cartLoading && cartItems.length === 0) {
+            navigate('/');
+        }
+    }, [cartItems.length, cartLoading, navigate]);
 
     const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm({
         defaultValues: {

@@ -68,8 +68,8 @@ export default function Login() {
   async function onSubmit(values) {
     setIsSubmitting(true);
     try {
-      await loginUser(values);
-      toast.success('تم تسجيل الدخول بنجاح');
+      const response = await loginUser(values);
+      toast.success(response.data?.message || 'تم تسجيل الدخول بنجاح');
       navigate('/');
     } catch (error) {
       console.error("Login error", error);

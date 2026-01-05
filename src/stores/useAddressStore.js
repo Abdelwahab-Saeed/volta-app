@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { getAddresses, addAddress, updateAddress, deleteAddress } from '@/api/addresses.api';
+import { toast } from 'sonner';
 
 export const useAddressStore = create((set, get) => ({
     addresses: [],
@@ -10,7 +11,7 @@ export const useAddressStore = create((set, get) => ({
         set({ isLoading: true, error: null });
         try {
             const response = await getAddresses();
-            const addresses = response.data.addresses || response.data || [];
+            const addresses = response.data.data || [];
             set({ addresses: Array.isArray(addresses) ? addresses : [] });
         } catch (error) {
             console.error('Error fetching addresses:', error);
@@ -23,13 +24,10 @@ export const useAddressStore = create((set, get) => ({
     addNewAddress: async (data) => {
         try {
             const response = await addAddress(data);
-            // Optimistically add the new address or re-fetch
-            // Assuming response contains the created address in data.address or directly
-            const newAddress = response.data.address || response.data;
+            const newAddress = response.data.data;
             if (newAddress) {
                 set((state) => ({ addresses: [...state.addresses, newAddress] }));
             } else {
-                // If response format is unclear, refetch
                 await get().fetchAddresses();
             }
             return response;
@@ -42,7 +40,7 @@ export const useAddressStore = create((set, get) => ({
     updateUserAddress: async (id, data) => {
         try {
             const response = await updateAddress(id, data);
-            const updatedAddress = response.data.address || response.data;
+            const updatedAddress = response.data.data;
 
             if (updatedAddress) {
                 set((state) => ({
@@ -62,12 +60,14 @@ export const useAddressStore = create((set, get) => ({
 
     deleteUserAddress: async (id) => {
         try {
-            await deleteAddress(id);
+            const response = await deleteAddress(id);
             set((state) => ({
                 addresses: state.addresses.filter((addr) => addr.id !== id)
             }));
+            toast.success(response.data.message || 'تم حذف العنوان بنجاح');
         } catch (error) {
             console.error("Error deleting address:", error);
+            toast.error(error.response?.data?.message || 'فشل حذف العنوان');
             throw error;
         }
     }

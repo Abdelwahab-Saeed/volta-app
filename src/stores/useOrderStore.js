@@ -10,8 +10,7 @@ export const useOrderStore = create((set) => ({
         set({ isLoading: true, error: null });
         try {
             const response = await getOrders();
-            // Handle different possible response structures
-            const orders = response.data.data || response.data || [];
+            const orders = response.data.data || [];
             set({ orders: Array.isArray(orders) ? orders : [] });
         } catch (error) {
             console.error('Error fetching orders:', error);
