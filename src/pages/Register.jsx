@@ -92,7 +92,8 @@ export default function Register() {
   async function onSubmit(values) {
     setIsSubmitting(true);
     try {
-      await registerUser(values);
+      const response = await registerUser(values);
+      toast.success(response.data?.message || 'تم تسجيل الحساب بنجاح');
       navigate('/');
     } catch (error) {
       console.error("Registration error", error);

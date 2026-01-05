@@ -15,8 +15,7 @@ export const useCheckoutStore = create((set) => ({
         set({ isLoading: true, error: null, success: false });
         try {
             const response = await checkout(data);
-            // Assuming response.data contains { message, order }
-            set({ success: true, orderData: response.data.order, isLoading: false });
+            set({ success: true, orderData: response.data.data?.order || response.data.data, isLoading: false });
 
             toast.success(response.data.message || 'تم إنشاء الطلب بنجاح');
 

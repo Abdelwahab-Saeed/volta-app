@@ -23,6 +23,8 @@ import Address from './pages/Address';
 import Wishlist from './pages/Wishlist';
 import Links from './components/layout/Links';
 import ProtectedRoute from './components/auth/ProtectedRoute';
+import ProductDetails from './pages/ProductDetails';
+import { Toaster } from "@/components/ui/sonner";
 
 function App() {
   const checkAuth = useAuthStore((state) => state.checkAuth);
@@ -71,6 +73,7 @@ function App() {
         <Route path='/cart' element={<ProtectedRoute><Cart /></ProtectedRoute>} />
         <Route path='/checkout' element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
         <Route path='/wishlist' element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
+        <Route path='/product/:id' element={<ProtectedRoute><ProductDetails /></ProtectedRoute>} />
 
         <Route element={<ProtectedRoute><ProfileLayout /></ProtectedRoute>}>
           <Route path="/profile" element={<Profile />} />
@@ -81,6 +84,7 @@ function App() {
         <Route path='*' element={<NotFoundPage />} />
       </Routes>
       <Footer />
+      <Toaster richColors position="top-center" />
     </>
   );
 }

@@ -7,7 +7,7 @@ export const register = (data) =>
 
 export const login = async (data) => {
   const res = await api.post('/login', data);
-  localStorage.setItem('token', res.data.token);
+  localStorage.setItem('token', res.data.data.token);
   return res;
 };
 

@@ -14,93 +14,20 @@ import SpecialProducts from '../components/home/SpecialProducts';
 import Products from '../components/home/Products';
 import stabilizer from '../assets/home/stabilizer.png';
 import { getCategories } from '@/api/categories';
-import { getProducts } from '@/api/products.api';
+import { useProductStore } from '@/stores/useProductStore';
 
 const banners = [banner3, banner2, banner1];
 
-const categories = [
-  {
-    name: 'كاميرات',
-    image: camera,
-  },
-  {
-    name: 'سماعات',
-    image: headphone,
-  },
-  {
-    name: 'هواتف',
-    image: phone,
-  },
-  {
-    name: 'كاميرات المراقبة',
-    image: securityCamera,
-  },
-  {
-    name: 'شاشات',
-    image: tv,
-  },
-];
-
-const products = [
-  {
-    name: 'منتج 1',
-    image: stabilizer,
-    price: 1000,
-  },
-  {
-    name: 'منتج 2',
-    image: stabilizer,
-    price: 1000,
-    discount: 15,
-  },
-  {
-    name: 'منتج 3',
-    image: stabilizer,
-    price: 1000,
-  },
-  {
-    name: 'منتج 4',
-    image: stabilizer,
-    price: 1000,
-  },
-  {
-    name: 'منتج 5',
-    image: stabilizer,
-    price: 1000,
-  },
-  {
-    name: 'منتج 6',
-    image: stabilizer,
-    price: 1000,
-  },
-  {
-    name: 'منتج 7',
-    image: stabilizer,
-    price: 1000,
-  },
-  {
-    name: 'منتج 8',
-    image: stabilizer,
-    price: 1000,
-    discount: 10,
-  },
-  {
-    name: 'منتج 9',
-    image: stabilizer,
-    price: 1000,
-  },
-];
-
 export default function Home() {
   // API data state
-  const [products, setProducts] = useState([]);
+  const { products, fetchProducts, loading: productsLoading } = useProductStore();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch categories on mount
+  // Fetch categories and products on mount
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchCategoriesData = async () => {
       try {
         const response = await getCategories();
         setCategories(response.data.data || response.data);
@@ -109,29 +36,10 @@ export default function Home() {
       }
     };
 
-    const fetchProducts = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await getProducts();
-        const data = response.data;
-
-        // Handle Laravel pagination response
-        if (data.data) {
-          setProducts(data.data);
-        } else {
-          setProducts(data);
-        }
-      } catch (err) {
-        console.error('Error fetching products:', err);
-        setError('حدث خطأ في تحميل المنتجات');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchCategories();
+    fetchCategoriesData();
     fetchProducts();
-  }, []);
+    setLoading(false);
+  }, [fetchProducts]);
 
   return (
     <div className="container mx-auto px-4 md:px-6 lg:px-8">

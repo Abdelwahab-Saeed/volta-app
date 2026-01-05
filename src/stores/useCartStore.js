@@ -21,7 +21,8 @@ export const useCartStore = create((set, get) => ({
         set({ cartLoading: true });
         try {
             const response = await getCart();
-            const items = response.data.items || response.data.data || response.data || [];
+            const resData = response.data.data;
+            const items = resData?.items || (Array.isArray(resData) ? resData : []);
             set({ cartItems: Array.isArray(items) ? items : [] });
         } catch (error) {
             console.error('Error fetching cart:', error);
@@ -40,8 +41,8 @@ export const useCartStore = create((set, get) => ({
         }
 
         try {
-            await addToCartApi({ product_id: product.id, quantity });
-            toast.success('تم إضافة المنتج للسلة');
+            const response = await addToCartApi({ product_id: product.id, quantity });
+            toast.success(response.data.message || 'تم إضافة المنتج للسلة');
             get().fetchCart();
         } catch (error) {
             console.error('Add to cart error:', error);
@@ -76,8 +77,8 @@ export const useCartStore = create((set, get) => ({
             );
             set({ cartItems: newItems });
 
-            await removeFromCartApi(cartItemId);
-            toast.success('تم حذف المنتج من السلة');
+            const response = await removeFromCartApi(cartItemId);
+            toast.success(response.data.message || 'تم حذف المنتج من السلة');
             get().fetchCart();
         } catch (error) {
             console.error('Remove from cart error:', error);
@@ -99,13 +100,15 @@ export const useCartStore = create((set, get) => ({
 
         try {
             const response = await applyCouponApi({ code, cart_total: subtotal });
-            const { discount_amount, message, coupon } = response.data; // Adjust based on actual API response
+            const { message, data: resData } = response.data;
 
-            // Assuming API returns calculated discount or new total. 
-            // If it returns discount amount directly:
+            // Extract from standard nested data field
+            const discount_amount = resData?.discount_amount;
+            const couponData = resData?.coupon || resData;
+
             set({
-                coupon: { ...coupon, code },
-                discountAmount: Number(discount_amount)
+                coupon: { ...couponData, code },
+                discountAmount: Number(discount_amount || 0)
             });
             toast.success(message || 'تم تطبيق الكوبون بنجاح');
             return true;

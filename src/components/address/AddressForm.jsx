@@ -60,24 +60,25 @@ export default function AddressForm({ open, onClose, onSuccess, initialData }) {
 
     try {
       if (initialData?.id) {
-        await updateUserAddress(initialData.id, {
+        const response = await updateUserAddress(initialData.id, {
           ...formData,
           country: 'Egypt',
           zip_code: '',
         });
-        toast.success('تم تحديث العنوان بنجاح');
+        toast.success(response.data?.message || 'تم تحديث العنوان بنجاح');
       } else {
-        await addNewAddress({
+        const response = await addNewAddress({
           ...formData,
           country: 'Egypt',
           zip_code: '',
         });
-        toast.success('تم حفظ العنوان بنجاح');
+        toast.success(response.data?.message || 'تم حفظ العنوان بنجاح');
       }
       onSuccess?.();
     } catch (error) {
       console.error("Failed to save address", error);
-      toast.error('فشل حفظ العنوان');
+      const message = error.response?.data?.message || 'فشل حفظ العنوان';
+      toast.error(message);
     } finally {
       setLoading(false);
     }

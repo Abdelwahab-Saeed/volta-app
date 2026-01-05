@@ -45,7 +45,7 @@ export default function ProductCard({
     try {
       await toggleWishlist(product);
     } catch (error) {
-      toast.error('فشل تحديث قائمة الأمنيات');
+      // Handled in store
     }
   };
 
@@ -106,7 +106,7 @@ export default function ProductCard({
       </div>
 
       {/* Image */}
-      <Link to={`/products/${product.id}`}>
+      <Link to={`/product/${product.id}`}>
         <div className="bg-white p-4 flex items-center justify-center aspect-square">
           <img
             src={`${import.meta.env.VITE_IMAGES_URL}/${product.image}`}
@@ -118,7 +118,7 @@ export default function ProductCard({
 
       {/* Content */}
       <div className="p-4 border-t border-slate-100">
-        <Link to={`/products/${product.id}`}>
+        <Link to={`/product/${product.id}`}>
           <h3 className="text-slate-800 font-bold mb-1 hover:text-primary transition-colors text-lg truncate">
             {product.name}
           </h3>

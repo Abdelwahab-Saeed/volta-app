@@ -13,7 +13,8 @@ export const useAuthStore = create((set, get) => ({
             try {
                 set({ loading: true });
                 const res = await me();
-                set({ user: res.data, isAuthenticated: true });
+                const userData = res.data.data?.user || res.data.data;
+                set({ user: userData, isAuthenticated: true });
             } catch (error) {
                 console.error('Check auth error:', error);
                 set({ user: null, isAuthenticated: false });
@@ -29,9 +30,10 @@ export const useAuthStore = create((set, get) => ({
     registerUser: async (data) => {
         try {
             const response = await register(data);
-            if (response.data.token) {
-                localStorage.setItem('token', response.data.token);
-                const userData = response.data.user || response.data;
+            const resData = response.data.data;
+            if (resData?.token) {
+                localStorage.setItem('token', resData.token);
+                const userData = resData.user || resData;
                 set({ user: userData, isAuthenticated: true });
             }
             return response;
@@ -43,11 +45,12 @@ export const useAuthStore = create((set, get) => ({
     loginUser: async (credentials) => {
         try {
             const response = await login(credentials);
-            const userData = response.data.user || response.data;
-            if (response.data.token) {
-                localStorage.setItem('token', response.data.token);
+            const resData = response.data.data;
+            if (resData?.token) {
+                localStorage.setItem('token', resData.token);
+                const userData = resData.user || resData;
+                set({ user: userData, isAuthenticated: true });
             }
-            set({ user: userData, isAuthenticated: true });
             return response;
         } catch (error) {
             throw error;
@@ -68,7 +71,7 @@ export const useAuthStore = create((set, get) => ({
     updateUserProfile: async (data) => {
         try {
             const response = await updateProfile(data);
-            const userData = response.data.user || response.data; // Adjust based on API response
+            const userData = response.data.data?.user || response.data.data;
             set({ user: userData });
             return response;
         } catch (error) {

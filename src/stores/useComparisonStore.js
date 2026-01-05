@@ -26,14 +26,15 @@ export const useComparisonStore = create((set, get) => ({
         }
 
         try {
-            await comparisonApi.addToComparison(product.id);
+            const response = await comparisonApi.addToComparison(product.id);
             set({ comparisonItems: [...comparisonItems, product], error: null });
-            toast.success('تمت إضافة المنتج للمقارنة');
+            toast.success(response.data?.message || 'تمت إضافة المنتج للمقارنة');
         } catch (error) {
+            const message = error.response?.data?.message || 'فشل إضافة المنتج للمقارنة';
             if (error.response?.status === 422) {
-                toast.error('قائمة المقارنة ممتلئة. الحد الأقصى هو منتجين فقط.');
+                toast.error(message || 'قائمة المقارنة ممتلئة. الحد الأقصى هو منتجين فقط.');
             } else {
-                toast.error('فشل إضافة المنتج للمقارنة');
+                toast.error(message);
             }
             throw error;
         }
@@ -42,11 +43,12 @@ export const useComparisonStore = create((set, get) => ({
     removeFromComparison: async (productId) => {
         const { comparisonItems } = get();
         try {
-            await comparisonApi.removeFromComparison(productId);
+            const response = await comparisonApi.removeFromComparison(productId);
             set({ comparisonItems: comparisonItems.filter(item => item.id !== productId) });
-            toast.success('تم حذف المنتج من المقارنة');
+            toast.success(response.data?.message || 'تم حذف المنتج من المقارنة');
         } catch (error) {
-            toast.error('فشل حذف المنتج من المقارنة');
+            const message = error.response?.data?.message || 'فشل حذف المنتج من المقارنة';
+            toast.error(message);
             throw error;
         }
     },
