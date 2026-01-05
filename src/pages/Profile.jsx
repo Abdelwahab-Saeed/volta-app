@@ -18,24 +18,22 @@ export default function Profile() {
   const ActiveComponent = tabs.find((tab) => tab.id === activeTab)?.component;
 
   return (
-    <div className="p-10 [box-shadow:0px_10px_27px_0px_#0000001A]">
-      <div className="mb-6  pb-4 border-b" dir="rtl">
+    <div className="p-4 md:p-10 [box-shadow:0px_10px_27px_0px_#0000001A]">
+      <div className="mb-6 pb-4 border-b flex flex-wrap gap-2 justify-center" dir="rtl">
         {tabs.map((tab, index) => (
           <Button
             size="lg"
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-6 py-2 ${
-              index === 0
+            className={`px-6 py-2 ${index === 0
                 ? 'rounded-r'
                 : index === tabs.length - 1
-                ? 'rounded-l'
-                : ''
-            } ${
-              activeTab === tab.id
+                  ? 'rounded-l'
+                  : ''
+              } ${activeTab === tab.id
                 ? 'bg-secondary text-white'
                 : 'bg-gray-200 text-secondary hover:bg-gray-300'
-            }`}
+              }`}
           >
             {tab.label}
           </Button>

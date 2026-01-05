@@ -105,16 +105,18 @@ export default function Register() {
 
   return (
     <>
-      <div className="bg-light-background px-40 py-8">
+      <div className="bg-light-background px-4 md:px-10 lg:px-40 py-8 text-right" dir="rtl">
         <div>
-          <h1 className="text-4xl font-bold text-primary mb-4">تسجيل </h1>
-          <ul className="flex gap-2 text-lg text-primary px-2 list-disc mx-6">
-            <li>الرئيسية تسجيل </li>
-          </ul>
+          <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4">تسجيل حساب جديد</h1>
+          <div className="flex gap-2 text-base md:text-lg text-primary">
+            <span>الرئيسية</span>
+            <span>/</span>
+            <span>تسجيل</span>
+          </div>
         </div>
       </div>
       <Form {...form}>
-        <div className="min-h-screen w-10/12 border-2 my-10 mx-auto flex flex-col justify-center bg-white shadow-2xl py-12 px-4 sm:px-6 lg:w-4/12 lg:px-16">
+        <div className="w-full max-w-xl border-2 my-10 mx-auto flex flex-col justify-center bg-white shadow-2xl py-12 px-6 lg:px-16" dir="rtl">
 
           {/* Header Section */}
           <div className="mb-10">
@@ -122,12 +124,12 @@ export default function Register() {
               <UserPlus size={24} className="text-secondary" />
               <h1 className="text-2xl font-bold text-primary mb-2">تسجيل حساب</h1>
             </div>
-            <p className="text-primary leading-10 mx-8">
+            <p className="text-primary leading-relaxed opacity-80">
               ستُستخدم بياناتك الشخصية لتحسين تجربتك على الموقع، وتسهيل الوصول إلى حسابك.
             </p>
           </div>
 
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 w-full mx-8 pl-16">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 w-full">
             {/* Personal Information Section */}
 
             <Field>

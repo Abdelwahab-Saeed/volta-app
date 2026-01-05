@@ -15,17 +15,37 @@ import {
   Handbag
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { getCategories } from "@/api/categories";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useCartStore } from "@/stores/useCartStore";
+import { useWishlistStore } from "@/stores/useWishlistStore";
+import { useComparisonStore } from "@/stores/useComparisonStore";
+import { toast } from "sonner";
 
 export default function Header() {
   const user = useAuthStore((state) => state.user);
-  const cartCount = useCartStore((state) => state.cartItems.length);
+  const cartCount = useCartStore((state) => state.cartItems?.length || 0);
+  const wishlistCount = useWishlistStore((state) => state.wishlistItems?.length || 0);
+  const comparisonCount = useComparisonStore((state) => state.comparisonItems?.length || 0);
+  const logoutUser = useAuthStore((state) => state.logoutUser);
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [categories, setCategories] = useState([]);
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      toast.success('تم تسجيل الخروج بنجاح');
+      setIsUserDropdownOpen(false);
+      setIsMenuOpen(false);
+      navigate('/');
+    } catch (error) {
+      toast.error('فشل تسجيل الخروج');
+    }
+  };
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -67,7 +87,7 @@ export default function Header() {
         <div className="w-55">
           <Link to='/'>
             <img src={logo} alt="Volta" className="w-full h-auto" />
-          </Link> 
+          </Link>
         </div>
 
         {/* Search Bar (Hidden on small mobile, visible on tablet+) */}
@@ -78,10 +98,10 @@ export default function Header() {
             placeholder="البحث..."
             className="border-0 focus-visible:ring-0 text-right h-full text-sm"
           />
-          <div className="hidden lg:flex items-center gap-2 px-3 border-l border-gray-200 cursor-pointer text-primary">
+          {/* <div className="hidden lg:flex items-center gap-2 px-3 border-l border-gray-200 cursor-pointer text-primary">
             <span className="text-xs whitespace-nowrap">تسوق بالأقسام</span>
             <ChevronDown size={14} />
-          </div>
+          </div> */}
           <button className="bg-secondary h-full px-4 flex items-center justify-center text-white">
             <Search size={20} />
           </button>
@@ -116,6 +136,12 @@ export default function Header() {
                     >
                       زيارة الملف الشخصي
                     </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-right block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 transition-colors"
+                    >
+                      تسجيل الخروج
+                    </button>
                   </div>
                 )}
               </div>
@@ -130,13 +156,13 @@ export default function Header() {
 
           {/* Icons */}
           <div className="flex items-center gap-3 md:gap-5">
-            <div className="relative cursor-pointer hidden sm:block">
-              <ArrowUpDown size={24} className="" />
-              <Badge count={0} />
+            <div className="relative cursor-pointer block">
+              <Link to='/comparison'> <ArrowUpDown size={24} className="" /> </Link>
+              <Badge count={comparisonCount} />
             </div>
             <div className="relative cursor-pointer">
-              <Heart size={24} className="" />
-              <Badge count={0} />
+              <Link to='/wishlist'> <Heart size={24} /> </Link>
+              <Badge count={wishlistCount} />
             </div>
             <div className="relative cursor-pointer">
               <Link to='/cart'> <Handbag size={24} /> </Link>
@@ -191,6 +217,12 @@ export default function Header() {
                   >
                     زيارة الملف الشخصي
                   </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="text-xs text-red-600 mt-2 block"
+                  >
+                    تسجيل الخروج
+                  </button>
                 </div>
               ) : (
                 <div>

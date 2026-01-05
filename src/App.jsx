@@ -2,6 +2,8 @@ import './App.css';
 import { useEffect } from 'react';
 import { useAuthStore } from './stores/useAuthStore';
 import { useCartStore } from './stores/useCartStore';
+import { useWishlistStore } from './stores/useWishlistStore';
+import { useComparisonStore } from './stores/useComparisonStore';
 import { Route, Routes } from 'react-router-dom';
 import Header from './components/layout/Header';
 import Register from './pages/Register';
@@ -18,10 +20,13 @@ import ProfileLayout from './components/profile/ProfileLayout';
 import Profile from './pages/Profile';
 import Orders from './pages/Orders';
 import Address from './pages/Address';
+import Wishlist from './pages/Wishlist';
 
 function App() {
   const checkAuth = useAuthStore((state) => state.checkAuth);
   const fetchCart = useCartStore((state) => state.fetchCart);
+  const fetchWishlist = useWishlistStore((state) => state.fetchWishlist);
+  const fetchComparison = useComparisonStore((state) => state.fetchComparison);
 
   useEffect(() => {
     checkAuth();
@@ -37,8 +42,12 @@ function App() {
     const unsub = useAuthStore.subscribe((state) => {
       if (state.isAuthenticated) {
         fetchCart();
+        fetchWishlist();
+        fetchComparison();
       } else {
         useCartStore.getState().clearCart();
+        useWishlistStore.getState().clearWishlist();
+        useComparisonStore.getState().clearComparison();
       }
     });
     return () => unsub();
@@ -56,6 +65,7 @@ function App() {
         <Route path='/comparison' element={<Comparison />} />
         <Route path='/cart' element={<Cart />} />
         <Route path='/checkout' element={<Checkout />} />
+        <Route path='/wishlist' element={<Wishlist />} />
         <Route element={<ProfileLayout />}>
           <Route path="/profile" element={<Profile />} />
           <Route path="/orders" element={<Orders />} />

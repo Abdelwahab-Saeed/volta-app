@@ -1,44 +1,88 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AddressCard from '../components/address/AddressCard';
 import { Button } from '../components/ui/button';
 import AddressForm from '../components/address/AddressForm';
-
-const addresses = [
-  {
-    id: 1,
-    name: 'محمد ايمن',
-    phone: '01098765432',
-    secondaryPhone: '01156486537',
-    fullAddress: 'العنوان: القاهرة - مصر الجديدة - شارع النزهة',
-  },
-  {
-    id: 2,
-    name: 'أحمد علي',
-    phone: '01112345678',
-    secondaryPhone: '01012345678',
-    fullAddress: 'العنوان: الجيزة - المهندسين - شارع جامعة الدول العربية',
-  },
-];
+import DeleteAddressModal from '../components/address/DeleteAddressModal';
+import { useAddressStore } from '@/stores/useAddressStore';
+import { Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function Address() {
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [addressList, setAddressList] = useState(addresses);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [editingAddress, setEditingAddress] = useState(null);
+  const [addressToDelete, setAddressToDelete] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
-  const handleAddAddress = (newAddress) => {
-    setAddressList([...addressList, newAddress]);
+  const { addresses, fetchAddresses, isLoading, deleteUserAddress } = useAddressStore();
+
+  useEffect(() => {
+    fetchAddresses();
+  }, []);
+
+  const handleAddAddressSuccess = () => {
+    setIsFormOpen(false);
+    setEditingAddress(null);
+  };
+
+  const handleEdit = (address) => {
+    setEditingAddress(address);
+    setIsFormOpen(true);
+  };
+
+  const handleDeleteClick = (id) => {
+    setAddressToDelete(id);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!addressToDelete) return;
+
+    setDeleteLoading(true);
+    try {
+      await deleteUserAddress(addressToDelete);
+      toast.success('تم حذف العنوان بنجاح');
+      setIsDeleteModalOpen(false);
+    } catch (error) {
+      toast.error('فشل حذف العنوان');
+    } finally {
+      setDeleteLoading(false);
+      setAddressToDelete(null);
+    }
   };
 
   return (
     <div className="flex flex-col items-center">
-      <div className="grid grid-cols-2 gap-5">
-        {addressList.map((address) => (
-          <AddressCard key={address.id} address={address} />
-        ))}
-      </div>
+      {isLoading ? (
+        <div className="flex justify-center py-10">
+          <Loader2 className="animate-spin text-primary w-8 h-8" />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
+          {addresses.length === 0 ? (
+            <div className="col-span-2 text-center text-gray-500 py-10">
+              لا توجد عناوين محفوظة
+            </div>
+          ) : (
+            addresses.map((address) => (
+              <AddressCard
+                key={address.id}
+                address={address}
+                onEdit={handleEdit}
+                onDelete={handleDeleteClick}
+              />
+            ))
+          )}
+        </div>
+      )}
+
       <Button
         size="lg"
-        className="mt-4 w-full max-w-md bg-secondary hover:bg-secondary/80 text-white text-lg rounded"
-        onClick={() => setIsFormOpen(true)}
+        className="mt-6 w-full max-w-md bg-secondary hover:bg-secondary/80 text-white text-lg rounded"
+        onClick={() => {
+          setEditingAddress(null);
+          setIsFormOpen(true);
+        }}
       >
         إضافة عنوان جديد
       </Button>
@@ -46,10 +90,21 @@ export default function Address() {
       {isFormOpen && (
         <AddressForm
           open={isFormOpen}
-          onClose={() => setIsFormOpen(false)}
-          onSubmit={handleAddAddress}
+          onClose={() => {
+            setIsFormOpen(false);
+            setEditingAddress(null);
+          }}
+          onSuccess={handleAddAddressSuccess}
+          initialData={editingAddress}
         />
       )}
+
+      <DeleteAddressModal
+        open={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        loading={deleteLoading}
+      />
     </div>
   );
 }

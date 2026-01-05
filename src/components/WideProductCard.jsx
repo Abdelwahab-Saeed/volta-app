@@ -4,14 +4,59 @@ import { ShoppingCart } from 'lucide-react';
 import { Button } from './ui/button';
 
 import { useCartStore } from "@/stores/useCartStore";
-import { Loader2, Check } from "lucide-react";
+import { useWishlistStore } from "@/stores/useWishlistStore";
+import { useComparisonStore } from "@/stores/useComparisonStore";
+import { Loader2, Check, Heart, ArrowLeftRight } from "lucide-react";
 import { useState } from "react";
+import { useAuthStore } from '@/stores/useAuthStore';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 export default function WideProductCard({ product }) {
   const addToCart = useCartStore((state) => state.addToCart);
   const cartItems = useCartStore((state) => state.cartItems);
+  const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
+  const isInWishlist = useWishlistStore((state) => state.isInWishlist(product.id));
+  const addToComparison = useComparisonStore((state) => state.addToComparison);
+  const removeFromComparison = useComparisonStore((state) => state.removeFromComparison);
+  const isInComparison = useComparisonStore((state) => state.isInComparison(product.id));
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+
   const isAdded = cartItems.some(item => item.product_id === product.id);
   const [addingStr, setAddingStr] = useState(false);
+  const navigate = useNavigate();
+
+  const handleWishlistToggle = async (e) => {
+    e.preventDefault();
+    if (!isAuthenticated) {
+      toast.error('يرجى تسجيل الدخول أولاً');
+      navigate('/login');
+      return;
+    }
+    try {
+      await toggleWishlist(product);
+    } catch (error) {
+      toast.error('فشل تحديث قائمة الأمنيات');
+    }
+  };
+
+  const handleComparisonToggle = async (e) => {
+    e.preventDefault();
+    if (!isAuthenticated) {
+      toast.error('يرجى تسجيل الدخول أولاً');
+      navigate('/login');
+      return;
+    }
+    try {
+      if (isInComparison) {
+        await removeFromComparison(product.id);
+      } else {
+        await addToComparison(product);
+      }
+    } catch (error) {
+      // Errors are handled in store
+    }
+  };
 
   const handleAddToCart = async (e) => {
     e.preventDefault();
@@ -39,13 +84,31 @@ export default function WideProductCard({ product }) {
           <div className="flex-1 p-8 bg-white flex flex-col justify-between">
             {/* Product Title */}
             <div>
-              <h3 className="text-2xl font-bold text-primary">
-                {product.name} {product.discount > 0 && (
-                  <span className="bg-secondary text-white px-2 rounded-md text-sm shadow-md">
-                    {product.discount}%
-                  </span>
-                )}
-              </h3>
+              <div className="flex justify-between items-start">
+                <h3 className="text-2xl font-bold text-primary">
+                  {product.name} {product.discount > 0 && (
+                    <span className="bg-secondary text-white px-2 rounded-md text-sm shadow-md mr-2">
+                      {product.discount}%
+                    </span>
+                  )}
+                </h3>
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleWishlistToggle}
+                    className={`p-2 bg-white rounded-full border border-slate-200 transition-colors ${isInWishlist ? 'text-red-500 bg-red-50 border-red-100' : 'hover:bg-red-50 hover:text-red-500'
+                      }`}
+                  >
+                    <Heart size={20} fill={isInWishlist ? "currentColor" : "none"} />
+                  </button>
+                  <button
+                    onClick={handleComparisonToggle}
+                    className={`p-2 bg-white rounded-full border border-slate-200 transition-colors ${isInComparison ? 'text-primary bg-blue-50 border-blue-100' : 'hover:bg-blue-50 hover:text-primary'
+                      }`}
+                  >
+                    <ArrowLeftRight size={20} />
+                  </button>
+                </div>
+              </div>
 
               {product.description && (
                 <p className="text-sm text-slate-600 text-right line-clamp-3">
