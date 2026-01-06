@@ -69,6 +69,11 @@ export default function ProductCard({
   };
   const handleAddToCart = async (e) => {
     e.preventDefault(); // Prevent navigation if wrapped in Link
+    if (!isAuthenticated) {
+      toast.error('يرجى تسجيل الدخول أولاً');
+      navigate('/login');
+      return;
+    }
     if (isAdded) return;
 
     setAddingStr(true);

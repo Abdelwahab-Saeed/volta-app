@@ -105,6 +105,11 @@ export default function ProductDetails() {
     };
 
     const handleAddToCart = async () => {
+        if (!isAuthenticated) {
+            toast.error('يرجى تسجيل الدخول أولاً');
+            navigate('/login');
+            return;
+        }
         if (isAdded) return;
         setAddingStr(true);
         await addToCart(product, quantity);

@@ -60,6 +60,11 @@ export default function WideProductCard({ product }) {
 
   const handleAddToCart = async (e) => {
     e.preventDefault();
+    if (!isAuthenticated) {
+      toast.error('يرجى تسجيل الدخول أولاً');
+      navigate('/login');
+      return;
+    }
     if (isAdded) return;
 
     setAddingStr(true);
