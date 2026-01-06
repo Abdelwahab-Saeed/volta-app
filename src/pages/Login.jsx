@@ -29,9 +29,9 @@ import {
   Checkbox
 } from "@/components/ui/checkbox"
 import { LockKeyhole, UserPlus, Loader2 } from "lucide-react"
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate, useLocation, Link } from "react-router-dom"
 import { useAuthStore } from "@/stores/useAuthStore"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 export const formSchema = z
   .object({
@@ -59,16 +59,29 @@ export default function Login() {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      identifier: '',
+      identifier: localStorage.getItem('remembered_identifier') || '',
       password: '',
-      remember: false,
+      remember: !!localStorage.getItem('remembered_identifier'),
     }
   })
+
+  useEffect(() => {
+    const savedIdentifier = localStorage.getItem('remembered_identifier');
+    if (savedIdentifier) {
+      form.setValue('identifier', savedIdentifier);
+      form.setValue('remember', true);
+    }
+  }, [form]);
 
   async function onSubmit(values) {
     setIsSubmitting(true);
     try {
       const response = await loginUser(values);
+      if (values.remember) {
+        localStorage.setItem('remembered_identifier', values.identifier);
+      } else {
+        localStorage.removeItem('remembered_identifier');
+      }
       toast.success(response.data?.message || 'تم تسجيل الدخول بنجاح');
       navigate('/');
     } catch (error) {
@@ -144,7 +157,7 @@ export default function Login() {
             </Field>
 
             {/* Remember Me */}
-            <div >
+            <div className="flex justify-between items-baseline">
               <div className="flex flex-row items-end space-x-2 space-y-0">
                 <Checkbox
                   id="remember"
@@ -156,6 +169,15 @@ export default function Login() {
                 <FieldLabel htmlFor="remember" className="text-primary font-medium cursor-pointer">
                   تذكرني
                 </FieldLabel>
+              </div>
+
+              <div className="mt-2 text-right">
+                <Link
+                  to="/forgot-password"
+                  className="text-secondary hover:text-primary text-sm font-medium"
+                >
+                  نسيت كلمة المرور؟
+                </Link>
               </div>
 
             </div>
