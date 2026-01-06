@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { login, logout, me, register, updateProfile, changePassword } from '@/api/auth.api';
+import { login, logout, me, register, updateProfile, changePassword, forgotPassword, resetPassword } from '@/api/auth.api';
 
 export const useAuthStore = create((set, get) => ({
     user: null,
@@ -8,7 +8,7 @@ export const useAuthStore = create((set, get) => ({
 
     // Actions
     checkAuth: async () => {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
         if (token) {
             try {
                 set({ loading: true });
@@ -19,6 +19,7 @@ export const useAuthStore = create((set, get) => ({
                 console.error('Check auth error:', error);
                 set({ user: null, isAuthenticated: false });
                 localStorage.removeItem('token');
+                sessionStorage.removeItem('token');
             } finally {
                 set({ loading: false });
             }
@@ -47,7 +48,11 @@ export const useAuthStore = create((set, get) => ({
             const response = await login(credentials);
             const resData = response.data.data;
             if (resData?.token) {
-                localStorage.setItem('token', resData.token);
+                if (credentials.remember) {
+                    localStorage.setItem('token', resData.token);
+                } else {
+                    sessionStorage.setItem('token', resData.token);
+                }
                 const userData = resData.user || resData;
                 set({ user: userData, isAuthenticated: true });
             }
@@ -65,6 +70,7 @@ export const useAuthStore = create((set, get) => ({
         } finally {
             set({ user: null, isAuthenticated: false });
             localStorage.removeItem('token');
+            sessionStorage.removeItem('token');
         }
     },
 
@@ -82,6 +88,24 @@ export const useAuthStore = create((set, get) => ({
     changeUserPassword: async (data) => {
         try {
             const response = await changePassword(data);
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    forgotPasswordAction: async (data) => {
+        try {
+            const response = await forgotPassword(data);
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    resetPasswordAction: async (data) => {
+        try {
+            const response = await resetPassword(data);
             return response;
         } catch (error) {
             throw error;

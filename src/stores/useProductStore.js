@@ -1,10 +1,11 @@
 import { create } from 'zustand';
-import { getProducts, getProduct } from '@/api/products.api';
+import { getProducts, getProduct, getBestSellingProducts } from '@/api/products.api';
 
 export const useProductStore = create((set) => ({
     products: [],
     pagination: null,
     selectedProduct: null,
+    bestSellingProducts: [],
     loading: false,
     error: null,
 
@@ -39,6 +40,21 @@ export const useProductStore = create((set) => ({
         } catch (error) {
             set({ error: error.message });
             console.error('Error fetching product:', error);
+        } finally {
+            set({ loading: false });
+        }
+    },
+
+    fetchBestSellingProducts: async () => {
+        set({ loading: true, error: null });
+        try {
+            const response = await getBestSellingProducts();
+            const resData = response.data.data;
+            const items = resData?.items || (Array.isArray(resData) ? resData : []);
+            set({ bestSellingProducts: items });
+        } catch (error) {
+            set({ error: error.message });
+            console.error('Error fetching best selling products:', error);
         } finally {
             set({ loading: false });
         }

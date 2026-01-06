@@ -20,7 +20,13 @@ const banners = [banner3, banner2, banner1];
 
 export default function Home() {
   // API data state
-  const { products, fetchProducts, loading: productsLoading } = useProductStore();
+  const {
+    products,
+    bestSellingProducts,
+    fetchProducts,
+    fetchBestSellingProducts,
+    loading: productsLoading
+  } = useProductStore();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -38,15 +44,16 @@ export default function Home() {
 
     fetchCategoriesData();
     fetchProducts();
+    fetchBestSellingProducts();
     setLoading(false);
-  }, [fetchProducts]);
+  }, [fetchProducts, fetchBestSellingProducts]);
 
   return (
     <div className="container mx-auto px-4 md:px-6 lg:px-8">
       <HomeCarousel banners={banners} />
       <CategoryCarousel categories={categories} />
       <FeaturesSection />
-      <SpecialProducts title="المنتجات المميزة" products={products} />
+      <SpecialProducts title="المنتجات المميزة" products={bestSellingProducts} />
       <Products products={products} />
     </div>
   );

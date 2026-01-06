@@ -21,3 +21,5 @@ export const me = () => api.get('/me');
 export const updateProfile = (data) => api.post('/profile', data);
 
 export const changePassword = (data) => api.post('/change-password', data);
+export const forgotPassword = (data) => api.post('/password/forgot', data);
+export const resetPassword = (data) => api.post('/password/reset', data);

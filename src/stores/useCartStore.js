@@ -108,7 +108,7 @@ export const useCartStore = create((set, get) => ({
 
             set({
                 coupon: { ...couponData, code },
-                discountAmount: Number(discount_amount || 0)
+                discountAmount: Math.min(Number(discount_amount || 0), subtotal)
             });
             toast.success(message || 'تم تطبيق الكوبون بنجاح');
             return true;

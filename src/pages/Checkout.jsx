@@ -92,10 +92,14 @@ export default function Checkout() {
         }
 
         try {
-            // Ensure coupon_code is sent if present in store/form
+            // Ensure coupon_code and items are sent as per API requirements
             const payload = {
                 ...data,
-                coupon_code: coupon ? coupon.code : (data.coupon_code || null)
+                coupon_code: coupon ? coupon.code : (data.coupon_code || null),
+                items: cartItems.map(item => ({
+                    product_id: item.product_id,
+                    quantity: item.quantity
+                }))
             };
 
             await submitOrder(payload, navigate);

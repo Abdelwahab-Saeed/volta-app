@@ -24,6 +24,8 @@ import Wishlist from './pages/Wishlist';
 import Links from './components/layout/Links';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import ProductDetails from './pages/ProductDetails';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import { Toaster } from "@/components/ui/sonner";
 
 function App() {
@@ -64,6 +66,8 @@ function App() {
       <Routes>
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* Protected Routes */}
         <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
