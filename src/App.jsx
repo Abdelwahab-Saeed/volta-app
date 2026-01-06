@@ -68,16 +68,16 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-
+        <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
         {/* Protected Routes */}
-        <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-        <Route path='/products' element={<ProtectedRoute><Products /></ProtectedRoute>} />
+        <Route path='/products' element={<Products />} />
         <Route path='/offers' element={<ProtectedRoute><Offers /></ProtectedRoute>} />
         <Route path='/comparison' element={<ProtectedRoute><Comparison /></ProtectedRoute>} />
         <Route path='/cart' element={<ProtectedRoute><Cart /></ProtectedRoute>} />
         <Route path='/checkout' element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
         <Route path='/wishlist' element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
-        <Route path='/product/:id' element={<ProtectedRoute><ProductDetails /></ProtectedRoute>} />
+        <Route path='/product/:id' element={<ProductDetails />} />
 
         <Route element={<ProtectedRoute><ProfileLayout /></ProtectedRoute>}>
           <Route path="/profile" element={<Profile />} />
