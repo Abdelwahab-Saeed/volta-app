@@ -12,6 +12,7 @@ import Login from './pages/Login';
 import Home from './pages/Home';
 import Products from './pages/Products';
 import NotFoundPage from './pages/NotFoundPage';
+import SearchResults from './pages/SearchResults';
 import Offers from './pages/Offers';
 import Comparison from './pages/Comparison';
 import Cart from './pages/Cart';
@@ -73,12 +74,13 @@ function App() {
         <Route path='/product/:id' element={<ProductDetails />} />
         {/* Protected Routes */}
         <Route path='/products' element={<Products />} />
+        <Route path='/search' element={<SearchResults />} />
         <Route path='/offers' element={<ProtectedRoute><Offers /></ProtectedRoute>} />
         <Route path='/comparison' element={<ProtectedRoute><Comparison /></ProtectedRoute>} />
         <Route path='/cart' element={<ProtectedRoute><Cart /></ProtectedRoute>} />
         <Route path='/checkout' element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
         <Route path='/wishlist' element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
-        
+
         <Route element={<ProtectedRoute><ProfileLayout /></ProtectedRoute>}>
           <Route path="/profile" element={<Profile />} />
           <Route path="/orders" element={<Orders />} />
