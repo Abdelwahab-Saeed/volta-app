@@ -28,7 +28,7 @@ import {
 import {
   Checkbox
 } from "@/components/ui/checkbox"
-import { LockKeyhole, UserPlus, Loader2 } from "lucide-react"
+import { LockKeyhole, UserPlus, Loader2, EyeOff, Eye } from "lucide-react"
 import { useNavigate, useLocation, Link } from "react-router-dom"
 import { useAuthStore } from "@/stores/useAuthStore"
 import { useState, useEffect } from "react"
@@ -55,6 +55,7 @@ export default function Login() {
   const loginUser = useAuthStore((state) => state.loginUser);
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -143,14 +144,22 @@ export default function Login() {
               <FieldLabel htmlFor="password" className="text-primary font-medium">
                 كلمة المرور
               </FieldLabel>
-              <Input
-                id="password"
-                placeholder="كلمة المرور"
-                className="mt-1 p-6"
-                type="password"
+              <div className="relative">
+                <Input
+                  id="password"
+                  placeholder="كلمة المرور"
+                  className="mt-1 p-6"
+                  type={showPassword ? "text" : "password"}
                 {...form.register("password")}
-              />
-
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-primary opacity-50 hover:opacity-100"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
               <FieldError className="text-red-500 text-sm mt-1">
                 {form.formState.errors.password?.message}
               </FieldError>
