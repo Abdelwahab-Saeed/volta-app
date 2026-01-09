@@ -213,7 +213,6 @@ export default function Products() {
               <SortDropdown onChange={setSort} />
               <button className="px-4 py-2 border border-slate-300 bg-slate-50 rounded-lg flex items-center gap-2 hover:bg-slate-100 transition-colors">
                 <span className="font-medium text-slate-700">{pagination?.total_items || 0}</span>
-                <ChevronDown size={18} className="text-slate-600" />
               </button>
             </div>
           </div>
