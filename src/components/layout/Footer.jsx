@@ -1,10 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Input } from '../ui/input';
 import WhiteLogo from '../../assets/Logo-04 2.png';
 import { Facebook, Mail, MapPin } from 'lucide-react';
+import { getCategories } from '@/api/categories';
 
 export default function Footer() {
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await getCategories();
+        setCategories(response.data.data || response.data);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
   return (
     <footer className="text-white">
       {/* Newsletter Section */}
@@ -35,8 +50,7 @@ export default function Footer() {
             <div className="flex flex-col items-center sm:items-start text-center sm:text-right">
               <img src={WhiteLogo} alt="Volra White Logo" className="mb-4 w-48 md:w-56" />
               <p className="max-w-xs text-sm md:text-base opacity-90 leading-relaxed">
-                زيروتك هي منصة رائدة في تقديم حلول تكنولوجيا المعلومات والخدمات
-                الرقمية التي تلبي احتياجات الأفراد والشركات على حد سواء.
+                فولتا هي منصة يمكنك من خلالها شراء المنتجات بسهولة وسرعة مع ضمان سرعة التوصيل وخدمات متميزة
               </p>
               <div className="flex flex-row mt-6">
                 <a href="https://facebook.com" target="_blank" rel="noreferrer">
@@ -79,23 +93,18 @@ export default function Footer() {
 
             {/* Information Links */}
             <div className="flex flex-col items-center sm:items-start text-center sm:text-right">
-              <h4 className="text-lg md:text-xl font-semibold mb-6">حول زيروتك</h4>
+              <h4 className="text-lg md:text-xl font-semibold mb-6">حول فولتا</h4>
               <ul className="space-y-3 opacity-80">
-                <li>
-                  <Link to="/products" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
-                    كاميرات لاسلكية
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/products" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
-                    شاشات
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/products" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
-                    انتركم
-                  </Link>
-                </li>
+                {categories.slice(0, 3).map((category, index) => (
+                  <li key={category.id || index}>
+                    <Link
+                      to={`/products?category=${category.id}`}
+                      className="hover:underline hover:text-secondary transition-colors text-sm md:text-base"
+                    >
+                      {category.name}
+                    </Link>
+                  </li>
+                ))}
                 <li>
                   <Link to="/contact" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
                     تواصل معنا
@@ -124,16 +133,16 @@ export default function Footer() {
                 </li>
                 <li>
                   <a
-                    href="mailto:info@zerotechegypt.com"
+                    href="mailto:info@volta-eg.com"
                     className="hover:text-secondary transition-colors flex items-center justify-center sm:justify-start gap-2"
                   >
                     <Mail size="20" />
-                    info@zerotechegypt.com
+                    info@volta-eg.com
                   </a>
                 </li>
                 <li className="flex items-center justify-center sm:justify-start gap-2">
                   <MapPin size="20" className="flex-shrink-0" />
-                  <span>ش الخليفة الواثق من ش عباس</span>
+                  <span>بني سويف - مصر</span>
                 </li>
               </ul>
             </div>
