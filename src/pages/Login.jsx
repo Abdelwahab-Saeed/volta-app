@@ -123,11 +123,11 @@ export default function Login() {
 
             <Field>
               <FieldLabel htmlFor="email" className="text-primary font-medium">
-                البريد الإلكتروني أو الهاتف
+                البريد الإلكتروني
               </FieldLabel>
               <Input
                 id="email"
-                placeholder="البريد الإلكتروني أو الهاتف"
+                placeholder="البريد الإلكتروني"
                 className="mt-1 p-6"
                 type="text"
                 {...form.register("identifier")}

@@ -28,7 +28,7 @@ import {
 import {
   Checkbox
 } from "@/components/ui/checkbox"
-import { UserPlus, Loader2 } from "lucide-react"
+import { UserPlus, Loader2, EyeOff, Eye } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import { useAuthStore } from "@/stores/useAuthStore"
 import { useState } from "react"
@@ -48,8 +48,11 @@ export const formSchema = z
     phone_number: z
       .string()
       .trim()
-      .regex(/^01[0-2,5][0-9]{8}$/, 'رقم الهاتف غير صحيح')
-      .optional(),
+      .optional()
+      .refine(
+        (val) => !val || /^01[0-2,5][0-9]{8}$/.test(val),
+        { message: 'رقم الهاتف غير صحيح' }
+      ),
 
     password: z
       .string()
@@ -76,6 +79,8 @@ export default function Register() {
   const registerUser = useAuthStore((state) => state.registerUser);
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -186,13 +191,23 @@ export default function Register() {
               <FieldLabel htmlFor="password" className="text-primary font-medium">
                 كلمة المرور
               </FieldLabel>
-              <Input
-                id="password"
-                placeholder="كلمة المرور"
-                className="mt-1 p-6"
-                type="password"
-                {...form.register("password")}
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  placeholder="يرجى إختيار كلمة مرور قوية"
+                  className="mt-1 p-6"
+                  type={showPassword ? "text" : "password"}
+                  {...form.register("password")}
+                />
+                <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-primary opacity-50 hover:opacity-100"
+                >
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+              
 
               <FieldError className="text-red-500 text-sm mt-1">
                 {form.formState.errors.password?.message}
@@ -203,13 +218,22 @@ export default function Register() {
               <FieldLabel htmlFor="password_confirmation" className="text-primary font-medium">
                 تأكيد كلمة المرور
               </FieldLabel>
-              <Input
-                id="password_confirmation"
-                placeholder="تأكيد كلمة المرور"
-                className="mt-1 p-6"
-                type="password"
-                {...form.register("password_confirmation")}
-              />
+              <div className="relative">
+                <Input
+                  id="password_confirmation"
+                  placeholder="تأكيد كلمة المرور"
+                  className="mt-1 p-6"
+                  type={showConfirmPassword ? "text" : "password"}
+                  {...form.register("password_confirmation")}
+                />
+                <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-primary opacity-50 hover:opacity-100"
+                >
+                    {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
               <FieldError className="text-red-500 text-sm mt-1">
                 {form.formState.errors.password_confirmation?.message}
               </FieldError>
