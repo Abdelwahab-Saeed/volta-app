@@ -103,9 +103,12 @@ export default function SmallProductCard({ product }) {
           </h3>
         </Link>
         <div className="flex items-center justify-between mb-3">
-          <span className="text-lg font-bold text-red-600">
+          <p className="text-lg font-bold text-red-600">
             {product.final_price} EGP
-          </span>
+          </p>
+          {product.discount > 0 ? (
+            <p className="text-md text-slate-400 line-through mr-2">EGP {product.price}</p>
+          ) : null}
         </div>
         <Button
           onClick={handleAddToCart}
