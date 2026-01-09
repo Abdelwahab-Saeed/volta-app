@@ -66,7 +66,7 @@ export default function ProductView({
             {/* Info Section */}
             <div className="flex flex-col gap-8">
                 <div>
-                    <div className="flex items-center gap-2 mb-4">
+                    {/* <div className="flex items-center gap-2 mb-4">
                         <span className="bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">متوفر</span>
                         <div className="flex text-yellow-500 ml-2">
                             {[...Array(5)].map((_, i) => (
@@ -74,7 +74,7 @@ export default function ProductView({
                             ))}
                         </div>
                         <span className="text-slate-400 text-sm">(4.8)</span>
-                    </div>
+                    </div> */}
 
                     <h1 className="text-4xl font-extrabold text-slate-900 mb-4 leading-tight">
                         {product.name}
