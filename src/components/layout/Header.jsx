@@ -34,6 +34,22 @@ export default function Header() {
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [categories, setCategories] = useState([]);
 
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${searchQuery}`);
+      setIsMenuOpen(false); // Close mobile menu if open
+      setSearchQuery(""); // Optional: clear search after navigation
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
   const handleLogout = async () => {
     try {
       await logoutUser();
@@ -63,10 +79,9 @@ export default function Header() {
       {/* --- Top Bar (Hidden on Mobile) --- */}
       <div className="hidden md:flex justify-between items-center bg-[#1e2749] text-white px-4 lg:px-10 py-4 text-xs">
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1 cursor-pointer">
+          <div className="flex items-center gap-1">
             <img src={EGflag} alt="Egypt" className="w-4 h-3 object-cover" />
             <span>العربية</span>
-            <ChevronDown size={14} />
           </div>
         </div>
         <a href="#" className="hover:underline">الدعم والمساعدة</a>
@@ -97,12 +112,18 @@ export default function Header() {
             type="text"
             placeholder="البحث..."
             className="border-0 focus-visible:ring-0 text-right h-full text-sm"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
           {/* <div className="hidden lg:flex items-center gap-2 px-3 border-l border-gray-200 cursor-pointer text-primary">
             <span className="text-xs whitespace-nowrap">تسوق بالأقسام</span>
             <ChevronDown size={14} />
           </div> */}
-          <button className="bg-secondary h-full px-4 flex items-center justify-center text-white">
+          <button
+            onClick={handleSearch}
+            className="bg-secondary h-full px-4 flex items-center justify-center text-white"
+          >
             <Search size={20} />
           </button>
 
@@ -111,12 +132,12 @@ export default function Header() {
         {/* User Actions */}
         <div className="flex items-center gap-3 md:gap-6">
           {/* Welcome/Login (Hidden on Mobile) */}
-          <div className="flex items-center gap-3">
+          <div className="hidden md:block  flex items-center gap-3">
             <div className="p-2 rounded-full">
               <User size={20} className="text-gray-600" />
             </div>
             {user ? (
-              <div className="relative">
+              <div className="relative ">
                 <button
                   onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
                   className="text-right flex items-center gap-2"
@@ -175,8 +196,20 @@ export default function Header() {
       {/* --- Mobile Search (Visible only on Mobile) --- */}
       <div className="md:hidden px-4 pb-4">
         <div className="flex items-center border-2 border-secondary rounded-lg overflow-hidden h-10">
-          <Input type="text" placeholder="البحث..." className="border-0 focus-visible:ring-0 text-right" />
-          <button className="bg-secondary h-full px-4 text-white"><Search size={18} /></button>
+          <Input
+            type="text"
+            placeholder="البحث..."
+            className="border-0 focus-visible:ring-0 text-right"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
+          />
+          <button
+            onClick={handleSearch}
+            className="bg-secondary h-full px-4 text-white"
+          >
+            <Search size={18} />
+          </button>
         </div>
       </div>
 
