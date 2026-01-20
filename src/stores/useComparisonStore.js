@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import * as comparisonApi from '../api/comparison.api';
 import { toast } from 'sonner';
+import i18n from '@/i18n';
 
 export const useComparisonStore = create((set, get) => ({
     comparisonItems: [],
@@ -21,18 +22,18 @@ export const useComparisonStore = create((set, get) => ({
         const { comparisonItems } = get();
 
         if (comparisonItems.length >= 2) {
-            toast.error('قائمة المقارنة ممتلئة. الحد الأقصى هو منتجين فقط.');
+            toast.error(i18n.t('messages.compare_full'));
             return;
         }
 
         try {
             const response = await comparisonApi.addToComparison(product.id);
             set({ comparisonItems: [...comparisonItems, product], error: null });
-            toast.success(response.data?.message || 'تمت إضافة المنتج للمقارنة');
+            toast.success(response.data?.message || i18n.t('messages.compare_added'));
         } catch (error) {
-            const message = error.response?.data?.message || 'فشل إضافة المنتج للمقارنة';
+            const message = error.response?.data?.message || i18n.t('messages.compare_failed');
             if (error.response?.status === 422) {
-                toast.error(message || 'قائمة المقارنة ممتلئة. الحد الأقصى هو منتجين فقط.');
+                toast.error(message || i18n.t('messages.compare_full'));
             } else {
                 toast.error(message);
             }
@@ -45,9 +46,9 @@ export const useComparisonStore = create((set, get) => ({
         try {
             const response = await comparisonApi.removeFromComparison(productId);
             set({ comparisonItems: comparisonItems.filter(item => item.id !== productId) });
-            toast.success(response.data?.message || 'تم حذف المنتج من المقارنة');
+            toast.success(response.data?.message || i18n.t('messages.compare_removed'));
         } catch (error) {
-            const message = error.response?.data?.message || 'فشل حذف المنتج من المقارنة';
+            const message = error.response?.data?.message || i18n.t('messages.compare_remove_failed');
             toast.error(message);
             throw error;
         }

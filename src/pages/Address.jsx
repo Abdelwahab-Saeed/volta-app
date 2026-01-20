@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import AddressCard from '../components/address/AddressCard';
 import { Button } from '../components/ui/button';
 import AddressForm from '../components/address/AddressForm';
@@ -6,8 +6,10 @@ import DeleteAddressModal from '../components/address/DeleteAddressModal';
 import { useAddressStore } from '@/stores/useAddressStore';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useState, useEffect } from 'react';
 
 export default function Address() {
+  const { t } = useTranslation();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [editingAddress, setEditingAddress] = useState(null);
@@ -41,10 +43,10 @@ export default function Address() {
     setDeleteLoading(true);
     try {
       await deleteUserAddress(addressToDelete);
-      toast.success('تم حذف العنوان بنجاح');
+      toast.success(t('address.success_delete'));
       setIsDeleteModalOpen(false);
     } catch (error) {
-      toast.error('فشل حذف العنوان');
+      toast.error(t('address.failed_delete'));
     } finally {
       setDeleteLoading(false);
       setAddressToDelete(null);
@@ -61,7 +63,7 @@ export default function Address() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
           {addresses.length === 0 ? (
             <div className="col-span-2 text-center text-gray-500 py-10">
-              لا توجد عناوين محفوظة
+              {t('address.no_addresses')}
             </div>
           ) : (
             addresses.map((address) => (
@@ -84,7 +86,7 @@ export default function Address() {
           setIsFormOpen(true);
         }}
       >
-        إضافة عنوان جديد
+        {t('address.add_new')}
       </Button>
 
       {isFormOpen && (

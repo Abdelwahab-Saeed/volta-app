@@ -1,11 +1,13 @@
-import { SwitchCamera, User } from 'lucide-react';
-import React, { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { Button } from '../ui/button';
+import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { toast } from 'sonner';
+import { useForm } from 'react-hook-form';
+import { User, SwitchCamera } from 'lucide-react';
+import { Button } from '../ui/button';
 
 export default function ProfileForm() {
+  const { t } = useTranslation();
   const [imagePreview, setImagePreview] = useState(null);
   const { user, updateUserProfile } = useAuthStore();
 
@@ -49,10 +51,10 @@ export default function ProfileForm() {
       }
 
       await updateUserProfile(formData);
-      toast.success('تم تحديث الملف الشخصي بنجاح');
+      toast.success(t('profile.success_update'));
     } catch (error) {
       console.error('Error:', error);
-      toast.error('فشل تحديث الملف الشخصي');
+      toast.error(t('profile.failed_update'));
     }
   };
 
@@ -71,7 +73,6 @@ export default function ProfileForm() {
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="space-y-6 mx-auto"
-      dir="rtl"
     >
       {/* Profile Image */}
       <div className="flex flex-col items-center">
@@ -116,48 +117,48 @@ export default function ProfileForm() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Full Name */}
         <div>
-          <label className="block text-right mb-2 font-medium text-xl">
-            الاسم بالكامل
+          <label className="block mb-2 font-medium text-xl">
+            {t('profile.full_name')}
           </label>
           <input
             type="text"
-            placeholder="أدخل"
+            placeholder={t('checkout.full_name_placeholder')}
             {...register('name', {
               required: false,
               minLength: {
                 value: 3,
-                message: 'الاسم يجب أن يكون 3 أحرف على الأقل',
+                message: t('checkout.full_name_required'),
               },
             })}
-            className={`w-full p-3 border rounded text-right ${errors.name ? 'border-red-500' : 'border-gray-300'
+            className={`w-full p-3 border rounded ${errors.name ? 'border-red-500' : 'border-gray-300'
               }`}
           />
           {errors.name && (
-            <p className="text-red-500 text-sm mt-1 text-right">
+            <p className="text-red-500 text-sm mt-1">
               {errors.name.message}
             </p>
           )}
         </div>
         {/* Email */}
         <div>
-          <label className="block text-right mb-2 font-medium text-xl">
-            البريد الإلكتروني
+          <label className="block mb-2 font-medium text-xl">
+            {t('profile.email')}
           </label>
           <input
             type="email"
-            placeholder="Am1163@gmail.com"
+            placeholder="example@mail.com"
             {...register('email', {
               required: false,
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: 'البريد الإلكتروني غير صحيح',
+                message: t('checkout.email_invalid'),
               },
             })}
-            className={`w-full p-3 border rounded text-right ${errors.email ? 'border-red-500' : 'border-gray-300'
+            className={`w-full p-3 border rounded ${errors.email ? 'border-red-500' : 'border-gray-300'
               }`}
           />
           {errors.email && (
-            <p className="text-red-500 text-sm mt-1 text-right">
+            <p className="text-red-500 text-sm mt-1">
               {errors.email.message}
             </p>
           )}
@@ -167,26 +168,26 @@ export default function ProfileForm() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Birth Date */}
         <div>
-          <label className="block text-right mb-2 font-medium text-xl">
-            تاريخ الميلاد
+          <label className="block mb-2 font-medium text-xl">
+            {t('profile.birth_date')}
           </label>
           <input
             type="date"
             placeholder="10/18/2003"
             {...register('date_of_birth', { required: false })}
-            className={`w-full p-3 border rounded text-right ${errors.date_of_birth ? 'border-red-500' : 'border-gray-300'
+            className={`w-full p-3 border rounded ${errors.date_of_birth ? 'border-red-500' : 'border-gray-300'
               }`}
           />
           {errors.date_of_birth && (
-            <p className="text-red-500 text-sm mt-1 text-right">
+            <p className="text-red-500 text-sm mt-1">
               {errors.date_of_birth.message}
             </p>
           )}
         </div>
         {/* Phone */}
         <div>
-          <label className="block text-right mb-2 font-medium text-xl">
-            الهاتف
+          <label className="block mb-2 font-medium text-xl">
+            {t('profile.phone')}
           </label>
           <input
             type="tel"
@@ -195,14 +196,14 @@ export default function ProfileForm() {
               required: false,
               pattern: {
                 value: /^[0-9]{11}$/,
-                message: 'رقم الهاتف يجب أن يكون 11 رقم',
+                message: t('checkout.phone_invalid'),
               },
             })}
-            className={`w-full p-3 border rounded text-right ${errors.phone_number ? 'border-red-500' : 'border-gray-300'
+            className={`w-full p-3 border rounded ${errors.phone_number ? 'border-red-500' : 'border-gray-300'
               }`}
           />
           {errors.phone_number && (
-            <p className="text-red-500 text-sm mt-1 text-right">
+            <p className="text-red-500 text-sm mt-1">
               {errors.phone_number.message}
             </p>
           )}
@@ -214,9 +215,9 @@ export default function ProfileForm() {
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="w-1/2 bg-secondary text-white py-3 rounded font-medium hover:bg-primary disabled:bg-gray-400 disabled:cursor-not-allowed text-xl h-auto"
+          className="w-full md:w-1/2 bg-secondary text-white py-3 rounded font-medium hover:bg-primary disabled:bg-gray-400 disabled:cursor-not-allowed text-xl h-auto"
         >
-          {isSubmitting ? 'جاري التحديث...' : 'تحديث'}
+          {isSubmitting ? t('profile.updating') : t('profile.update')}
         </Button>
       </div>
     </form>

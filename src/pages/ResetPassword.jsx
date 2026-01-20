@@ -10,16 +10,10 @@ import { Lock, Loader2, Eye, EyeOff, CheckCircle2, XCircle } from "lucide-react"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import { useAuthStore } from "@/stores/useAuthStore"
 import { useState, useEffect } from "react"
-
-const formSchema = z.object({
-    password: z.string().min(8, 'كلمة المرور يجب أن تكون 8 أحرف على الأقل'),
-    password_confirmation: z.string().min(1, 'تأكيد كلمة المرور مطلوب'),
-}).refine((data) => data.password === data.password_confirmation, {
-    message: "كلمات المرور غير متطابقة",
-    path: ["password_confirmation"],
-});
+import { useTranslation } from "react-i18next";
 
 export default function ResetPassword() {
+    const { t } = useTranslation();
     const resetPasswordAction = useAuthStore((state) => state.resetPasswordAction);
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
@@ -28,14 +22,22 @@ export default function ResetPassword() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [urlError, setUrlError] = useState(null);
 
+    const formSchema = z.object({
+        password: z.string().min(8, t('profile.password_too_short')),
+        password_confirmation: z.string().min(1, t('profile.confirm_password_required')),
+    }).refine((data) => data.password === data.password_confirmation, {
+        message: t('profile.password_mismatch'),
+        path: ["password_confirmation"],
+    });
+
     const token = searchParams.get('token');
     const email = searchParams.get('email');
 
     useEffect(() => {
         if (!token || !email) {
-            setUrlError('رابط إعادة التعيين غير صالح أو منتهي الصلاحية.');
+            setUrlError(t('auth.invalid_link'));
         }
-    }, [token, email]);
+    }, [token, email, t]);
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -53,7 +55,7 @@ export default function ResetPassword() {
                 token,
                 email
             });
-            toast.success('تمت إعادة تعيين كلمة المرور بنجاح');
+            toast.success(t('messages.password_reset_success', { defaultValue: 'Password reset successfully' }));
             setTimeout(() => {
                 navigate('/login');
             }, 3000);
@@ -77,10 +79,10 @@ export default function ResetPassword() {
         return (
             <div className="min-h-[60vh] flex flex-col items-center justify-center p-4 text-center">
                 <XCircle size={64} className="text-red-500 mb-4" />
-                <h2 className="text-2xl font-bold text-primary mb-2">خطأ في الرابط</h2>
+                <h2 className="text-2xl font-bold text-primary mb-2">{t('auth.link_error')}</h2>
                 <p className="text-primary opacity-80 mb-6">{urlError}</p>
                 <Button onClick={() => navigate('/login')} className="bg-primary px-8 py-6">
-                    العودة لتسجيل الدخول
+                    {t('auth.back_to_login')}
                 </Button>
             </div>
         );
@@ -88,33 +90,33 @@ export default function ResetPassword() {
 
     return (
         <>
-            <div className="bg-light-background px-4 md:px-10 lg:px-40 py-8 text-right" dir="rtl">
+            <div className="bg-light-background px-4 md:px-10 lg:px-40 py-8">
                 <div>
-                    <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4">تعيين كلمة المرور</h1>
+                    <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4">{t('auth.reset_password_title')}</h1>
                     <div className="flex gap-2 text-base md:text-lg text-primary">
-                        <span>الرئيسية</span>
+                        <Link to="/" className="hover:underline">{t('header.home')}</Link>
                         <span>/</span>
-                        <span>تعيين كلمة المرور الجديدة</span>
+                        <span>{t('auth.reset_password_title')}</span>
                     </div>
                 </div>
             </div>
 
-            <div className="w-full max-w-lg border-2 my-10 mx-auto flex flex-col justify-center bg-white shadow-2xl py-12 px-6 lg:px-16" dir="rtl">
+            <div className="w-full max-w-lg border-2 my-10 mx-auto flex flex-col justify-center bg-white shadow-2xl py-12 px-6 lg:px-16">
                 <div className="mb-10">
                     <div className="flex gap-3 items-center">
                         <Lock size={24} className="text-secondary font-bold" />
-                        <h1 className="text-2xl font-bold text-primary mb-2">كلمة مرور جديدة</h1>
+                        <h1 className="text-2xl font-bold text-primary mb-2">{t('auth.reset_password_title')}</h1>
                     </div>
                     <p className="text-primary leading-relaxed opacity-80">
-                        الرجاء إدخال كلمة المرور الجديدة وتأكيدها.
+                        {t('auth.new_password_desc')}
                     </p>
                 </div>
 
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 w-full">
                         <Field className="relative">
-                            <FieldLabel htmlFor="password" title="password">
-                                كلمة المرور الجديدة
+                            <FieldLabel htmlFor="password">
+                                {t('profile.new_password')}
                             </FieldLabel>
                             <div className="relative">
                                 <Input
@@ -127,7 +129,7 @@ export default function ResetPassword() {
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute left-4 top-1/2 -translate-y-1/2 text-primary opacity-50 hover:opacity-100"
+                                    className="absolute end-4 top-1/2 -translate-y-1/2 text-primary opacity-50 hover:opacity-100"
                                 >
                                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                                 </button>
@@ -139,7 +141,7 @@ export default function ResetPassword() {
 
                         <Field>
                             <FieldLabel htmlFor="password_confirmation">
-                                تأكيد كلمة المرور
+                                {t('profile.confirm_password')}
                             </FieldLabel>
                             <div className="relative">
                                 <Input
@@ -152,7 +154,7 @@ export default function ResetPassword() {
                                 <button
                                     type="button"
                                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                    className="absolute left-4 top-1/2 -translate-y-1/2 text-primary opacity-50 hover:opacity-100"
+                                    className="absolute end-4 top-1/2 -translate-y-1/2 text-primary opacity-50 hover:opacity-100"
                                 >
                                     {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                                 </button>
@@ -166,7 +168,7 @@ export default function ResetPassword() {
                         <div className="bg-gray-50 p-4 rounded-lg space-y-2">
                             <div className="flex items-center gap-2 text-sm">
                                 {passwordStrength.length ? <CheckCircle2 size={16} className="text-green-500" /> : <div className="w-4 h-4 border rounded-full" />}
-                                <span className={passwordStrength.length ? "text-green-700" : "text-gray-500"}>8 أحرف على الأقل</span>
+                                <span className={passwordStrength.length ? "text-green-700" : "text-gray-500"}>{t('auth.at_least_8_chars')}</span>
                             </div>
                         </div>
 
@@ -178,10 +180,10 @@ export default function ResetPassword() {
                             {isSubmitting ? (
                                 <>
                                     <Loader2 className="w-5 h-5 animate-spin ml-2" />
-                                    جاري الحفظ...
+                                    {t('profile.updating')}
                                 </>
                             ) : (
-                                'حفظ كلمة المرور'
+                                t('auth.save_password')
                             )}
                         </Button>
                     </form>

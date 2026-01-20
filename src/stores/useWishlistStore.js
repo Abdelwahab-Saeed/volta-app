@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import * as wishlistApi from '../api/wishlist.api';
 import { toast } from 'sonner';
+import i18n from '@/i18n';
 
 export const useWishlistStore = create((set, get) => ({
     wishlistItems: [],
@@ -30,11 +31,11 @@ export const useWishlistStore = create((set, get) => ({
 
         try {
             const response = await wishlistApi.toggleWishlist(product.id);
-            toast.success(response.data?.message || (isInWishlist ? 'تم الحذف من قائمة الأمنيات' : 'تمت الإضافة لقائمة الأمنيات'));
+            toast.success(response.data?.message || (isInWishlist ? i18n.t('messages.wishlist_removed') : i18n.t('messages.wishlist_added')));
         } catch (error) {
             // Rollback on error
             set({ wishlistItems });
-            const message = error.response?.data?.message || 'فشل تحديث قائمة الأمنيات';
+            const message = error.response?.data?.message || i18n.t('messages.failed_to_update_wishlist');
             toast.error(message);
             throw error;
         }

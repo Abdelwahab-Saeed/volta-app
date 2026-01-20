@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { Button } from '../ui/button';
 import { LogOut, MapPinHouse, ShoppingCart, User } from 'lucide-react';
@@ -7,6 +8,7 @@ import { useAuthStore } from '@/stores/useAuthStore';
 import { toast } from 'sonner';
 
 export default function ProfileLayout() {
+  const { t } = useTranslation();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const logoutUser = useAuthStore((state) => state.logoutUser);
   const navigate = useNavigate();
@@ -14,10 +16,10 @@ export default function ProfileLayout() {
   const handleLogout = async () => {
     try {
       await logoutUser();
-      toast.success('تم تسجيل الخروج بنجاح');
+      toast.success(t('header.logout_success'));
       navigate('/');
     } catch (error) {
-      toast.error('فشل تسجيل الخروج');
+      toast.error(t('header.logout_error'));
     }
   };
 
@@ -26,7 +28,6 @@ export default function ProfileLayout() {
       <div className="container mx-auto flex flex-col lg:flex-row gap-6 py-8 px-4">
         <aside
           className="w-full lg:w-1/4 h-fit flex flex-col gap-2 md:gap-4 py-6 px-2 [box-shadow:0px_10px_27px_0px_#0000001A]"
-          dir="rtl"
         >
           <NavLink
             to="/profile"
@@ -38,7 +39,7 @@ export default function ProfileLayout() {
             }
           >
             <User size={22} />
-            الملف الشخصي
+            {t('header.profile')}
           </NavLink>
 
           <NavLink
@@ -51,7 +52,7 @@ export default function ProfileLayout() {
             }
           >
             <ShoppingCart size={22} />
-            الطلبات
+            {t('orders.title')}
           </NavLink>
 
           <NavLink
@@ -64,7 +65,7 @@ export default function ProfileLayout() {
             }
           >
             <MapPinHouse size={22} />
-            العناوين
+            {t('address.title')}
           </NavLink>
           <Button
             variant="ghost"
@@ -72,7 +73,7 @@ export default function ProfileLayout() {
             onClick={() => setIsDialogOpen(true)}
           >
             <LogOut style={{ width: 22, height: 22 }} />
-            تسجيل الخروج
+            {t('header.logout')}
           </Button>
         </aside>
         <div className="w-full lg:w-3/4">
@@ -84,7 +85,8 @@ export default function ProfileLayout() {
         open={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
         onConfirm={handleLogout}
-        title="هل تريد تسجيل الخروج؟"
+        title={t('auth.logout_confirm_title')}
+        description={t('auth.logout_confirm_desc')}
         type="normal"
       />
     </>

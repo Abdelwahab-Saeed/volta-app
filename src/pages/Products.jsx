@@ -9,8 +9,10 @@ import { getCategories } from '@/api/categories';
 import { Link, useSearchParams } from 'react-router-dom';
 import useDebounce from '@/hooks/useDebounce';
 import { useProductStore } from '@/stores/useProductStore';
+import { useTranslation } from 'react-i18next';
 
 export default function Products() {
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [sort, setSort] = useState('price_asc');
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -96,19 +98,19 @@ export default function Products() {
 
   return (
     <>
-      <div className="bg-light-background px-4 md:px-10 lg:px-40 py-8 text-right" dir="rtl">
+      <div className="bg-light-background px-4 md:px-10 lg:px-40 py-8">
         <div>
           <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4">
-            {selectedCategory?.name || 'جميع المنتجات'}
+            {selectedCategory?.name || t('products_page.all_products')}
           </h1>
           <div className="flex gap-2 items-center text-primary text-sm md:text-base">
-            <Link to="/" className="hover:underline">الرئيسية</Link>
+            <Link to="/" className="hover:underline">{t('header.home')}</Link>
             <Square fill='true' size={8} />
-            <span> المنتجات </span>
+            <span> {t('products_page.all_products')} </span>
           </div>
         </div>
       </div>
-      <div className="flex flex-col lg:flex-row justify-center px-4 md:px-10 lg:px-20 py-12 gap-8" dir="rtl">
+      <div className="flex flex-col lg:flex-row justify-center px-4 md:px-10 lg:px-20 py-12 gap-8">
         {/* Filter Sidebar */}
         <aside className="w-full lg:w-3/12">
           <div className="bg-white sticky top-4">
@@ -117,19 +119,19 @@ export default function Products() {
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="بحث"
+                  placeholder={t('products_page.search')}
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full py-3 px-4 pr-11 border rounded-lg border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-400 focus:bg-white transition-all text-right"
+                  className="w-full py-3 px-4 pr-11 border rounded-lg border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-400 focus:bg-white transition-all rtl:pr-4 rtl:pl-11"
                 />
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-primary rtl:left-auto rtl:right-3" />
               </div>
             </div>
 
             {/* Categories Section */}
             <div className="p-4 md:p-6 bg-light-background rounded-xl">
               <h3 className="text-lg md:text-xl font-bold text-primary border-b-2 pb-4 mb-4">
-                الفئات
+                {t('products_page.categories')}
               </h3>
               <div className="space-y-1">
                 {categories.map((category) => (
@@ -156,7 +158,7 @@ export default function Products() {
             {/* Price Range Section */}
             <div className="p-4 md:p-6 mt-6 bg-light-background rounded-xl">
               <h3 className="text-lg md:text-xl font-bold border-b-2 pb-4 text-primary mb-6">
-                السعر
+                {t('products_page.price')}
               </h3>
               <div className="px-1">
                 <Slider
@@ -170,9 +172,9 @@ export default function Products() {
                   className="mb-6"
                 />
                 <div className="flex items-center justify-between mt-2 text-slate-600 font-medium text-sm md:text-base">
-                  <span>EGP{priceRange[0].toLocaleString()}</span>
+                  <span dir="ltr">{t('common.currency')} {priceRange[0].toLocaleString()}</span>
                   <span>—</span>
-                  <span>EGP{priceRange[1].toLocaleString()}</span>
+                  <span dir="ltr">{t('common.currency')} {priceRange[1].toLocaleString()}</span>
                 </div>
               </div>
             </div>
@@ -182,7 +184,7 @@ export default function Products() {
         {/* Main Content */}
         <div className="w-full lg:w-9/12">
           <h2 className="text-2xl md:text-3xl mb-4 font-bold text-slate-800">
-            {selectedCategory?.name || 'جميع المنتجات'}
+            {selectedCategory?.name || t('products_page.all_products')}
           </h2>
           <hr className="border-slate-200 mb-4" />
 
@@ -213,6 +215,7 @@ export default function Products() {
               <SortDropdown onChange={setSort} />
               <button className="px-4 py-2 border border-slate-300 bg-slate-50 rounded-lg flex items-center gap-2 hover:bg-slate-100 transition-colors">
                 <span className="font-medium text-slate-700">{pagination?.total_items || 0}</span>
+                <span className="text-slate-500 text-sm">{t('products_page.total_products')}</span>
               </button>
             </div>
           </div>
@@ -235,7 +238,7 @@ export default function Products() {
           {/* Empty State */}
           {!loading && !error && products.length === 0 && (
             <div className="text-center py-20">
-              <p className="text-slate-500 text-lg">لا توجد منتجات تطابق بحثك</p>
+              <p className="text-slate-500 text-lg">{t('products_page.no_products')}</p>
             </div>
           )}
 
@@ -260,7 +263,7 @@ export default function Products() {
 
           {/* Pagination */}
           {pagination && pagination.total_pages >= 1 && (
-            <div className="flex justify-center gap-2 my-8" dir='ltr'>
+            <div className="flex justify-center gap-2 my-8" dir="ltr">
               {Array.from({ length: pagination.total_pages }, (_, i) => i + 1).map((page) => (
                 <button
                   key={page}

@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { Eye, EyeOff } from 'lucide-react';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { toast } from 'sonner';
+import { useForm } from 'react-hook-form';
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function ChangePasswordForm() {
+  const { t } = useTranslation();
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -29,11 +31,11 @@ export default function ChangePasswordForm() {
   const onSubmit = async (data) => {
     try {
       await changeUserPassword(data);
-      toast.success('تم تغيير كلمة المرور بنجاح');
+      toast.success(t('profile.success_password'));
       reset();
     } catch (error) {
       console.error('Error:', error);
-      toast.error('فشل تغيير كلمة المرور. تأكد من كلمة المرور الحالية');
+      toast.error(t('profile.failed_password'));
     }
   };
 
@@ -41,33 +43,32 @@ export default function ChangePasswordForm() {
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="space-y-6 max-w-md mx-auto"
-      dir="rtl"
     >
       {/* Current Password */}
       <div>
-        <label className="block text-right mb-2 font-medium">
-          كلمة المرور الحالية
+        <label className="block mb-2 font-medium">
+          {t('profile.current_password')}
         </label>
         <div className="relative">
           <input
             type={showCurrentPassword ? 'text' : 'password'}
-            placeholder="أدخل كلمة المرور الحالية"
+            placeholder={t('profile.current_password')}
             {...register('current_password', {
-              required: 'كلمة المرور الحالية مطلوبة',
+              required: t('profile.password_required'),
             })}
-            className={`w-full p-3 border rounded text-right pr-12 ${errors.current_password ? 'border-red-500' : 'border-gray-300'
+            className={`w-full p-3 border rounded px-12 ${errors.current_password ? 'border-red-500' : 'border-gray-300'
               }`}
           />
           <button
             type="button"
             onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+            className="absolute end-3 top-1/2 -translate-y-1/2 text-gray-500"
           >
             {showCurrentPassword ? <EyeOff size={20} /> : <Eye size={20} />}
           </button>
         </div>
         {errors.current_password && (
-          <p className="text-red-500 text-sm mt-1 text-right">
+          <p className="text-red-500 text-sm mt-1">
             {errors.current_password.message}
           </p>
         )}
@@ -75,37 +76,37 @@ export default function ChangePasswordForm() {
 
       {/* New Password */}
       <div>
-        <label className="block text-right mb-2 font-medium">
-          كلمة المرور الجديدة
+        <label className="block mb-2 font-medium">
+          {t('profile.new_password')}
         </label>
         <div className="relative">
           <input
             type={showNewPassword ? 'text' : 'password'}
-            placeholder="أدخل كلمة المرور الجديدة"
+            placeholder={t('profile.new_password')}
             {...register('password', {
-              required: 'كلمة المرور الجديدة مطلوبة',
+              required: t('profile.new_password_required'),
               minLength: {
                 value: 8,
-                message: 'كلمة المرور يجب أن تكون 8 أحرف على الأقل',
+                message: t('profile.password_too_short'),
               },
               maxLength: {
                 value: 255,
-                message: 'كلمة المرور طويلة جداً'
+                message: 'Password too long'
               }
             })}
-            className={`w-full p-3 border rounded text-right pr-12 ${errors.password ? 'border-red-500' : 'border-gray-300'
+            className={`w-full p-3 border rounded px-12 ${errors.password ? 'border-red-500' : 'border-gray-300'
               }`}
           />
           <button
             type="button"
             onClick={() => setShowNewPassword(!showNewPassword)}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+            className="absolute end-3 top-1/2 -translate-y-1/2 text-gray-500"
           >
             {showNewPassword ? <EyeOff size={20} /> : <Eye size={20} />}
           </button>
         </div>
         {errors.password && (
-          <p className="text-red-500 text-sm mt-1 text-right">
+          <p className="text-red-500 text-sm mt-1">
             {errors.password.message}
           </p>
         )}
@@ -113,31 +114,31 @@ export default function ChangePasswordForm() {
 
       {/* Confirm Password */}
       <div>
-        <label className="block text-right mb-2 font-medium">
-          تأكيد كلمة المرور
+        <label className="block mb-2 font-medium">
+          {t('profile.confirm_password')}
         </label>
         <div className="relative">
           <input
             type={showConfirmPassword ? 'text' : 'password'}
-            placeholder="أعد إدخال كلمة المرور الجديدة"
+            placeholder={t('profile.confirm_password')}
             {...register('password_confirmation', {
-              required: 'تأكيد كلمة المرور مطلوب',
+              required: t('profile.confirm_password_required'),
               validate: (value) =>
-                value === password || 'كلمة المرور غير متطابقة',
+                value === password || t('profile.password_mismatch'),
             })}
-            className={`w-full p-3 border rounded text-right pr-12 ${errors.password_confirmation ? 'border-red-500' : 'border-gray-300'
+            className={`w-full p-3 border rounded px-12 ${errors.password_confirmation ? 'border-red-500' : 'border-gray-300'
               }`}
           />
           <button
             type="button"
             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+            className="absolute end-3 top-1/2 -translate-y-1/2 text-gray-500"
           >
             {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
           </button>
         </div>
         {errors.password_confirmation && (
-          <p className="text-red-500 text-sm mt-1 text-right">
+          <p className="text-red-500 text-sm mt-1">
             {errors.password_confirmation.message}
           </p>
         )}
@@ -149,7 +150,7 @@ export default function ChangePasswordForm() {
         disabled={isSubmitting}
         className="w-full bg-secondary text-white py-3 rounded font-medium hover:bg-opacity-90 disabled:bg-gray-400 disabled:cursor-not-allowed"
       >
-        {isSubmitting ? 'جاري التحديث...' : 'تحديث كلمة المرور'}
+        {isSubmitting ? t('profile.updating') : t('profile.change_password')}
       </button>
     </form>
   );

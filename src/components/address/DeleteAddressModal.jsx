@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React from 'react';
 import {
     Dialog,
@@ -11,6 +12,7 @@ import { Button } from '../ui/button';
 import { AlertTriangle } from 'lucide-react';
 
 export default function DeleteAddressModal({ open, onClose, onConfirm, loading }) {
+    const { t } = useTranslation();
     return (
         <Dialog open={open} onOpenChange={onClose}>
             <DialogContent className="max-w-sm rounded-lg p-6">
@@ -18,9 +20,9 @@ export default function DeleteAddressModal({ open, onClose, onConfirm, loading }
                     <div className="bg-red-100 p-3 rounded-full">
                         <AlertTriangle className="w-8 h-8 text-red-600" />
                     </div>
-                    <DialogTitle className="text-xl font-bold text-gray-900">حذف العنوان</DialogTitle>
+                    <DialogTitle className="text-xl font-bold text-gray-900">{t('address.delete_confirm_title')}</DialogTitle>
                     <DialogDescription className="text-gray-600">
-                        هل أنت متأكد من رغبتك في حذف هذا العنوان؟ لا يمكن التراجع عن هذا الإجراء.
+                        {t('address.delete_confirm_desc')}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -31,14 +33,14 @@ export default function DeleteAddressModal({ open, onClose, onConfirm, loading }
                         disabled={loading}
                         className="flex-1 text-gray-700 border-gray-300 hover:bg-gray-50"
                     >
-                        إلغاء
+                        {t('address.cancel')}
                     </Button>
                     <Button
                         onClick={onConfirm}
                         disabled={loading}
                         className="flex-1 bg-red-600 hover:bg-red-700 text-white"
                     >
-                        {loading ? 'جاري الحذف...' : 'تأكيد الحذف'}
+                        {loading ? t('address.deleting') : t('address.confirm_delete')}
                     </Button>
                 </DialogFooter>
             </DialogContent>

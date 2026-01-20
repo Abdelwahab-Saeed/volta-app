@@ -1,9 +1,11 @@
+import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
 import OrderCard from '../components/orders/OrderCard';
 import { useOrderStore } from '@/stores/useOrderStore';
 import { Loader2 } from 'lucide-react';
 
 export default function Orders() {
+  const { t } = useTranslation();
   const { orders, fetchOrders, isLoading } = useOrderStore();
 
   useEffect(() => {
@@ -21,7 +23,7 @@ export default function Orders() {
   if (orders.length === 0) {
     return (
       <div className="text-center py-20 text-gray-500 text-lg">
-        لا توجد طلبات سابقة
+        {t('orders.no_orders')}
       </div>
     );
   }

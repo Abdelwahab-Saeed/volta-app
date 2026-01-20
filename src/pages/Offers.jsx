@@ -6,8 +6,10 @@ import { useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Slider } from '@/components/ui/slider';
 import WideProductCard from '@/components/WideProductCard';
+import { useTranslation } from 'react-i18next';
 
 export default function Offers() {
+    const { t } = useTranslation();
     const [sort, setSort] = useState('price_asc');
     const [selectedCategory, setSelectedCategory] = useState('SVC 5-20 kVA');
     const [priceRange, setPriceRange] = useState([40136, 135900]);
@@ -24,37 +26,37 @@ export default function Offers() {
 
     const products = [
         {
-            name: 'منتج 1',
+            name: `${t('products_page.all_products')} 1`,
             image: stabilizer,
             price: 1000,
             discount: 10,
         },
         {
-            name: 'منتج 2',
+            name: `${t('products_page.all_products')} 2`,
             image: stabilizer,
             price: 1000,
             discount: 15,
         },
         {
-            name: 'منتج 3',
+            name: `${t('products_page.all_products')} 3`,
             image: stabilizer,
             price: 1000,
             discount: 5,
         },
         {
-            name: 'منتج 4',
+            name: `${t('products_page.all_products')} 4`,
             image: stabilizer,
             price: 1000,
             discount: 12,
         },
         {
-            name: 'منتج 5',
+            name: `${t('products_page.all_products')} 5`,
             image: stabilizer,
             price: 1000,
             discount: 22,
         },
         {
-            name: 'منتج 6',
+            name: `${t('products_page.all_products')} 6`,
             image: stabilizer,
             price: 1000,
             discount: 18,
@@ -67,17 +69,17 @@ export default function Offers() {
 
     return (
         <>
-            <div className="bg-light-background px-4 md:px-10 lg:px-40 py-8 text-right" dir="rtl">
+            <div className="bg-light-background px-4 md:px-10 lg:px-40 py-8">
                 <div>
-                    <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4">عروض مميزة</h1>
+                    <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4">{t('offers.title')}</h1>
                     <div className="flex gap-2 text-base md:text-lg text-primary">
-                        <span>الرئيسية</span>
+                        <Link to="/" className="hover:underline">{t('header.home')}</Link>
                         <span>/</span>
-                        <span>عروض المنتجات</span>
+                        <span>{t('offers.title')}</span>
                     </div>
                 </div>
             </div>
-            <div className="flex flex-col lg:flex-row justify-center px-4 md:px-10 lg:px-20 py-12 gap-8" dir="rtl">
+            <div className="flex flex-col lg:flex-row justify-center px-4 md:px-10 lg:px-20 py-12 gap-8">
                 {/* Filter Sidebar */}
                 <aside className="w-full lg:w-3/12">
                     <div className="bg-white sticky top-4">
@@ -86,17 +88,17 @@ export default function Offers() {
                             <div className="relative">
                                 <input
                                     type="text"
-                                    placeholder="بحث"
-                                    className="w-full py-3 px-4 pr-11 border rounded-lg border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-400 focus:bg-white transition-all text-right"
+                                    placeholder={t('products_page.search')}
+                                    className="w-full py-3 px-4 pr-11 border rounded-lg border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-400 focus:bg-white transition-all rtl:pr-4 rtl:pl-11"
                                 />
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" />
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-primary rtl:left-auto rtl:right-3" />
                             </div>
                         </div>
 
                         {/* Categories Section */}
                         <div className="p-4 md:p-6 bg-light-background rounded-xl">
                             <h3 className="text-lg md:text-xl font-bold text-primary border-b-2 pb-4 mb-4">
-                                الفئات
+                                {t('products_page.categories')}
                             </h3>
                             <div className="space-y-1">
                                 {categories.map((category, index) => (
@@ -123,7 +125,7 @@ export default function Offers() {
                         {/* Price Range Section */}
                         <div className="p-4 md:p-6 mt-6 bg-light-background rounded-xl">
                             <h3 className="text-lg md:text-xl font-bold border-b-2 pb-4 text-primary mb-6">
-                                السعر
+                                {t('products_page.price')}
                             </h3>
                             <div className="px-1">
                                 <Slider
@@ -137,14 +139,14 @@ export default function Offers() {
                                 />
                                 <div className="flex items-center justify-center gap-2 mt-6 text-sm md:text-base">
                                     <div className="flex-1 bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-center">
-                                        <span className="text-slate-800 font-semibold">
-                                            EGP{priceRange[1].toLocaleString()}
+                                        <span className="text-slate-800 font-semibold" dir="ltr">
+                                            {t('common.currency')}{priceRange[1].toLocaleString()}
                                         </span>
                                     </div>
                                     <div className="w-6 h-0.5 bg-slate-300"></div>
                                     <div className="flex-1 bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-center">
-                                        <span className="text-slate-800 font-semibold">
-                                            EGP{priceRange[0].toLocaleString()}
+                                        <span className="text-slate-800 font-semibold" dir="ltr">
+                                            {t('common.currency')}{priceRange[0].toLocaleString()}
                                         </span>
                                     </div>
                                 </div>
@@ -155,7 +157,7 @@ export default function Offers() {
 
                 {/* Main Content */}
                 <div className="w-full lg:w-9/12">
-                    <h2 className="text-2xl md:text-3xl mb-4 font-bold text-slate-800">العروض المتوفرة</h2>
+                    <h2 className="text-2xl md:text-3xl mb-4 font-bold text-slate-800">{t('offers.available_offers')}</h2>
                     <hr className="border-slate-200 mb-4" />
 
                     <div className="flex justify-between items-baseline">
@@ -206,7 +208,7 @@ export default function Offers() {
                     )}
 
                     {/* Pagination */}
-                    <div className="flex justify-center flex-wrap gap-2 my-8" dir='ltr'>
+                    <div className="flex justify-center flex-wrap gap-2 my-8" dir="ltr">
                         {[1, 2, 3, 4, 5, 6, 7].map((page) => (
                             <button
                                 key={page}

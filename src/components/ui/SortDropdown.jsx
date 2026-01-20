@@ -1,6 +1,6 @@
 "use client"
-
-import {useState} from "react"
+import { useTranslation } from "react-i18next";
+import { useState } from "react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,12 +10,13 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { ChevronDown } from "lucide-react"
 
-export function SortDropdown({onChange}) {
+export function SortDropdown({ onChange }) {
+  const { t } = useTranslation();
   const [sort, setSort] = useState("price_asc");
 
   const options = [
-    { value: "price_asc", label: "السعر من الأقل للأعلى" },
-    { value: "price_desc", label: "السعر من الأعلى للأقل" },
+    { value: "price_asc", label: t('products_page.sort_price_asc') },
+    { value: "price_desc", label: t('products_page.sort_price_desc') },
   ];
 
   const handleChange = (value) => {
@@ -26,7 +27,7 @@ export function SortDropdown({onChange}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger >
-        
+
         <button className="p-2 border bg-muted flex gap-20 justify-between">
           <span>{options[0].value === sort ? options[0].label : options[1].label}</span>
           <ChevronDown />
@@ -34,16 +35,16 @@ export function SortDropdown({onChange}) {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className="w-48">
-        
+
         <DropdownMenuRadioGroup
           value={sort}
           onValueChange={handleChange}
         >
-            {options.map((option) => (
-              <DropdownMenuRadioItem key={option.value} value={option.value}>
-                {option.label}
-              </DropdownMenuRadioItem>
-            ))}
+          {options.map((option) => (
+            <DropdownMenuRadioItem key={option.value} value={option.value}>
+              {option.label}
+            </DropdownMenuRadioItem>
+          ))}
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>

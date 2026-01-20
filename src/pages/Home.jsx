@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import HomeCarousel from '../components/home/HomeCarousel';
 import CategoryCarousel from '../components/home/CategoryCarousel';
 import FeaturesSection from '../components/home/FeaturesSection';
@@ -9,6 +10,7 @@ import { useProductStore } from '@/stores/useProductStore';
 import { useBannerStore } from '@/stores/useBannerStore';
 
 export default function Home() {
+  const { t } = useTranslation();
   // API data state
   const {
     products,
@@ -49,7 +51,7 @@ export default function Home() {
   return (
     <div className="container mx-auto px-4 md:px-6 lg:px-8">
       <HomeCarousel banners={banners} loading={bannersLoading} />
-      <SpecialProducts title="المنتجات المميزة" products={bestSellingProducts} />
+      <SpecialProducts title={t('header.featured_products')} products={bestSellingProducts} />
       <Products products={products} />
       <CategoryCarousel categories={categories} />
       <FeaturesSection />

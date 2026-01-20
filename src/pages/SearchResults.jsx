@@ -4,8 +4,10 @@ import { useProductStore } from '@/stores/useProductStore';
 import ProductCard from '@/components/ProductCard';
 import { Loader2, Square, LayoutGrid, StretchHorizontal } from 'lucide-react';
 import WideProductCard from '@/components/WideProductCard';
+import { useTranslation } from 'react-i18next';
 
 export default function SearchResults() {
+    const { t } = useTranslation();
     const [searchParams] = useSearchParams();
     const query = searchParams.get('q') || '';
     const [currentPage, setCurrentPage] = useState(1);
@@ -30,20 +32,20 @@ export default function SearchResults() {
 
     return (
         <>
-            <div className="bg-light-background px-4 md:px-10 lg:px-40 py-8 text-right" dir="rtl">
+            <div className="bg-light-background px-4 md:px-10 lg:px-40 py-8">
                 <div>
                     <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4">
-                        نتائج البحث عن: "{query}"
+                        {t('search.results_for')}: "{query}"
                     </h1>
                     <div className="flex gap-2 items-center text-primary text-sm md:text-base">
-                        <Link to="/" className="hover:underline">الرئيسية</Link>
+                        <Link to="/" className="hover:underline">{t('header.home')}</Link>
                         <Square fill='true' size={8} />
-                        <span> بحث </span>
+                        <span> {t('search.page_title')} </span>
                     </div>
                 </div>
             </div>
 
-            <div className="container mx-auto px-4 md:px-10 lg:px-20 py-12" dir="rtl">
+            <div className="container mx-auto px-4 md:px-10 lg:px-20 py-12">
                 {/* Controls */}
                 <div className="flex justify-between items-center mb-6">
                     <div className="flex items-center gap-2">
@@ -69,7 +71,7 @@ export default function SearchResults() {
                     </div>
 
                     <div className="text-slate-600 font-medium">
-                        {pagination?.total_items || 0} منتج
+                        {pagination?.total_items || 0} {t('products_page.total_products')}
                     </div>
                 </div>
 
@@ -91,7 +93,7 @@ export default function SearchResults() {
                 {/* Empty State */}
                 {!loading && !error && products.length === 0 && (
                     <div className="text-center py-20">
-                        <p className="text-slate-500 text-lg">لا توجد منتجات تطابق بحثك</p>
+                        <p className="text-slate-500 text-lg">{t('search.no_results')}</p>
                     </div>
                 )}
 
@@ -116,7 +118,7 @@ export default function SearchResults() {
 
                 {/* Pagination */}
                 {pagination && pagination.total_pages > 1 && (
-                    <div className="flex justify-center gap-2 mt-12" dir='ltr'>
+                    <div className="flex justify-center gap-2 mt-12" dir="ltr">
                         {Array.from({ length: pagination.total_pages }, (_, i) => i + 1).map((page) => (
                             <button
                                 key={page}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Dialog,
   DialogContent,
@@ -15,9 +16,12 @@ export default function ConfirmDialog({
   title,
   description,
   type = 'warning',
-  confirmText = 'تأكيد',
-  cancelText = 'إلغاء',
+  confirmText,
+  cancelText,
 }) {
+  const { t } = useTranslation();
+  const finalConfirmText = confirmText || t('common.confirm');
+  const finalCancelText = cancelText || t('common.cancel');
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-md rounded-md p-4">
@@ -37,7 +41,7 @@ export default function ConfirmDialog({
             variant="outline"
             className="flex-1 text-secondary border-secondary hover:bg-gray-100 text-base hover:text-secondary rounded"
           >
-            {cancelText}
+            {finalCancelText}
           </Button>
           <Button
             type="button"
@@ -48,7 +52,7 @@ export default function ConfirmDialog({
             }}
             className="flex-1 text-base rounded"
           >
-            {confirmText}
+            {finalConfirmText}
           </Button>
         </div>
       </DialogContent>

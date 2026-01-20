@@ -1,18 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
-    Star,
     Minus,
     Plus,
     ShoppingCart,
     Heart,
     ArrowLeftRight,
-    Shield,
-    Truck,
-    RotateCcw,
     Check,
     Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from 'react-i18next';
 
 export default function ProductView({
     product,
@@ -27,6 +24,7 @@ export default function ProductView({
     isAdded,
     addingLoading
 }) {
+    const { t } = useTranslation();
     const incrementQuantity = () => setQuantity((prev) => prev + 1);
     const decrementQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
@@ -46,57 +44,31 @@ export default function ProductView({
                         </div>
                     )}
                 </div>
-
-                {/* Trust Badges */}
-                {/* <div className="grid grid-cols-3 gap-4">
-                    <div className="flex flex-col items-center text-center p-4 bg-slate-50 rounded-2xl border border-slate-100 transition-colors hover:bg-white hover:shadow-md">
-                        <Truck className="text-secondary mb-2" size={24} />
-                        <span className="text-xs font-semibold text-slate-700">شحن سريع</span>
-                    </div>
-                    <div className="flex flex-col items-center text-center p-4 bg-slate-50 rounded-2xl border border-slate-100 transition-colors hover:bg-white hover:shadow-md">
-                        <Shield className="text-secondary mb-2" size={24} />
-                        <span className="text-xs font-semibold text-slate-700">ضمان عامين</span>
-                    </div>
-                    <div className="flex flex-col items-center text-center p-4 bg-slate-50 rounded-2xl border border-slate-100 transition-colors hover:bg-white hover:shadow-md">
-                        <RotateCcw className="text-secondary mb-2" size={24} />
-                        <span className="text-xs font-semibold text-slate-700">إرجاع خلال 14 يوم</span>
-                    </div>
-                </div> */}
             </div>
 
             {/* Info Section */}
             <div className="flex flex-col gap-8">
                 <div>
-                    {/* <div className="flex items-center gap-2 mb-4">
-                        <span className="bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">متوفر</span>
-                        <div className="flex text-yellow-500 ml-2">
-                            {[...Array(5)].map((_, i) => (
-                                <Star key={i} size={16} fill="currentColor" />
-                            ))}
-                        </div>
-                        <span className="text-slate-400 text-sm">(4.8)</span>
-                    </div> */}
-
                     <h1 className="text-4xl font-extrabold text-slate-900 mb-4 leading-tight">
                         {product.name}
                     </h1>
 
                     <div className="flex items-center gap-4">
                         <span className="text-4xl font-black text-secondary">
-                            EGP {product.final_price?.toLocaleString()}
+                            <span dir="ltr">{t('common.currency')} {product.final_price?.toLocaleString()}</span>
                         </span>
                         {product.discount > 0 && (
                             <span className="text-2xl text-slate-300 line-through">
-                                EGP {product.price?.toLocaleString()}
+                                <span dir="ltr">{t('common.currency')} {product.price?.toLocaleString()}</span>
                             </span>
                         )}
                     </div>
                 </div>
 
                 <div className="space-y-4">
-                    <h3 className="font-bold text-slate-900 text-lg">الوصف</h3>
-                    <p className="text-slate-600 leading-relaxed text-lg">
-                        {product.description || "لا يوجد وصف متاح لهذا المنتج حالياً. يتميز هذا المنتج بجودة عالية وتصميم عصري يناسب احتياجاتكم."}
+                    <h3 className="font-bold text-slate-900 text-lg">{t('product.description')}</h3>
+                    <p className="text-slate-600 leading-relaxed text-lg whitespace-pre-line">
+                        {product.description || t('product.no_description')}
                     </p>
                 </div>
 
@@ -104,7 +76,7 @@ export default function ProductView({
                     {/* Bundle Offers */}
                     {product.bundle_offers && product.bundle_offers.length > 0 && (
                         <div className="space-y-3">
-                            <h3 className="font-bold text-slate-900 text-lg">عروض الكميات</h3>
+                            <h3 className="font-bold text-slate-900 text-lg">{t('product.bundle_offers')}</h3>
                             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                                 {product.bundle_offers.map((offer) => (
                                     <div
@@ -115,12 +87,12 @@ export default function ProductView({
                                             : 'border-slate-100 hover:border-secondary/50'
                                             }`}
                                     >
-                                        <p className="font-bold text-slate-800 text-lg">{offer.quantity} قطع</p>
+                                        <p className="font-bold text-slate-800 text-lg">{offer.quantity} {t('product.pieces')}</p>
                                         <p className="font-bold text-secondary text-base">
-                                            {Number(offer.bundle_price).toLocaleString()} EGP
+                                            <span dir="ltr">{t('common.currency')} {Number(offer.bundle_price).toLocaleString()}</span>
                                         </p>
                                         <p className="text-xs text-slate-500 mt-1">
-                                            ({Math.round(offer.bundle_price / offer.quantity).toLocaleString()} / قطعة)
+                                            ({Math.round(offer.bundle_price / offer.quantity).toLocaleString()} / {t('product.per_piece')})
                                         </p>
                                     </div>
                                 ))}
@@ -129,7 +101,7 @@ export default function ProductView({
                     )}
 
                     <div className="flex items-center gap-6">
-                        <span className="font-bold text-slate-900">الكمية:</span>
+                        <span className="font-bold text-slate-900">{t('product.quantity_label')}:</span>
                         <div className="flex items-center border border-slate-300 rounded-xl h-12 overflow-hidden">
                             <button
                                 onClick={incrementQuantity}
@@ -170,12 +142,12 @@ export default function ProductView({
                                 ) : isAdded ? (
                                     <div className="flex items-center gap-2">
                                         <Check className="h-6 w-6" />
-                                        <span>تمت الإضافة</span>
+                                        <span>{t('product.added')}</span>
                                     </div>
                                 ) : (
                                     <div className="flex items-center gap-2">
                                         <ShoppingCart className="h-6 w-6" />
-                                        <span>أضف إلى السلة</span>
+                                        <span>{t('product.add_to_cart')}</span>
                                     </div>
                                 )}
                             </Button>
@@ -188,7 +160,7 @@ export default function ProductView({
                                 {addingLoading ? (
                                     <Loader2 className="mr-2 h-6 w-6 animate-spin" />
                                 ) : (
-                                    <span>شراء الآن</span>
+                                    <span>{t('product.buy_now')}</span>
                                 )}
                             </Button>
                         </div>
@@ -202,7 +174,7 @@ export default function ProductView({
                                     }`}
                             >
                                 <Heart size={20} fill={isInWishlist ? "currentColor" : "none"} />
-                                <span className="font-medium">المفضلة</span>
+                                <span className="font-medium">{t('product.wishlist')}</span>
                             </button>
                             <button
                                 onClick={onToggleComparison}
@@ -212,7 +184,7 @@ export default function ProductView({
                                     }`}
                             >
                                 <ArrowLeftRight size={20} />
-                                <span className="font-medium">مقارنة</span>
+                                <span className="font-medium">{t('product.compare')}</span>
                             </button>
                         </div>
                     </div>

@@ -8,6 +8,7 @@ import { useComparisonStore } from "@/stores/useComparisonStore";
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 export default function SmallProductCard({ product }) {
   const addToCart = useCartStore((state) => state.addToCart);
@@ -23,10 +24,11 @@ export default function SmallProductCard({ product }) {
   const [addingStr, setAddingStr] = useState(false);
   const navigate = useNavigate();
 
+  const { t } = useTranslation();
   const handleWishlistToggle = async (e) => {
     e.preventDefault();
     if (!isAuthenticated) {
-      toast.error('يرجى تسجيل الدخول أولاً');
+      toast.error(t('messages.login_required_wishlist'));
       navigate('/login');
       return;
     }
@@ -40,7 +42,7 @@ export default function SmallProductCard({ product }) {
   const handleComparisonToggle = async (e) => {
     e.preventDefault();
     if (!isAuthenticated) {
-      toast.error('يرجى تسجيل الدخول أولاً');
+      toast.error(t('messages.login_required_compare'));
       navigate('/login');
       return;
     }
@@ -57,11 +59,6 @@ export default function SmallProductCard({ product }) {
 
   const handleAddToCart = async (e) => {
     e.preventDefault();
-    if (!isAuthenticated) {
-      toast.error('يرجى تسجيل الدخول أولاً');
-      navigate('/login');
-      return;
-    }
     if (isAdded) return;
 
     setAddingStr(true);
@@ -104,10 +101,10 @@ export default function SmallProductCard({ product }) {
         </Link>
         <div className="flex items-center justify-between mb-3">
           <p className="text-lg font-bold text-red-600">
-            {product.final_price} EGP
+            {product.final_price?.toLocaleString()} EGP
           </p>
           {product.discount > 0 ? (
-            <p className="text-md text-slate-400 line-through mr-2">EGP {product.price}</p>
+            <p className="text-md text-slate-400 line-through mr-2">EGP {product.price?.toLocaleString()}</p>
           ) : null}
         </div>
         <div className="flex flex-col gap-2">
@@ -124,12 +121,12 @@ export default function SmallProductCard({ product }) {
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : isAdded ? (
                 <>
-                  <p className="text-lg">تم الإضافة</p>
+                  <p className="text-lg">{t('product.added')}</p>
                   <Check />
                 </>
               ) : (
                 <>
-                  <p className="text-lg">أضف إلى العربة</p>
+                  <p className="text-lg">{t('product.add_to_cart')}</p>
                   <ShoppingCart />
                 </>
               )}
@@ -151,7 +148,7 @@ export default function SmallProductCard({ product }) {
             disabled={addingStr}
             className="w-full h-10 text-white bg-secondary hover:bg-[#0090c7]"
           >
-            <span className="text-lg">شراء الآن</span>
+            <span className="text-lg">{t('product.buy_now')}</span>
           </Button>
         </div>
       </CardContent>

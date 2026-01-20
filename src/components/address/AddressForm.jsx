@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
@@ -12,6 +13,7 @@ import { useAddressStore } from '@/stores/useAddressStore';
 import { toast } from 'sonner';
 
 export default function AddressForm({ open, onClose, onSuccess, initialData }) {
+  const { t } = useTranslation();
   const { addNewAddress, updateUserAddress } = useAddressStore();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -65,19 +67,19 @@ export default function AddressForm({ open, onClose, onSuccess, initialData }) {
           country: 'Egypt',
           zip_code: '',
         });
-        toast.success(response.data?.message || 'تم تحديث العنوان بنجاح');
+        toast.success(response.data?.message || t('address.success_save'));
       } else {
         const response = await addNewAddress({
           ...formData,
           country: 'Egypt',
           zip_code: '',
         });
-        toast.success(response.data?.message || 'تم حفظ العنوان بنجاح');
+        toast.success(response.data?.message || t('address.success_save'));
       }
       onSuccess?.();
     } catch (error) {
       console.error("Failed to save address", error);
-      const message = error.response?.data?.message || 'فشل حفظ العنوان';
+      const message = error.response?.data?.message || t('address.failed_save');
       toast.error(message);
     } finally {
       setLoading(false);
@@ -89,42 +91,42 @@ export default function AddressForm({ open, onClose, onSuccess, initialData }) {
       <DialogContent className="max-w-md rounded p-8">
         <DialogHeader>
           <DialogTitle className="text-center text-xl">
-            {initialData ? 'تعديل العنوان' : 'إضافة عنوان جديد'}
+            {initialData ? t('address.edit_title') : t('address.add_new')}
           </DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-2 text-right">
-              الاسم بالكامل
+            <label className="block text-sm font-medium mb-2">
+              {t('checkout.full_name')}
             </label>
             <input
               type="text"
               name="recipient_name"
               value={formData.recipient_name}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2 text-right">
-              الهاتف
+            <label className="block text-sm font-medium mb-2">
+              {t('checkout.phone')}
             </label>
             <input
               type="tel"
               name="phone_number"
               value={formData.phone_number}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2 text-right">
-              المحافظة
+            <label className="block text-sm font-medium mb-2">
+              {t('checkout.state')}
             </label>
             <Select
               value={formData.state}
@@ -132,45 +134,45 @@ export default function AddressForm({ open, onClose, onSuccess, initialData }) {
             >
               <SelectTrigger
                 size="lg"
-                className="w-full text-right rounded-md py-3"
+                className="w-full rounded-md py-3"
               >
-                <SelectValue placeholder="اختر المحافظة" />
+                <SelectValue placeholder={t('address.select_state')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="القاهرة">القاهرة</SelectItem>
-                <SelectItem value="الجيزة">الجيزة</SelectItem>
-                <SelectItem value="الفيوم">الفيوم</SelectItem>
-                <SelectItem value="بني سويف">بني سويف</SelectItem>
+                <SelectItem value="القاهرة">{t('checkout.cairo', { defaultValue: 'Cairo' })}</SelectItem>
+                <SelectItem value="الجيزة">{t('checkout.giza', { defaultValue: 'Giza' })}</SelectItem>
+                <SelectItem value="الفيوم">{t('checkout.fayoum', { defaultValue: 'Fayoum' })}</SelectItem>
+                <SelectItem value="بني سويف">{t('checkout.beni_suef', { defaultValue: 'Beni Suef' })}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2 text-right">
-              المدينة / المنطقة
+            <label className="block text-sm font-medium mb-2">
+              {t('checkout.city')}
             </label>
             <input
               type="text"
               name="city"
               value={formData.city}
               onChange={handleChange}
-              placeholder="مثال: مدينة نصر"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              placeholder={t('checkout.city_placeholder')}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2 text-right">
-              العنوان بالتفصيل
+            <label className="block text-sm font-medium mb-2">
+              {t('checkout.address')}
             </label>
             <input
               type="text"
               name="address_line_1"
               value={formData.address_line_1}
               onChange={handleChange}
-              placeholder="اسم الشارع - رقم العقار - رقم الشقة"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              placeholder={t('checkout.address_placeholder')}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500"
               required
             />
           </div>
@@ -182,14 +184,14 @@ export default function AddressForm({ open, onClose, onSuccess, initialData }) {
               disabled={loading}
               className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700"
             >
-              إلغاء
+              {t('address.cancel')}
             </Button>
             <Button
               type="submit"
               disabled={loading}
               className="flex-1 bg-cyan-500 hover:bg-cyan-600 text-white"
             >
-              {loading ? 'جاري الحفظ...' : 'حفظ العنوان'}
+              {loading ? t('address.saving') : t('address.save')}
             </Button>
           </div>
         </form>

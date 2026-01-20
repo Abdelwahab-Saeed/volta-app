@@ -1,16 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
-    Star,
-    Minus,
-    Plus,
-    ShoppingCart,
-    Heart,
     ChevronRight,
-    Loader2,
-    Check
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/stores/useCartStore";
 import { useProductStore } from "@/stores/useProductStore";
 import { useWishlistStore } from "@/stores/useWishlistStore";
@@ -18,12 +10,14 @@ import { useComparisonStore } from "@/stores/useComparisonStore";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import ProductView from "@/components/product/ProductView";
 import SpecialProducts from "@/components/home/SpecialProducts";
 
 export default function ProductDetails() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const { selectedProduct: product, fetchProductById, loading, error, clearSelectedProduct } = useProductStore();
     const [quantity, setQuantity] = useState(1);
     const [mainImage, setMainImage] = useState("");
@@ -53,7 +47,7 @@ export default function ProductDetails() {
     useEffect(() => {
         if (product) {
             setMainImage(product.image);
-            setQuantity(product.stock);
+            setQuantity(1); // Default to 1, not stock
         }
     }, [product]);
 
@@ -68,9 +62,9 @@ export default function ProductDetails() {
     if (error || !product) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-                <p className="text-red-500 text-lg font-medium">{error || "المنتج غير موجود"}</p>
+                <p className="text-red-500 text-lg font-medium">{error || t('product.not_found')}</p>
                 <Link to="/products" className="text-secondary hover:underline">
-                    العودة للمنتجات
+                    {t('product.back_to_products')}
                 </Link>
             </div>
         );
@@ -80,7 +74,7 @@ export default function ProductDetails() {
 
     const handleWishlistToggle = async () => {
         if (!isAuthenticated) {
-            toast.error('يرجى تسجيل الدخول أولاً');
+            toast.error(t('messages.login_required_wishlist'));
             navigate('/login');
             return;
         }
@@ -93,7 +87,7 @@ export default function ProductDetails() {
 
     const handleComparisonToggle = async () => {
         if (!isAuthenticated) {
-            toast.error('يرجى تسجيل الدخول أولاً');
+            toast.error(t('messages.login_required_compare'));
             navigate('/login');
             return;
         }
@@ -128,17 +122,14 @@ export default function ProductDetails() {
         }
     };
 
-    const incrementQuantity = () => setQuantity((prev) => prev + 1);
-    const decrementQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
-
     return (
-        <div className="container mx-auto px-4 py-8 font-sans">
+        <div className="container mx-auto px-4 py-8 font-sans transition-all duration-300">
             {/* Breadcrumb */}
-            <div className="flex items-center gap-2 text-sm text-gray-500 mb-8">
-                <Link to="/" className="hover:text-secondary">الرئيسية</Link>
-                <ChevronRight size={14} />
-                <Link to="/products" className="hover:text-secondary">المنتجات</Link>
-                <ChevronRight size={14} />
+            <div className="flex items-center gap-2 text-sm text-gray-500 mb-8 overflow-x-auto whitespace-nowrap scrollbar-hide">
+                <Link to="/" className="hover:text-secondary">{t('header.home')}</Link>
+                <ChevronRight size={14} className="flex-shrink-0 rtl:rotate-180" />
+                <Link to="/products" className="hover:text-secondary">{t('header.products')}</Link>
+                <ChevronRight size={14} className="flex-shrink-0 rtl:rotate-180" />
                 <span className="text-gray-900 font-medium truncate max-w-[200px]">{product.name}</span>
             </div>
 
@@ -160,7 +151,7 @@ export default function ProductDetails() {
             {/* Related Products */}
             {relatedProducts.length > 0 && (
                 <div className="mt-20">
-                    <SpecialProducts title="منتجات ذات صلة" products={relatedProducts} />
+                    <SpecialProducts title={t('product.related_products')} products={relatedProducts} />
                 </div>
             )}
         </div>

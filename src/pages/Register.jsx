@@ -28,59 +28,59 @@ import {
 import {
   Checkbox
 } from "@/components/ui/checkbox"
-import { UserPlus, Loader2, EyeOff, Eye } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import { useAuthStore } from "@/stores/useAuthStore"
 import { useState } from "react"
-
-export const formSchema = z
-  .object({
-    name: z
-      .string()
-      .trim()
-      .min(3, 'الاسم يجب ألا يقل عن ثلاثة أحرف')
-      .max(150, 'الاسم يجب ألا يزيد عن 150 حرف'),
-
-    email: z
-      .email('البريد الإلكتروني غير صحيح')
-      .trim(),
-
-    phone_number: z
-      .string()
-      .trim()
-      .optional()
-      .refine(
-        (val) => !val || /^01[0-2,5][0-9]{8}$/.test(val),
-        { message: 'رقم الهاتف غير صحيح' }
-      ),
-
-    password: z
-      .string()
-      .regex(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#]).+$/,
-        'كلمة المرور ضعيفة حيث يجب أن تحتوي على حرف كبير وحرف صغير ورمز خاص'
-      ),
-
-    password_confirmation: z.string(),
-
-    terms: z
-      .boolean()
-      .refine((val) => val === true, {
-        message: 'يجب الموافقة على الشروط والأحكام',
-      }),
-  })
-  .refine((data) => data.password === data.password_confirmation, {
-    message: 'كلمتا المرور غير متطابقتين',
-    path: ['password_confirmation'],
-  });
-
+import { useTranslation } from "react-i18next";
 
 export default function Register() {
+  const { t } = useTranslation();
   const registerUser = useAuthStore((state) => state.registerUser);
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const formSchema = z
+    .object({
+      name: z
+        .string()
+        .trim()
+        .min(3, t('checkout.full_name_required'))
+        .max(150, 'Name is too long'),
+
+      email: z
+        .email(t('checkout.email_invalid'))
+        .trim(),
+
+      phone_number: z
+        .string()
+        .trim()
+        .optional()
+        .refine(
+          (val) => !val || /^01[0-2,5][0-9]{8}$/.test(val),
+          { message: t('checkout.phone_invalid') }
+        ),
+
+      password: z
+        .string()
+        .regex(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#]).+$/,
+          t('profile.password_too_short') // Or a more specific message if needed
+        ),
+
+      password_confirmation: z.string(),
+
+      terms: z
+        .boolean()
+        .refine((val) => val === true, {
+          message: t('auth.terms_required', { defaultValue: 'You must agree to the terms' }),
+        }),
+    })
+    .refine((data) => data.password === data.password_confirmation, {
+      message: t('profile.password_mismatch'),
+      path: ['password_confirmation'],
+    });
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -98,11 +98,11 @@ export default function Register() {
     setIsSubmitting(true);
     try {
       const response = await registerUser(values);
-      toast.success(response.data?.message || 'تم تسجيل الحساب بنجاح');
+      toast.success(response.data?.message || t('messages.register_success', { defaultValue: 'Account created successfully' }));
       navigate('/');
     } catch (error) {
       console.error("Registration error", error);
-      const message = error.response?.data?.message || 'حدث خطأ في التسجيل';
+      const message = error.response?.data?.message || t('common.error');
       toast.error(message);
     } finally {
       setIsSubmitting(false);
@@ -111,27 +111,27 @@ export default function Register() {
 
   return (
     <>
-      <div className="bg-light-background px-4 md:px-10 lg:px-40 py-8 text-right" dir="rtl">
+      <div className="bg-light-background px-4 md:px-10 lg:px-40 py-8">
         <div>
-          <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4">تسجيل حساب جديد</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4">{t('auth.register_title')}</h1>
           <div className="flex gap-2 text-base md:text-lg text-primary">
-            <span>الرئيسية</span>
+            <Link to="/" className="hover:underline">{t('header.home')}</Link>
             <span>/</span>
-            <span>تسجيل</span>
+            <span>{t('auth.register_title')}</span>
           </div>
         </div>
       </div>
       <Form {...form}>
-        <div className="w-full max-w-xl border-2 my-10 mx-auto flex flex-col justify-center bg-white shadow-2xl py-12 px-6 lg:px-16" dir="rtl">
+        <div className="w-full max-w-xl border-2 my-10 mx-auto flex flex-col justify-center bg-white shadow-2xl py-12 px-6 lg:px-16">
 
           {/* Header Section */}
           <div className="mb-10">
             <div className="flex gap-3 items-center">
               <UserPlus size={24} className="text-secondary" />
-              <h1 className="text-2xl font-bold text-primary mb-2">تسجيل حساب</h1>
+              <h1 className="text-2xl font-bold text-primary mb-2">{t('auth.register_title')}</h1>
             </div>
             <p className="text-primary leading-relaxed opacity-80">
-              ستُستخدم بياناتك الشخصية لتحسين تجربتك على الموقع، وتسهيل الوصول إلى حسابك.
+              {t('auth.privacy_notice')}
             </p>
           </div>
 
@@ -140,11 +140,11 @@ export default function Register() {
 
             <Field>
               <FieldLabel htmlFor="name" className="text-primary font-medium">
-                الاسم بالكامل
+                {t('auth.name')}
               </FieldLabel>
               <Input
                 id="name"
-                placeholder="الاسم بالكامل"
+                placeholder={t('auth.name')}
                 className="mt-1 p-6"
                 {...form.register("name")}
               />
@@ -155,11 +155,11 @@ export default function Register() {
 
             <Field>
               <FieldLabel htmlFor="email" className="text-primary font-medium">
-                البريد الإلكتروني
+                {t('auth.email')}
               </FieldLabel>
               <Input
                 id="email"
-                placeholder="البريد الإلكتروني"
+                placeholder={t('auth.email')}
                 className="mt-1 p-6"
                 type="email"
                 {...form.register("email")}
@@ -171,11 +171,11 @@ export default function Register() {
 
             <Field>
               <FieldLabel htmlFor="phoneNumber" className="text-primary font-medium">
-                الهاتف (اختياري)
+                {t('auth.phone')} ({t('common.optional', { defaultValue: 'Optional' })})
               </FieldLabel>
               <Input
                 id="phoneNumber"
-                placeholder="الهاتف"
+                placeholder={t('auth.phone')}
                 className="mt-1 p-6"
                 {...form.register("phone_number")}
               />
@@ -189,25 +189,25 @@ export default function Register() {
 
             <Field>
               <FieldLabel htmlFor="password" className="text-primary font-medium">
-                كلمة المرور
+                {t('auth.password')}
               </FieldLabel>
               <div className="relative">
                 <Input
                   id="password"
-                  placeholder="يرجى إختيار كلمة مرور قوية"
+                  placeholder={t('auth.password')}
                   className="mt-1 p-6"
                   type={showPassword ? "text" : "password"}
                   {...form.register("password")}
                 />
                 <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-primary opacity-50 hover:opacity-100"
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute end-4 top-1/2 -translate-y-1/2 text-primary opacity-50 hover:opacity-100"
                 >
-                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
-              
+
 
               <FieldError className="text-red-500 text-sm mt-1">
                 {form.formState.errors.password?.message}
@@ -216,22 +216,22 @@ export default function Register() {
 
             <Field>
               <FieldLabel htmlFor="password_confirmation" className="text-primary font-medium">
-                تأكيد كلمة المرور
+                {t('auth.confirm_password')}
               </FieldLabel>
               <div className="relative">
                 <Input
                   id="password_confirmation"
-                  placeholder="تأكيد كلمة المرور"
+                  placeholder={t('auth.confirm_password')}
                   className="mt-1 p-6"
                   type={showConfirmPassword ? "text" : "password"}
                   {...form.register("password_confirmation")}
                 />
                 <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-primary opacity-50 hover:opacity-100"
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute end-4 top-1/2 -translate-y-1/2 text-primary opacity-50 hover:opacity-100"
                 >
-                    {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
               <FieldError className="text-red-500 text-sm mt-1">
@@ -250,7 +250,7 @@ export default function Register() {
                 />
 
                 <FieldLabel htmlFor="terms" className="text-primary font-medium cursor-pointer">
-                  أوافق على الشروط والأحكام وسياسة الخصوصية
+                  {t('auth.terms_and_privacy', { defaultValue: 'I agree to the terms and privacy policy' })}
                 </FieldLabel>
               </div>
               <FieldError className="text-red-500 text-sm mt-2">
@@ -268,22 +268,22 @@ export default function Register() {
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin ml-2" />
-                  جاري التسجيل...
+                  {t('auth.registering')}
                 </>
               ) : (
-                'تسجيل'
+                t('auth.register_button')
               )}
             </Button>
 
             {/* Login Link */}
             <div className="text-center mt-4">
               <p className="text-primary">
-                هل لديك حساب بالفعل؟{" "}
+                {t('auth.have_account')}{" "}
                 <Link
                   to="/login"
                   className="text-secondary hover:text-primary font-medium"
                 >
-                  تسجيل الدخول
+                  {t('auth.login_button')}
                 </Link>
               </p>
             </div>

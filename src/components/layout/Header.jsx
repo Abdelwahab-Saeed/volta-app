@@ -22,8 +22,12 @@ import { useCartStore } from "@/stores/useCartStore";
 import { useWishlistStore } from "@/stores/useWishlistStore";
 import { useComparisonStore } from "@/stores/useComparisonStore";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "@/components/common/LanguageSwitcher";
+import i18n from '@/i18n';
 
 export default function Header() {
+  const { t } = useTranslation();
   const user = useAuthStore((state) => state.user);
   const cartCount = useCartStore((state) => state.cartItems?.length || 0);
   const wishlistCount = useWishlistStore((state) => state.wishlistItems?.length || 0);
@@ -53,12 +57,12 @@ export default function Header() {
   const handleLogout = async () => {
     try {
       await logoutUser();
-      toast.success('تم تسجيل الخروج بنجاح');
+      toast.success(t('header.logout_success'));
       setIsUserDropdownOpen(false);
       setIsMenuOpen(false);
       navigate('/');
     } catch (error) {
-      toast.error('فشل تسجيل الخروج');
+      toast.error(t('header.logout_error'));
     }
   };
 
@@ -79,12 +83,9 @@ export default function Header() {
       {/* --- Top Bar (Hidden on Mobile) --- */}
       <div className="hidden md:flex justify-between items-center bg-[#1e2749] text-white px-4 lg:px-10 py-4 text-xs">
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1">
-            <img src={EGflag} alt="Egypt" className="w-4 h-3 object-cover" />
-            <span>العربية</span>
-          </div>
+          <LanguageSwitcher />
         </div>
-        <a href="#" className="hover:underline">الدعم والمساعدة</a>
+        <a href="#" className="hover:underline">{t('header.contact')}</a>
       </div>
 
       {/* --- Main Header --- */}
@@ -110,7 +111,7 @@ export default function Header() {
 
           <Input
             type="text"
-            placeholder="البحث..."
+            placeholder={t('header.search_placeholder')}
             className="border-0 focus-visible:ring-0 text-right h-full text-sm"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -140,36 +141,36 @@ export default function Header() {
               <div className="relative ">
                 <button
                   onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
-                  className="text-right flex items-center gap-2"
+                  className="text-start flex items-center gap-2"
                 >
                   <div>
-                    <p className="text-sm text-primary">مرحباً، {user.name}</p>
+                    <p className="text-sm text-primary">{t('header.welcome')}, {user.name}</p>
                   </div>
                   <ChevronDown size={16} className={`text-gray-500 transition-transform ${isUserDropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
 
                 {isUserDropdownOpen && (
-                  <div className="absolute top-full left-0 mt-2 bg-white border rounded-lg shadow-lg py-2 min-w-[180px] z-50">
+                  <div className="absolute top-full start-0 mt-2 bg-white border rounded-lg shadow-lg py-2 min-w-[180px] z-50">
                     <Link
                       to='/profile'
                       onClick={() => setIsUserDropdownOpen(false)}
                       className="block px-4 py-2 text-sm text-primary hover:bg-gray-100 transition-colors"
                     >
-                      زيارة الملف الشخصي
+                      {t('header.visit_profile')}
                     </Link>
                     <button
                       onClick={handleLogout}
-                      className="w-full text-right block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 transition-colors"
+                      className="w-full text-start block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 transition-colors"
                     >
-                      تسجيل الخروج
+                      {t('header.logout')}
                     </button>
                   </div>
                 )}
               </div>
             ) : (
-              <div className="text-right">
-                <p className="text-sm text-primary">مرحباً، زائر</p>
-                <Link to='/login' className="text-sm text-secondary hover:underline">تسجيل الدخول إلى حسابك</Link>
+              <div className="text-start">
+                <p className="text-sm text-primary">{t('header.welcome_guest')}</p>
+                <Link to='/login' className="text-sm text-secondary hover:underline">{t('header.login_prompt')}</Link>
               </div>
             )}
 
@@ -198,7 +199,7 @@ export default function Header() {
         <div className="flex items-center border-2 border-secondary rounded-lg overflow-hidden h-10">
           <Input
             type="text"
-            placeholder="البحث..."
+            placeholder={t('header.search_placeholder')}
             className="border-0 focus-visible:ring-0 text-right"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -219,12 +220,13 @@ export default function Header() {
           <ul className="flex items-center gap-4 lg:gap-7 text-[12px] lg:text-[13px] font-medium py-3 overflow-x-auto no-scrollbar">
             {categories.map((cat) => (
               <Link to={`/products?category=${cat.id}`} key={cat.id} className="cursor-pointer hover:text-secondary whitespace-nowrap">
-                {cat.name}
+                {cat.name} {cat.name_ar && i18n.language === 'ar' ? `(${cat.name})` : ''}
+                {/* Note: Ideally categories should come translated from API */}
               </Link>
             ))}
           </ul>
-          <div className="hidden lg:block text-[13px] whitespace-nowrap pr-4">
-            <span className="text-white ml-2">الخط الساخن:</span><br />
+          <div className="hidden lg:block text-[13px] whitespace-nowrap pe-4">
+            <span className="text-white ms-2">{t('header.hotline')}:</span><br />
             <span className="font-bold">16105</span>
           </div>
         </div>
@@ -234,38 +236,38 @@ export default function Header() {
       {isMenuOpen && (
         <div className="fixed inset-0 z-50 flex md:hidden">
           <div className="fixed inset-0 bg-black/50" onClick={() => setIsMenuOpen(false)} />
-          <div className="relative w-72 max-w-[80%] bg-white h-full shadow-xl flex flex-col p-6 animate-in slide-in-from-right">
+          <div className="relative w-72 max-w-[80%] bg-white h-full shadow-xl flex flex-col p-6 animate-in slide-in-from-inline-end">
             <button onClick={() => setIsMenuOpen(false)} className="self-end mb-6"><X /></button>
 
             <div className="flex items-center gap-3 mb-8 pb-6 border-b">
               <div className="bg-gray-100 p-3 rounded-full"><User /></div>
               {user ? (
                 <div>
-                  <p className="text-xs text-gray-500">مرحباً بك</p>
+                  <p className="text-xs text-gray-500">{t('header.welcome')}</p>
                   <p className="font-bold text-[#1e2749]">{user.name}</p>
                   <Link
                     to='/profile'
                     onClick={() => setIsMenuOpen(false)}
                     className="text-xs text-secondary mt-1 block"
                   >
-                    زيارة الملف الشخصي
+                    {t('header.visit_profile')}
                   </Link>
                   <button
                     onClick={handleLogout}
                     className="text-xs text-red-600 mt-2 block"
                   >
-                    تسجيل الخروج
+                    {t('header.logout')}
                   </button>
                 </div>
               ) : (
                 <div>
-                  <p className="text-xs text-gray-500">مرحباً بك</p>
+                  <p className="text-xs text-gray-500">{t('header.welcome')}</p>
                   <Link
                     to='/login'
                     onClick={() => setIsMenuOpen(false)}
                     className="font-bold text-[#1e2749]"
                   >
-                    تسجيل الدخول
+                    {t('header.login')}
                   </Link>
                 </div>
               )}
@@ -281,9 +283,16 @@ export default function Header() {
               ))}
             </ul>
 
-            <div className="mt-auto pt-6 border-t flex items-center gap-2 text-secondary">
-              <PhoneCall size={18} />
-              <span className="text-sm font-bold">اتصل بنا: 16105</span>
+            <div className="mt-auto pt-6 border-t flex flex-col gap-4">
+              <div className="flex justify-between items-center text-secondary">
+                <div className="flex items-center gap-2">
+                  <PhoneCall size={18} />
+                  <span className="text-sm font-bold">16105</span>
+                </div>
+              </div>
+              <div className="flex justify-center">
+                <LanguageSwitcher />
+              </div>
             </div>
           </div>
         </div>

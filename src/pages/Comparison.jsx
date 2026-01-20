@@ -11,8 +11,10 @@ import { useCartStore } from "@/stores/useCartStore";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function Comparison() {
+    const { t } = useTranslation();
     const comparisonItems = useComparisonStore((state) => state.comparisonItems);
     const removeFromComparison = useComparisonStore((state) => state.removeFromComparison);
     const addToCart = useCartStore((state) => state.addToCart);
@@ -30,9 +32,9 @@ export default function Comparison() {
         setLoadingIds(prev => [...prev, product.id]);
         try {
             await addToCart(product);
-            toast.success('تمت إضافة المنتج للسلة');
+            toast.success(t('messages.cart_add_success', { defaultValue: 'Product added to cart' }));
         } catch (error) {
-            toast.error('فشل إضافة المنتج للسلة');
+            toast.error(t('messages.cart_add_error', { defaultValue: 'Failed to add product to cart' }));
         } finally {
             setLoadingIds(prev => prev.filter(id => id !== product.id));
         }
@@ -42,31 +44,33 @@ export default function Comparison() {
 
     if (comparisonItems?.length === 0) {
         return (
-            <div className="container mx-auto px-4 py-20 text-center" dir="rtl">
+            <div className="container mx-auto px-4 py-20 text-center">
                 <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6">
                     <ArrowLeftRight size={40} className="text-secondary" />
                 </div>
-                <h1 className="text-2xl md:text-3xl font-bold text-primary mb-4">قائمة المقارنة فارغة</h1>
+                <h1 className="text-2xl md:text-3xl font-bold text-primary mb-4">{t('comparison.empty_title')}</h1>
                 <p className="text-slate-600 mb-8 max-w-md mx-auto">
-                    لم تقم بإضافة أي منتجات للمقارنة بعد. يمكنك إضافة حتى منتجين للمقارنة بينهما.
+                    {t('comparison.empty_desc')}
                 </p>
                 <Link
                     to="/products"
                     className="inline-flex items-center justify-center px-8 py-3 bg-secondary text-white font-bold rounded-lg hover:bg-blue-600 transition-colors shadow-lg"
                 >
-                    تصفح المنتجات
+                    {t('comparison.browse_products')}
                 </Link>
             </div>
         );
     }
 
     return (
-        <div className="container mx-auto px-4 py-8 md:py-16 overflow-x-auto" dir="rtl">
-            <h1 className="text-2xl md:text-3xl font-bold text-primary mb-8 text-right underline decoration-secondary decoration-4 underline-offset-8">مقارنة المنتجات</h1>
+        <div className="container mx-auto px-4 py-8 md:py-16 overflow-x-auto">
+            <h1 className="text-2xl md:text-3xl font-bold text-primary mb-8 underline decoration-secondary decoration-4 underline-offset-8">
+                {t('comparison.title')}
+            </h1>
             <Table className="border-collapse border border-secondary min-w-[700px]">
                 <TableBody>
                     <TableRow className={`text-center text-lg md:text-xl`}>
-                        <TableCell className={`${borderStyle} bg-slate-50 font-bold w-32`}>المنتج</TableCell>
+                        <TableCell className={`${borderStyle} bg-slate-50 font-bold w-32`}>{t('comparison.product_label')}</TableCell>
                         {comparisonItems.map((product) => (
                             <TableCell key={product.id} className={`${borderStyle}`}>
                                 <div className="max-w-[180px] md:max-w-[250px] mx-auto p-4 text-center">
@@ -82,34 +86,34 @@ export default function Comparison() {
                     </TableRow>
 
                     <TableRow className={`text-center text-lg md:text-xl`}>
-                        <TableCell className={`${borderStyle} bg-slate-50 font-bold`}>وصف المنتج</TableCell>
+                        <TableCell className={`${borderStyle} bg-slate-50 font-bold`}>{t('comparison.description_label')}</TableCell>
                         {comparisonItems.map((product) => (
                             <TableCell key={product.id} className={`${borderStyle} p-4`}>
                                 <p className="text-gray-600 text-sm md:text-base leading-relaxed text-right line-clamp-4">
-                                    {product.description || 'لا يوجد وصف متوفر لهذا المنتج حالياً.'}
+                                    {product.description || t('comparison.no_description')}
                                 </p>
                             </TableCell>
                         ))}
                     </TableRow>
 
                     <TableRow className={`text-center text-lg md:text-xl`}>
-                        <TableCell className={`${borderStyle} bg-slate-50 font-bold`}>سعر</TableCell>
+                        <TableCell className={`${borderStyle} bg-slate-50 font-bold`}>{t('comparison.price_label')}</TableCell>
                         {comparisonItems.map((product) => (
                             <TableCell key={product.id} className={`${borderStyle} font-bold text-secondary`}>
-                                EGP {product.final_price?.toLocaleString()}
+                                <span dir="ltr">{t('common.currency')} {product.final_price?.toLocaleString()}</span>
                             </TableCell>
                         ))}
                     </TableRow>
 
                     <TableRow className={`text-center text-lg md:text-xl`}>
-                        <TableCell className={`${borderStyle} bg-slate-50 font-bold`}>كود المنتج</TableCell>
+                        <TableCell className={`${borderStyle} bg-slate-50 font-bold`}>{t('comparison.code_label')}</TableCell>
                         {comparisonItems.map((product) => (
                             <TableCell key={product.id} className={`${borderStyle}`}> {product.code || 'N/A'} </TableCell>
                         ))}
                     </TableRow>
 
                     <TableRow className={`text-center text-lg md:text-xl`}>
-                        <TableCell className={`${borderStyle} bg-slate-50 font-bold`}>أضف إلى العربة</TableCell>
+                        <TableCell className={`${borderStyle} bg-slate-50 font-bold`}>{t('comparison.add_to_cart')}</TableCell>
                         {comparisonItems.map((product) => (
                             <TableCell key={product.id} className={`${borderStyle} p-4 text-center`}>
                                 <button
@@ -119,7 +123,7 @@ export default function Comparison() {
                                 >
                                     <ShoppingCart size={20} />
                                     <span className="text-sm md:text-base font-bold">
-                                        {loadingIds.includes(product.id) ? 'جاري الإضافة...' : 'أضف للسلة'}
+                                        {loadingIds.includes(product.id) ? t('comparison.adding') : t('comparison.add_to_cart')}
                                     </span>
                                 </button>
                             </TableCell>
@@ -127,7 +131,7 @@ export default function Comparison() {
                     </TableRow>
 
                     <TableRow className={`text-center text-lg md:text-xl`}>
-                        <TableCell className={`${borderStyle} bg-slate-50 font-bold`}>حذف</TableCell>
+                        <TableCell className={`${borderStyle} bg-slate-50 font-bold`}>{t('comparison.remove')}</TableCell>
                         {comparisonItems.map((product) => (
                             <TableCell key={product.id} className={`${borderStyle} p-4 text-center`}>
                                 <button

@@ -28,34 +28,34 @@ import {
 import {
   Checkbox
 } from "@/components/ui/checkbox"
-import { LockKeyhole, UserPlus, Loader2, EyeOff, Eye } from "lucide-react"
 import { useNavigate, useLocation, Link } from "react-router-dom"
 import { useAuthStore } from "@/stores/useAuthStore"
 import { useState, useEffect } from "react"
-
-export const formSchema = z
-  .object({
-    identifier: z
-      .string()
-      .trim()
-      .min(1, 'البريد الإلكتروني أو الهاتف مطلوب'),
-
-    password: z
-      .string()
-      .trim()
-      .min(1, 'كلمة المرور مطلوبة'),
-
-    remember: z
-      .boolean()
-      .default(false),
-  });
-
+import { useTranslation } from "react-i18next";
 
 export default function Login() {
+  const { t } = useTranslation();
   const loginUser = useAuthStore((state) => state.loginUser);
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const formSchema = z
+    .object({
+      identifier: z
+        .string()
+        .trim()
+        .min(1, t('checkout.phone_required')),
+
+      password: z
+        .string()
+        .trim()
+        .min(1, t('profile.password_required')),
+
+      remember: z
+        .boolean()
+        .default(false),
+    });
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -83,11 +83,11 @@ export default function Login() {
       } else {
         localStorage.removeItem('remembered_identifier');
       }
-      toast.success(response.data?.message || 'تم تسجيل الدخول بنجاح');
+      toast.success(response.data?.message || t('messages.login_success', { defaultValue: 'Logged in successfully' }));
       navigate('/');
     } catch (error) {
       console.error("Login error", error);
-      const message = error.response?.data?.message || 'حدث خطأ في تسجيل الدخول';
+      const message = error.response?.data?.message || t('common.error');
       toast.error(message);
     } finally {
       setIsSubmitting(false);
@@ -96,27 +96,27 @@ export default function Login() {
 
   return (
     <>
-      <div className="bg-light-background px-4 md:px-10 lg:px-40 py-8 text-right" dir="rtl">
+      <div className="bg-light-background px-4 md:px-10 lg:px-40 py-8">
         <div>
-          <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4">تسجيل الدخول</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4">{t('auth.login_title')}</h1>
           <div className="flex gap-2 text-base md:text-lg text-primary">
-            <span>الرئيسية</span>
+            <Link to="/" className="hover:underline">{t('header.home')}</Link>
             <span>/</span>
-            <span>تسجيل الدخول</span>
+            <span>{t('auth.login_title')}</span>
           </div>
         </div>
       </div>
       <Form {...form}>
-        <div className="w-full max-w-lg border-2 my-10 mx-auto flex flex-col justify-center bg-white shadow-2xl py-12 px-6 lg:px-16" dir="rtl">
+        <div className="w-full max-w-lg border-2 my-10 mx-auto flex flex-col justify-center bg-white shadow-2xl py-12 px-6 lg:px-16">
 
           {/* Header Section */}
           <div className="mb-10">
             <div className="flex gap-3 items-center">
               <LockKeyhole size={24} className="text-secondary font-bold" />
-              <h1 className="text-2xl font-bold text-primary mb-2">تسجيل الدخول إلى حسابك</h1>
+              <h1 className="text-2xl font-bold text-primary mb-2">{t('auth.login_title')}</h1>
             </div>
             <p className="text-primary leading-relaxed opacity-80">
-              ستُستخدم بياناتك الشخصية لتحسين تجربتك على الموقع، وتسهيل الوصول إلى حسابك.
+              {t('auth.privacy_notice')}
             </p>
           </div>
 
@@ -124,11 +124,11 @@ export default function Login() {
 
             <Field>
               <FieldLabel htmlFor="email" className="text-primary font-medium">
-                البريد الإلكتروني
+                {t('auth.email')}
               </FieldLabel>
               <Input
                 id="email"
-                placeholder="البريد الإلكتروني"
+                placeholder={t('auth.email')}
                 className="mt-1 p-6"
                 type="text"
                 {...form.register("identifier")}
@@ -142,20 +142,20 @@ export default function Login() {
 
             <Field>
               <FieldLabel htmlFor="password" className="text-primary font-medium">
-                كلمة المرور
+                {t('auth.password')}
               </FieldLabel>
               <div className="relative">
                 <Input
                   id="password"
-                  placeholder="كلمة المرور"
+                  placeholder={t('auth.password')}
                   className="mt-1 p-6"
                   type={showPassword ? "text" : "password"}
-                {...form.register("password")}
+                  {...form.register("password")}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-primary opacity-50 hover:opacity-100"
+                  className="absolute end-4 top-1/2 -translate-y-1/2 text-primary opacity-50 hover:opacity-100"
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
@@ -176,16 +176,16 @@ export default function Login() {
                 />
 
                 <FieldLabel htmlFor="remember" className="text-primary font-medium cursor-pointer">
-                  تذكرني
+                  {t('auth.remember_me')}
                 </FieldLabel>
               </div>
 
-              <div className="mt-2 text-right">
+              <div className="mt-2">
                 <Link
                   to="/forgot-password"
                   className="text-secondary hover:text-primary text-sm font-medium"
                 >
-                  نسيت كلمة المرور؟
+                  {t('auth.forgot_password')}
                 </Link>
               </div>
 
@@ -200,22 +200,22 @@ export default function Login() {
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin ml-2" />
-                  جاري تسجيل الدخول...
+                  {t('auth.logging_in')}
                 </>
               ) : (
-                'تسجيل'
+                t('auth.login_button')
               )}
             </Button>
 
             {/* Login Link */}
             <div className="text-center mt-4">
               <p className="text-primary">
-                لا تمتلك حسابا؟
+                {t('auth.no_account')}{" "}
                 <Link
                   to="/register"
                   className="text-secondary hover:text-primary font-medium"
                 >
-                  سجل الآن
+                  {t('auth.register_button')}
                 </Link>
               </p>
             </div>

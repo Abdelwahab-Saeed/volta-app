@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import {
     Table,
     TableBody,
@@ -15,6 +16,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
 export default function Cart() {
+    const { t } = useTranslation();
     const {
         cartItems,
         removeFromCart,
@@ -76,18 +78,18 @@ export default function Cart() {
     };
 
     return (
-        <div className="container mx-auto py-4 md:py-8 lg:py-20">
+        <div className="container mx-auto py-4 md:py-8 lg:py-20 transition-all duration-300">
             <div className="flex flex-col lg:flex-row gap-8 lg:gap-20">
                 {/* Cart Table */}
                 {cartItems.length > 0 ? (
-                    <div className="w-full lg:w-9/12 bg-white shadow-sm overflow-x-auto mb-6">
+                    <div className="w-full lg:w-9/12 bg-white shadow-sm overflow-x-auto mb-6 rounded-xl">
                         <Table>
                             <TableHeader>
                                 <TableRow className="bg-gray-100 text-xl">
-                                    <TableHead className="text-right px-4 md:px-15 font-semibold text-primary py-4">المنتج</TableHead>
-                                    <TableHead className="text-right font-semibold text-primary py-4">السعر</TableHead>
-                                    <TableHead className="text-right px-2 md:px-10 font-semibold text-primary py-4">الكمية</TableHead>
-                                    <TableHead className="text-right font-semibold text-primary py-4">الإجمالي</TableHead>
+                                    <TableHead className="text-start px-4 md:px-15 font-semibold text-primary py-4">{t('cart.product')}</TableHead>
+                                    <TableHead className="text-start font-semibold text-primary py-4">{t('cart.price')}</TableHead>
+                                    <TableHead className="text-start px-2 md:px-10 font-semibold text-primary py-4">{t('cart.quantity')}</TableHead>
+                                    <TableHead className="text-start font-semibold text-primary py-4">{t('cart.item_total')}</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -98,29 +100,29 @@ export default function Cart() {
                                                 <button
                                                     onClick={() => removeItem(item.id)}
                                                     className="text-gray-400 hover:text-red-500 transition-colors"
-                                                    aria-label="حذف المنتج"
+                                                    aria-label={t('cart.remove')}
                                                 >
                                                     <Trash2 className="w-5 h-5" />
                                                 </button>
-                                                <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-100 rounded flex items-center justify-center flex-shrink-0">
+                                                <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 p-2">
                                                     <img
-                                                        src={`${import.meta.env.VITE_IMAGES_URL}/${item.product.image}`}
-                                                        alt={item.product.name}
-                                                        className="w-12 h-12 md:w-16 md:h-16 object-contain"
+                                                        src={`${import.meta.env.VITE_IMAGES_URL}/${item.product?.image}`}
+                                                        alt={item.product?.name}
+                                                        className="w-full h-full object-contain"
                                                     />
                                                 </div>
-                                                <span className="font-medium text-base md:text-lg text-primary">{item.product.name}</span>
+                                                <span className="font-medium text-base md:text-lg text-primary">{item.product?.name}</span>
                                             </div>
                                         </TableCell>
-                                        <TableCell className="text-right text-primary text-base md:text-lg">
+                                        <TableCell className="text-start text-primary text-base md:text-lg">
                                             EGP{(useCartStore.getState().getItemPrice(item) / item.quantity).toFixed(2)}
                                         </TableCell>
-                                        <TableCell className="text-right">
+                                        <TableCell className="text-start">
                                             <div className="inline-flex items-center border border-gray-300 rounded-md">
                                                 <button
                                                     onClick={() => updateQuantity(item.id, item.quantity - 1)}
                                                     className="text-lg px-2 py-1 md:px-3 md:py-2 hover:bg-gray-100 transition-colors"
-                                                    aria-label="تقليل الكمية"
+                                                    aria-label={t('cart.decrease_quantity')}
                                                 >
                                                     <Minus className="w-4 h-4" />
                                                 </button>
@@ -130,13 +132,13 @@ export default function Cart() {
                                                 <button
                                                     onClick={() => updateQuantity(item.id, item.quantity + 1)}
                                                     className="text-lg px-2 py-1 md:px-3 md:py-2 hover:bg-gray-100 transition-colors"
-                                                    aria-label="زيادة الكمية"
+                                                    aria-label={t('cart.increase_quantity')}
                                                 >
                                                     <Plus className="w-4 h-4" />
                                                 </button>
                                             </div>
                                         </TableCell>
-                                        <TableCell className="text-right font-semibold text-primary text-base md:text-lg">
+                                        <TableCell className="text-start font-semibold text-primary text-base md:text-lg">
                                             EGP{useCartStore.getState().getItemPrice(item).toFixed(2)}
                                         </TableCell>
                                     </TableRow>
@@ -145,57 +147,57 @@ export default function Cart() {
                         </Table>
                     </div>
                 ) : (
-                    <div className="w-full lg:w-9/12 flex justify-center items-center bg-white shadow-sm overflow-hidden mb-6 h-60">
+                    <div className="w-full lg:w-9/12 flex justify-center items-center bg-white shadow-sm overflow-hidden mb-6 h-60 rounded-xl">
                         <div className="p-6 text-center">
                             <ShoppingCart className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                            <p className="text-center text-xl font-semibold text-primary">السلة فارغة</p>
-                            <Link to="/products" className="text-primary underline mt-2 inline-block">تصفح المنتجات</Link>
+                            <p className="text-center text-xl font-semibold text-primary">{t('cart.empty')}</p>
+                            <Link to="/products" className="text-primary underline mt-2 inline-block transition-colors hover:text-secondary">{t('cart.browse_products')}</Link>
                         </div>
                     </div>
                 )}
 
                 {/* Totals Section */}
                 <div className="w-full lg:w-3/12">
-                    <div className="bg-white p-6 rounded-lg shadow-sm">
-                        <h3 className="text-xl font-bold text-gray-800 mb-6 border-b pb-4">ملخص الطلب</h3>
+                    <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                        <h3 className="text-xl font-bold text-gray-800 mb-6 border-b pb-4">{t('cart.order_summary')}</h3>
 
                         <div className="flex justify-between items-center mb-3">
-                            <span className="text-lg text-gray-600">المجموع الفرعي</span>
+                            <span className="text-lg text-gray-600">{t('cart.subtotal')}</span>
                             <span className="text-lg font-bold text-primary">EGP{subtotal.toFixed(2)}</span>
                         </div>
 
                         {discountAmount > 0 && (
                             <div className="flex justify-between items-center mb-3 text-green-600">
-                                <span className="text-lg">خصم الكوبون</span>
+                                <span className="text-lg">{t('cart.discount')}</span>
                                 <span className="text-lg font-bold">-EGP{discountAmount.toFixed(2)}</span>
                             </div>
                         )}
 
                         <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-300 pt-2">
-                            <span className="text-xl font-bold text-primary">الإجمالي</span>
+                            <span className="text-xl font-bold text-primary">{t('cart.total')}</span>
                             <span className="text-xl font-bold text-primary">EGP{total.toFixed(2)}</span>
                         </div>
 
                         <Link to="/checkout" className={`block w-full ${cartItems.length === 0 ? 'pointer-events-none' : ''}`}>
                             <Button
                                 disabled={cartItems.length === 0}
-                                className="w-full h-12 text-lg bg-primary hover:bg-[#152a45] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full h-12 text-lg bg-primary hover:bg-[#152a45] transition-colors rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                إتمام الشراء
+                                {t('cart.checkout')}
                             </Button>
                         </Link>
 
                         <div className="mt-4 text-center">
                             <Link to='/' className="text-primary hover:underline transition-colors block py-2">
-                                تابع عملية الشراء
+                                {t('cart.continue_shopping')}
                             </Link>
                         </div>
                     </div>
 
                     {/* Coupon Section directly under totals for mobile flow or separate but close */}
-                    <div className="mt-6 bg-white p-6 rounded-lg shadow-sm">
-                        <label className="block text-lg text-right text-primary font-bold mb-3">
-                            كود الكوبون
+                    <div className="mt-6 bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                        <label className="block text-lg text-start text-primary font-bold mb-3">
+                            {t('cart.coupon_code')}
                         </label>
                         <div className="flex gap-2">
                             <div className="relative flex-1">
@@ -204,13 +206,13 @@ export default function Cart() {
                                     value={couponCode}
                                     onChange={(e) => setCouponCode(e.target.value)}
                                     disabled={!!coupon}
-                                    placeholder="ادخل الكود"
-                                    className="w-full border border-gray-300 rounded px-4 py-2 text-right focus:outline-none focus:border-primary disabled:bg-gray-100"
+                                    placeholder={t('cart.enter_code')}
+                                    className="w-full border border-gray-300 rounded px-4 py-2 text-start focus:outline-none focus:border-primary disabled:bg-gray-100"
                                 />
                                 {coupon && (
                                     <button
                                         onClick={handleRemoveCoupon}
-                                        className="absolute left-2 top-1/2 -translate-y-1/2 text-red-500 hover:text-red-700 p-1"
+                                        className="absolute end-2 top-1/2 -translate-y-1/2 text-red-500 hover:text-red-700 p-1"
                                     >
                                         <X className="w-4 h-4" />
                                     </button>
@@ -219,14 +221,14 @@ export default function Cart() {
                             <Button
                                 onClick={handleApplyCoupon}
                                 disabled={isApplyingCoupon || !!coupon || !couponCode}
-                                className="bg-primary text-white font-bold px-6 py-2 hover:bg-[#152a45] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="bg-primary text-white font-bold px-6 py-2 hover:bg-[#152a45] transition-colors disabled:opacity-50 disabled:cursor-not-allowed h-10"
                             >
-                                {isApplyingCoupon ? 'جاري...' : 'تطبيق'}
+                                {isApplyingCoupon ? t('cart.applying') : t('cart.apply')}
                             </Button>
                         </div>
                         {coupon && (
-                            <p className="text-green-600 text-sm mt-2 text-right">
-                                تم تطبيق الكوبون {coupon.code}
+                            <p className="text-green-600 text-sm mt-2 text-start">
+                                {t('cart.coupon_applied', { code: coupon.code })}
                             </p>
                         )}
                     </div>

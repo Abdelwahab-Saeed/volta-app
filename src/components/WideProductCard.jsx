@@ -11,7 +11,7 @@ import { useState } from "react";
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'sonner';
-
+import { useTranslation } from 'react-i18next';
 export default function WideProductCard({ product }) {
   const addToCart = useCartStore((state) => state.addToCart);
   const cartItems = useCartStore((state) => state.cartItems);
@@ -26,10 +26,11 @@ export default function WideProductCard({ product }) {
   const [addingStr, setAddingStr] = useState(false);
   const navigate = useNavigate();
 
+  const { t } = useTranslation();
   const handleWishlistToggle = async (e) => {
     e.preventDefault();
     if (!isAuthenticated) {
-      toast.error('يرجى تسجيل الدخول أولاً');
+      toast.error(t('messages.login_required_wishlist'));
       navigate('/login');
       return;
     }
@@ -43,7 +44,7 @@ export default function WideProductCard({ product }) {
   const handleComparisonToggle = async (e) => {
     e.preventDefault();
     if (!isAuthenticated) {
-      toast.error('يرجى تسجيل الدخول أولاً');
+      toast.error(t('messages.login_required_compare'));
       navigate('/login');
       return;
     }
@@ -60,11 +61,6 @@ export default function WideProductCard({ product }) {
 
   const handleAddToCart = async (e) => {
     e.preventDefault();
-    if (!isAuthenticated) {
-      toast.error('يرجى تسجيل الدخول أولاً');
-      navigate('/login');
-      return;
-    }
     if (isAdded) return;
 
     setAddingStr(true);
@@ -119,7 +115,7 @@ export default function WideProductCard({ product }) {
               </div>
 
               {product.description && (
-                <p className="text-sm text-slate-600 text-right line-clamp-2 sm:line-clamp-3 mb-4">
+                <p className="text-sm text-slate-600 text-start line-clamp-2 sm:line-clamp-3 mb-4">
                   {product.description}
                 </p>
               )}
@@ -143,12 +139,12 @@ export default function WideProductCard({ product }) {
                     ) : isAdded ? (
                       <>
                         <Check className="w-5 h-5" />
-                        <span className="text-base font-medium">تم الإضافة</span>
+                        <span className="text-base font-medium">{t('product.added')}</span>
                       </>
                     ) : (
                       <>
                         <ShoppingCart className="w-5 h-5" />
-                        <span className="text-base font-medium">أضف إلى العربة</span>
+                        <span className="text-base font-medium">{t('product.add_to_cart')}</span>
                       </>
                     )}
                   </div>
@@ -170,7 +166,7 @@ export default function WideProductCard({ product }) {
                   disabled={addingStr}
                   className="w-full sm:w-auto h-11 px-6 rounded-md transition-colors bg-secondary hover:bg-[#0090c7] text-white"
                 >
-                  <span className="text-base font-medium">شراء الآن</span>
+                  <span className="text-base font-medium">{t('product.buy_now')}</span>
                 </Button>
               </div>
 
@@ -179,7 +175,7 @@ export default function WideProductCard({ product }) {
                 {product.discount > 0 ? (
                   <>
                     <span className="text-sm text-slate-400 line-through order-2 sm:order-1">
-                      EGP {product.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      EGP {product.price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
                     <span className="text-2xl sm:text-3xl font-bold text-red-600 order-1 sm:order-2">
                       EGP {product.final_price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}

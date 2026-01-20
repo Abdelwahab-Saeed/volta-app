@@ -17,6 +17,7 @@ import { useState } from "react";
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 export default function ProductCard({
   product
@@ -34,11 +35,12 @@ export default function ProductCard({
   const [addingStr, setAddingStr] = useState(false);
   const navigate = useNavigate();
 
+  const { t } = useTranslation();
   const handleWishlistToggle = async (e) => {
     e.preventDefault();
     e.stopPropagation();
     if (!isAuthenticated) {
-      toast.error('يرجى تسجيل الدخول أولاً');
+      toast.error(t('messages.login_required_wishlist'));
       navigate('/login');
       return;
     }
@@ -53,7 +55,7 @@ export default function ProductCard({
     e.preventDefault();
     e.stopPropagation();
     if (!isAuthenticated) {
-      toast.error('يرجى تسجيل الدخول أولاً');
+      toast.error(t('messages.login_required_compare'));
       navigate('/login');
       return;
     }
@@ -69,11 +71,6 @@ export default function ProductCard({
   };
   const handleAddToCart = async (e) => {
     e.preventDefault(); // Prevent navigation if wrapped in Link
-    if (!isAuthenticated) {
-      toast.error('يرجى تسجيل الدخول أولاً');
-      navigate('/login');
-      return;
-    }
     if (isAdded) return;
 
     setAddingStr(true);
@@ -132,9 +129,9 @@ export default function ProductCard({
 
         <div className="mt-3">
           <div className='my-6 flex items-center'>
-            <p className="text-lg font-semibold text-red-700">EGP {product.final_price}</p>
+            <p className="text-lg font-semibold text-red-700">EGP {product.final_price?.toLocaleString()}</p>
             {product.discount > 0 ? (
-              <p className="text-md text-slate-400 line-through mr-2">EGP {product.price}</p>
+              <p className="text-md text-slate-400 line-through mr-2">EGP {product.price?.toLocaleString()}</p>
             ) : null}
           </div>
           <div>
@@ -151,12 +148,12 @@ export default function ProductCard({
               ) : isAdded ? (
                 <>
                   <Check size={20} />
-                  <span className="text-lg">تم الإضافة</span>
+                  <span className="text-lg">{t('product.added')}</span>
                 </>
               ) : (
                 <>
                   <ShoppingCart size={20} />
-                  <span className="text-lg">أضف إلى العربة</span>
+                  <span className="text-lg">{t('product.add_to_cart')}</span>
                 </>
               )}
             </button>
@@ -176,7 +173,7 @@ export default function ProductCard({
               disabled={addingStr}
               className="mt-2 flex items-center justify-center gap-2 w-full h-11 transition-all duration-300 rounded-md text-white bg-secondary hover:bg-[#0090c7]"
             >
-              <span className="text-lg">شراء الآن</span>
+              <span className="text-lg">{t('product.buy_now')}</span>
             </button>
           </div>
         </div>
