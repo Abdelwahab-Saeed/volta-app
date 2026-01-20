@@ -110,30 +110,50 @@ export default function SmallProductCard({ product }) {
             <p className="text-md text-slate-400 line-through mr-2">EGP {product.price}</p>
           ) : null}
         </div>
-        <Button
-          onClick={handleAddToCart}
-          disabled={addingStr || isAdded}
-          className={`w-full h-10 text-white ${isAdded
-            ? "bg-green-500 hover:bg-green-600 cursor-default"
-            : "bg-[#31A0D3] hover:bg-[#0058AB]"
-            }`}
-        >
-          <div className="flex gap-2 justify-center items-center">
-            {addingStr ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
-            ) : isAdded ? (
-              <>
-                <p className="text-lg">تم الإضافة</p>
-                <Check />
-              </>
-            ) : (
-              <>
-                <p className="text-lg">أضف إلى العربة</p>
-                <ShoppingCart />
-              </>
-            )}
-          </div>
-        </Button>
+        <div className="flex flex-col gap-2">
+          <Button
+            onClick={handleAddToCart}
+            disabled={addingStr || isAdded}
+            className={`w-full h-10 text-white ${isAdded
+              ? "bg-green-500 hover:bg-green-600 cursor-default"
+              : "bg-[#31A0D3] hover:bg-[#0058AB]"
+              }`}
+          >
+            <div className="flex gap-2 justify-center items-center">
+              {addingStr ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : isAdded ? (
+                <>
+                  <p className="text-lg">تم الإضافة</p>
+                  <Check />
+                </>
+              ) : (
+                <>
+                  <p className="text-lg">أضف إلى العربة</p>
+                  <ShoppingCart />
+                </>
+              )}
+            </div>
+          </Button>
+          <Button
+            onClick={async (e) => {
+              e.preventDefault();
+              setAddingStr(true);
+              try {
+                await addToCart(product);
+                navigate('/checkout');
+              } catch (error) {
+                console.error(error);
+              } finally {
+                setAddingStr(false);
+              }
+            }}
+            disabled={addingStr}
+            className="w-full h-10 text-white bg-secondary hover:bg-[#0090c7]"
+          >
+            <span className="text-lg">شراء الآن</span>
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );

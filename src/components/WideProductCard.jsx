@@ -128,30 +128,51 @@ export default function WideProductCard({ product }) {
             {/* Price and Add to Cart */}
             <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-4 mt-2 sm:mt-6">
               {/* Add to Cart Button */}
-              <Button
-                onClick={handleAddToCart}
-                disabled={addingStr || isAdded}
-                className={`w-full sm:w-auto h-12 px-10 rounded-md transition-colors ${isAdded
-                  ? "bg-green-500 hover:bg-green-600 text-white cursor-default"
-                  : "bg-[#31A0D3] hover:bg-[#2890C2] text-white"
-                  }`}
-              >
-                <div className="flex gap-2 items-center justify-center">
-                  {addingStr ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : isAdded ? (
-                    <>
-                      <Check className="w-5 h-5" />
-                      <span className="text-base font-medium">تم الإضافة</span>
-                    </>
-                  ) : (
-                    <>
-                      <ShoppingCart className="w-5 h-5" />
-                      <span className="text-base font-medium">أضف إلى العربة</span>
-                    </>
-                  )}
-                </div>
-              </Button>
+              <div className="flex flex-col gap-2 w-full sm:w-auto">
+                <Button
+                  onClick={handleAddToCart}
+                  disabled={addingStr || isAdded}
+                  className={`w-full sm:w-auto h-11 px-6 rounded-md transition-colors ${isAdded
+                    ? "bg-green-500 hover:bg-green-600 text-white cursor-default"
+                    : "bg-[#31A0D3] hover:bg-[#2890C2] text-white"
+                    }`}
+                >
+                  <div className="flex gap-2 items-center justify-center">
+                    {addingStr ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : isAdded ? (
+                      <>
+                        <Check className="w-5 h-5" />
+                        <span className="text-base font-medium">تم الإضافة</span>
+                      </>
+                    ) : (
+                      <>
+                        <ShoppingCart className="w-5 h-5" />
+                        <span className="text-base font-medium">أضف إلى العربة</span>
+                      </>
+                    )}
+                  </div>
+                </Button>
+
+                <Button
+                  onClick={async (e) => {
+                    e.preventDefault();
+                    setAddingStr(true);
+                    try {
+                      await addToCart(product);
+                      navigate('/checkout');
+                    } catch (error) {
+                      console.error(error);
+                    } finally {
+                      setAddingStr(false);
+                    }
+                  }}
+                  disabled={addingStr}
+                  className="w-full sm:w-auto h-11 px-6 rounded-md transition-colors bg-secondary hover:bg-[#0090c7] text-white"
+                >
+                  <span className="text-base font-medium">شراء الآن</span>
+                </Button>
+              </div>
 
               {/* Price Section */}
               <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto gap-1">

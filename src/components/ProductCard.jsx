@@ -134,8 +134,8 @@ export default function ProductCard({
           <div className='my-6 flex items-center'>
             <p className="text-lg font-semibold text-red-700">EGP {product.final_price}</p>
             {product.discount > 0 ? (
-            <p className="text-md text-slate-400 line-through mr-2">EGP {product.price}</p>
-          ) : null}
+              <p className="text-md text-slate-400 line-through mr-2">EGP {product.price}</p>
+            ) : null}
           </div>
           <div>
             <button
@@ -159,6 +159,24 @@ export default function ProductCard({
                   <span className="text-lg">أضف إلى العربة</span>
                 </>
               )}
+            </button>
+            <button
+              onClick={async (e) => {
+                e.preventDefault();
+                setAddingStr(true);
+                try {
+                  await addToCart(product);
+                  navigate('/checkout');
+                } catch (error) {
+                  console.error(error);
+                } finally {
+                  setAddingStr(false);
+                }
+              }}
+              disabled={addingStr}
+              className="mt-2 flex items-center justify-center gap-2 w-full h-11 transition-all duration-300 rounded-md text-white bg-secondary hover:bg-[#0090c7]"
+            >
+              <span className="text-lg">شراء الآن</span>
             </button>
           </div>
         </div>

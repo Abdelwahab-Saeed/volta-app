@@ -3,7 +3,7 @@ import React from 'react';
 
 export default function FeaturesSection() {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full my-8" dir="rtl">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full my-10" dir="rtl">
       <div className="flex items-center gap-5 bg-[#F6F7F9] px-6 py-6 rounded-lg">
         <BadgeCheck color="#31A0D3" size={30} className="flex-shrink-0" />
         <div className="flex flex-col">

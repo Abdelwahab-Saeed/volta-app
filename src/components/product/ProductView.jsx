@@ -19,6 +19,7 @@ export default function ProductView({
     quantity,
     setQuantity,
     onAddToCart,
+    onBuyNow,
     onToggleWishlist,
     onToggleComparison,
     isInWishlist,
@@ -100,56 +101,120 @@ export default function ProductView({
                 </div>
 
                 <div className="flex flex-col gap-6 pt-6 border-t border-slate-100">
+                    {/* Bundle Offers */}
+                    {product.bundle_offers && product.bundle_offers.length > 0 && (
+                        <div className="space-y-3">
+                            <h3 className="font-bold text-slate-900 text-lg">عروض الكميات</h3>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                {product.bundle_offers.map((offer) => (
+                                    <div
+                                        key={offer.id}
+                                        onClick={() => setQuantity(offer.quantity)}
+                                        className={`cursor-pointer border-2 rounded-xl p-3 transition-all hover:shadow-md text-center ${quantity === offer.quantity
+                                            ? 'border-secondary bg-blue-50'
+                                            : 'border-slate-100 hover:border-secondary/50'
+                                            }`}
+                                    >
+                                        <p className="font-bold text-slate-800 text-lg">{offer.quantity} قطع</p>
+                                        <p className="font-bold text-secondary text-base">
+                                            {Number(offer.bundle_price).toLocaleString()} EGP
+                                        </p>
+                                        <p className="text-xs text-slate-500 mt-1">
+                                            ({Math.round(offer.bundle_price / offer.quantity).toLocaleString()} / قطعة)
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
                     <div className="flex items-center gap-6">
                         <span className="font-bold text-slate-900">الكمية:</span>
-                        <div className="flex items-center bg-slate-100 rounded-xl h-12 overflow-hidden">
-                            <span className="w-12 text-center font-bold text-lg text-slate-800">{quantity}</span>
+                        <div className="flex items-center border border-slate-300 rounded-xl h-12 overflow-hidden">
+                            <button
+                                onClick={incrementQuantity}
+                                className="w-12 h-full flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-300"
+                            >
+                                <Plus size={18} />
+                            </button>
+                            <input
+                                type="number"
+                                value={quantity}
+                                onChange={(e) => {
+                                    const val = parseInt(e.target.value);
+                                    if (val > 0) setQuantity(val);
+                                }}
+                                className="w-16 text-center font-bold text-lg text-slate-800 focus:outline-none"
+                            />
+                            <button
+                                onClick={decrementQuantity}
+                                className="w-12 h-full flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-300"
+                            >
+                                <Minus size={18} />
+                            </button>
                         </div>
                     </div>
 
-                    <div className="flex gap-4">
-                        <Button
-                            onClick={onAddToCart}
-                            disabled={addingLoading || isAdded}
-                            className={`flex-1 h-14 text-xl font-bold rounded-2xl shadow-lg transition-all transform active:scale-95 ${isAdded
+                    <div className="flex flex-col gap-3">
+                        <div className="flex gap-4">
+                            <Button
+                                onClick={onAddToCart}
+                                disabled={addingLoading || isAdded}
+                                className={`flex-1 h-14 text-lg font-bold rounded-2xl shadow-lg transition-all transform active:scale-95 ${isAdded
                                     ? "bg-green-500 hover:bg-green-600 text-white shadow-green-100"
-                                    : "bg-gradient-to-r from-[#31A0D3] to-[#2890C2] hover:from-[#2890C2] hover:to-[#1e7ca8] text-white shadow-blue-100"
-                                }`}
-                        >
-                            {addingLoading ? (
-                                <Loader2 className="mr-2 h-6 w-6 animate-spin" />
-                            ) : isAdded ? (
-                                <div className="flex items-center gap-2">
-                                    <Check className="h-6 w-6" />
-                                    <span>تمت الإضافة</span>
-                                </div>
-                            ) : (
-                                <div className="flex items-center gap-2">
-                                    <ShoppingCart className="h-6 w-6" />
-                                    <span>أضف إلى السلة</span>
-                                </div>
-                            )}
-                        </Button>
+                                    : "bg-white border-2 border-[#31A0D3] text-[#31A0D3] hover:bg-blue-50 shadow-blue-50"
+                                    }`}
+                            >
+                                {addingLoading ? (
+                                    <Loader2 className="mr-2 h-6 w-6 animate-spin" />
+                                ) : isAdded ? (
+                                    <div className="flex items-center gap-2">
+                                        <Check className="h-6 w-6" />
+                                        <span>تمت الإضافة</span>
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center gap-2">
+                                        <ShoppingCart className="h-6 w-6" />
+                                        <span>أضف إلى السلة</span>
+                                    </div>
+                                )}
+                            </Button>
 
-                        <button
-                            onClick={onToggleWishlist}
-                            className={`h-14 w-14 rounded-2xl border flex items-center justify-center transition-all transform active:scale-90 ${isInWishlist
-                                    ? 'bg-red-50 border-red-100 text-red-500 shadow-md'
-                                    : 'bg-slate-50 border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50'
-                                }`}
-                        >
-                            <Heart size={28} fill={isInWishlist ? "currentColor" : "none"} />
-                        </button>
+                            <Button
+                                onClick={onBuyNow}
+                                disabled={addingLoading}
+                                className="flex-1 h-14 text-lg font-bold rounded-2xl shadow-lg transition-all transform active:scale-95 bg-gradient-to-r from-[#31A0D3] to-[#2890C2] hover:from-[#2890C2] hover:to-[#1e7ca8] text-white shadow-blue-100"
+                            >
+                                {addingLoading ? (
+                                    <Loader2 className="mr-2 h-6 w-6 animate-spin" />
+                                ) : (
+                                    <span>شراء الآن</span>
+                                )}
+                            </Button>
+                        </div>
 
-                        <button
-                            onClick={onToggleComparison}
-                            className={`h-14 w-14 rounded-2xl border flex items-center justify-center transition-all transform active:scale-90 ${isInComparison
-                                    ? 'bg-blue-50 border-blue-100 text-primary shadow-md'
-                                    : 'bg-slate-50 border-slate-200 text-slate-400 hover:text-primary hover:border-blue-200 hover:bg-blue-50'
-                                }`}
-                        >
-                            <ArrowLeftRight size={28} />
-                        </button>
+                        <div className="flex gap-4 justify-center mt-2">
+                            <button
+                                onClick={onToggleWishlist}
+                                className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${isInWishlist
+                                    ? 'text-red-500 bg-red-50'
+                                    : 'text-slate-500 hover:text-red-500 hover:bg-red-50'
+                                    }`}
+                            >
+                                <Heart size={20} fill={isInWishlist ? "currentColor" : "none"} />
+                                <span className="font-medium">المفضلة</span>
+                            </button>
+                            <button
+                                onClick={onToggleComparison}
+                                className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${isInComparison
+                                    ? 'text-primary bg-blue-50'
+                                    : 'text-slate-500 hover:text-primary hover:bg-blue-50'
+                                    }`}
+                            >
+                                <ArrowLeftRight size={20} />
+                                <span className="font-medium">مقارنة</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

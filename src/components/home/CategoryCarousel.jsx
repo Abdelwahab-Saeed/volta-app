@@ -9,7 +9,7 @@ import {
 
 export default function CategoryCarousel({ categories }) {
   return (
-    <div dir="ltr" className="my-8">
+    <div dir="ltr" className="my-16">
       <Carousel
         className="w-full"
         opts={{

@@ -28,6 +28,7 @@ import ProductDetails from './pages/ProductDetails';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import { Toaster } from "@/components/ui/sonner";
+import ScrollToTop from './components/layout/ScrollToTop';
 
 function App() {
   const checkAuth = useAuthStore((state) => state.checkAuth);
@@ -62,6 +63,7 @@ function App() {
 
   return (
     <>
+      <ScrollToTop />
       <Header />
       <Links />
       <Routes>
@@ -77,8 +79,8 @@ function App() {
         <Route path='/search' element={<SearchResults />} />
         <Route path='/offers' element={<ProtectedRoute><Offers /></ProtectedRoute>} />
         <Route path='/comparison' element={<ProtectedRoute><Comparison /></ProtectedRoute>} />
-        <Route path='/cart' element={<ProtectedRoute><Cart /></ProtectedRoute>} />
-        <Route path='/checkout' element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+        <Route path='/cart' element={<Cart />} />
+        <Route path='/checkout' element={<Checkout />} />
         <Route path='/wishlist' element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
 
         <Route element={<ProtectedRoute><ProfileLayout /></ProtectedRoute>}>

@@ -11,6 +11,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useCartStore } from "@/stores/useCartStore";
 import { useCheckoutStore } from "@/stores/useCheckoutStore";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { useAddressStore } from "@/stores/useAddressStore";
 import { toast } from "sonner";
 
 export default function Checkout() {
@@ -58,7 +59,8 @@ export default function Checkout() {
             shipping_way: "home",
             payment_method: "cash",
             notes: "",
-            coupon_code: coupon ? coupon.code : ""
+            coupon_code: coupon ? coupon.code : "",
+            address_line: ""
         }
     });
 
@@ -76,6 +78,27 @@ export default function Checkout() {
             setValue('coupon_code', coupon.code);
         }
     }, [coupon, setValue]);
+
+    // Fetch addresses and pre-fill
+    const { addresses, fetchAddresses } = useAddressStore();
+
+    useEffect(() => {
+        if (user) {
+            fetchAddresses();
+        }
+    }, [user, fetchAddresses]);
+
+    useEffect(() => {
+        if (addresses && addresses.length > 0) {
+            const firstAddress = addresses[0];
+            setValue('state', firstAddress.state || "");
+            setValue('city', firstAddress.city || "");
+            const fullAddress = [firstAddress.address_line_1, firstAddress.address_line_2].filter(Boolean).join(' ');
+            setValue('address_line', fullAddress || "");
+            if (firstAddress.recipient_name) setValue('full_name', firstAddress.recipient_name);
+            if (firstAddress.phone_number) setValue('phone_number', firstAddress.phone_number);
+        }
+    }, [addresses, setValue]);
 
     // Calculate totals
     const subtotal = getCartSubtotal();
@@ -253,6 +276,26 @@ export default function Checkout() {
                                     </div>
                                 </div>
 
+                                {/* Address Line */}
+                                <div>
+                                    <Label htmlFor="address_line" className="text-right block mb-2">
+                                        العنوان بالتفصيل
+                                    </Label>
+                                    <Input
+                                        id="address_line"
+                                        placeholder="اسم الشارع، رقم العمارة، رقم الشقة..."
+                                        className="text-right"
+                                        {...register("address_line", {
+                                            required: "العنوان مطلوب"
+                                        })}
+                                    />
+                                    {errors.address_line && (
+                                        <p className="text-red-500 text-sm mt-1 text-right">
+                                            {errors.address_line.message}
+                                        </p>
+                                    )}
+                                </div>
+
                                 {/* Shipping Method */}
                                 <div>
                                     <Label className="text-right block mb-3 font-semibold">
@@ -268,12 +311,12 @@ export default function Checkout() {
                                             </Label>
                                             <RadioGroupItem value="home" id="shipping-home" />
                                         </div>
-                                        <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 cursor-pointer mt-2">
+                                        {/* <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 cursor-pointer mt-2">
                                             <Label htmlFor="shipping-office" className="flex-1 cursor-pointer text-right">
                                                 توصيل للمكتب
                                             </Label>
                                             <RadioGroupItem value="office" id="shipping-office" />
-                                        </div>
+                                        </div> */}
                                         <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 cursor-pointer mt-2">
                                             <Label htmlFor="shipping-pickup" className="flex-1 cursor-pointer text-right">
                                                 استلام من الفرع
@@ -304,7 +347,7 @@ export default function Checkout() {
                                                 </Label>
                                                 <RadioGroupItem value="cash" id="payment-cash" />
                                             </div>
-                                            <div className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                                            {/* <div className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
                                                 <Label htmlFor="payment-card" className="flex-1 cursor-pointer text-right">
                                                     بطاقة الائتمان/الخصم المباشر
                                                 </Label>
@@ -315,13 +358,7 @@ export default function Checkout() {
                                                     محفظة الكترونية
                                                 </Label>
                                                 <RadioGroupItem value="wallet" id="payment-wallet" />
-                                            </div>
-                                            <div className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
-                                                <Label htmlFor="payment-valu" className="flex-1 cursor-pointer text-right">
-                                                    Valu
-                                                </Label>
-                                                <RadioGroupItem value="valu" id="payment-valu" />
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </RadioGroup>
                                     {errors.payment_method && (
@@ -387,7 +424,7 @@ export default function Checkout() {
                                         <div className="flex-1 text-right">
                                             <p className="font-medium text-gray-800 line-clamp-2">{item.product.name}</p>
                                             <p className="text-sm text-gray-600 mt-1">
-                                                {item.quantity} x EGP{item.product.final_price.toFixed(2)}
+                                                {item.quantity} x EGP{(useCartStore.getState().getItemPrice(item) / item.quantity).toFixed(2)}
                                             </p>
                                         </div>
                                         <div className="w-16 h-16 bg-gray-100 rounded flex items-center justify-center flex-shrink-0">

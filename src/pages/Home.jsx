@@ -49,10 +49,10 @@ export default function Home() {
   return (
     <div className="container mx-auto px-4 md:px-6 lg:px-8">
       <HomeCarousel banners={banners} loading={bannersLoading} />
-      <CategoryCarousel categories={categories} />
-      <FeaturesSection />
       <SpecialProducts title="المنتجات المميزة" products={bestSellingProducts} />
       <Products products={products} />
+      <CategoryCarousel categories={categories} />
+      <FeaturesSection />
     </div>
   );
 }

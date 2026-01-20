@@ -113,7 +113,7 @@ export default function Cart() {
                                             </div>
                                         </TableCell>
                                         <TableCell className="text-right text-primary text-base md:text-lg">
-                                            EGP{item.product.final_price}
+                                            EGP{(useCartStore.getState().getItemPrice(item) / item.quantity).toFixed(2)}
                                         </TableCell>
                                         <TableCell className="text-right">
                                             <div className="inline-flex items-center border border-gray-300 rounded-md">
@@ -137,7 +137,7 @@ export default function Cart() {
                                             </div>
                                         </TableCell>
                                         <TableCell className="text-right font-semibold text-primary text-base md:text-lg">
-                                            EGP{(item.product.final_price * item.quantity).toFixed(2)}
+                                            EGP{useCartStore.getState().getItemPrice(item).toFixed(2)}
                                         </TableCell>
                                     </TableRow>
                                 ))}

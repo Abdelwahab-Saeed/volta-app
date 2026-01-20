@@ -105,15 +105,27 @@ export default function ProductDetails() {
     };
 
     const handleAddToCart = async () => {
-        if (!isAuthenticated) {
-            toast.error('يرجى تسجيل الدخول أولاً');
-            navigate('/login');
-            return;
-        }
         if (isAdded) return;
         setAddingStr(true);
-        await addToCart(product, quantity);
-        setAddingStr(false);
+        try {
+            await addToCart(product, quantity);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setAddingStr(false);
+        }
+    };
+
+    const handleBuyNow = async () => {
+        setAddingStr(true);
+        try {
+            await addToCart(product, quantity);
+            navigate('/checkout');
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setAddingStr(false);
+        }
     };
 
     const incrementQuantity = () => setQuantity((prev) => prev + 1);
@@ -136,6 +148,7 @@ export default function ProductDetails() {
                 quantity={quantity}
                 setQuantity={setQuantity}
                 onAddToCart={handleAddToCart}
+                onBuyNow={handleBuyNow}
                 onToggleWishlist={handleWishlistToggle}
                 onToggleComparison={handleComparisonToggle}
                 isInWishlist={isInWishlist}
