@@ -32,6 +32,7 @@ import { useNavigate, useLocation, Link } from "react-router-dom"
 import { useAuthStore } from "@/stores/useAuthStore"
 import { useState, useEffect } from "react"
 import { useTranslation } from "react-i18next";
+import { Eye, LockKeyhole } from "lucide-react"
 
 export default function Login() {
   const { t } = useTranslation();

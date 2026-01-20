@@ -32,6 +32,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { useAuthStore } from "@/stores/useAuthStore"
 import { useState } from "react"
 import { useTranslation } from "react-i18next";
+import { Eye, UserPlus } from "lucide-react"
 
 export default function Register() {
   const { t } = useTranslation();
