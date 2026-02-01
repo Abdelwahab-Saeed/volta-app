@@ -291,5 +291,48 @@
     "offers": {
         "title": "Special Offers",
         "available_offers": "Available Offers"
+    },
+    "about_us": {
+        "title": "About Us",
+        "description": "Volta Stabilizer & Electrical Solutions is an Egyptian company specializing in voltage stabilizers and integrated electrical solutions. We serve individuals, businesses, and traders by providing reliable electrical products designed to protect equipment and ensure stable and efficient power performance. At Volta, we are committed to delivering practical solutions tailored to the needs of the Egyptian market, with a strong focus on quality, safety standards, and after-sales support—making us a trusted partner in electrical and power solutions.",
+        "vision_title": "Our Vision",
+        "vision_text": "To become the leading brand in Egypt for voltage stabilizers and electrical solutions, and the first choice for customers seeking quality, safety, and reliability.",
+        "mission_title": "Our Mission",
+        "mission_text": "To provide advanced electrical solutions that meet the needs of individuals, companies, and traders across Egypt by offering: High-quality, certified products, Competitive pricing, Professional technical support and after-sales service, and Long-term partnerships built on trust and transparency.",
+        "goals_title": "Our Goals",
+        "goals": [
+            "Deliver high-safety voltage stabilizers",
+            "Protect electrical devices from power fluctuations",
+            "Effectively serve the Egyptian market",
+            "Expand our presence nationwide",
+            "Strengthen Volta as a trusted electrical solutions brand"
+        ]
+    },
+    "vision_page": {
+        "title": "Our Vision & Mission",
+        "vision": {
+            "title": "Our Vision",
+            "text": "To become the leading brand in Egypt for voltage stabilizers and electrical solutions, and the first choice for customers seeking quality, safety, and reliability."
+        },
+        "mission": {
+            "title": "Our Mission",
+            "text": "To provide advanced electrical solutions that meet the needs of individuals, companies, and traders across Egypt by offering:",
+            "items": [
+                "High-quality, certified products",
+                "Competitive pricing",
+                "Professional technical support and after-sales service"
+            ],
+            "commitment": "Long-term partnerships built on trust and transparency."
+        },
+        "goals": {
+            "title": "Our Goals",
+            "items": [
+                "Deliver high-safety voltage stabilizers",
+                "Protect electrical devices from power fluctuations",
+                "Effectively serve the Egyptian market",
+                "Expand our presence nationwide",
+                "Strengthen Volta as a trusted electrical solutions brand"
+            ]
+        }
     }
 }

@@ -27,6 +27,8 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import ProductDetails from './pages/ProductDetails';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import AboutUs from './pages/AboutUs';
+import Vision from './pages/Vision';
 import { Toaster } from "@/components/ui/sonner";
 import ScrollToTop from './components/layout/ScrollToTop';
 
@@ -88,6 +90,9 @@ function App() {
           <Route path="/orders" element={<Orders />} />
           <Route path="/addresses" element={<Address />} />
         </Route>
+
+        <Route path="/about-us" element={<AboutUs />} />
+        <Route path="/vision" element={<Vision />} />
 
         <Route path='*' element={<NotFoundPage />} />
       </Routes>

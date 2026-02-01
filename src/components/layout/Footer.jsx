@@ -108,6 +108,16 @@ export default function Footer() {
                   </li>
                 ))}
                 <li>
+                  <Link to="/about-us" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
+                    {t('about_us.title')}
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/vision" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
+                    {t('vision_page.title')}
+                  </Link>
+                </li>
+                <li>
                   <Link to="/contact" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
                     {t('footer.contact_us')}
                   </Link>
