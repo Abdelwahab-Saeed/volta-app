@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
+import SafeImage from "@/components/common/SafeImage";
 
 import logo from '../assets/volta-logo-02.png';
 
@@ -163,7 +164,7 @@ export default function Checkout() {
                         <div className="bg-white rounded-lg shadow-sm p-6">
                             <div className="mb-6">
                                 <div className="border-b border-gray-300 pb-6 mb-4">
-                                    <img src={logo} alt="VOLTA" className="h-15" />
+                                    <SafeImage src={logo} alt="VOLTA" className="h-15" />
                                 </div>
                                 <h2 className="text-2xl font-bold text-gray-800 text-start">{t('checkout.shipping_info')}</h2>
                             </div>
@@ -404,7 +405,7 @@ export default function Checkout() {
                                 {cartItems.map((item) => (
                                     <div key={item.id} className="flex items-center gap-3 pb-4 border-b">
                                         <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 p-2">
-                                            <img
+                                            <SafeImage
                                                 src={`${import.meta.env.VITE_IMAGES_URL}/${item.product?.image}`}
                                                 alt={item.product?.name}
                                                 className="w-full h-full object-contain"

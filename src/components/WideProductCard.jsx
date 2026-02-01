@@ -12,6 +12,7 @@ import { useAuthStore } from '@/stores/useAuthStore';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+import SafeImage from './common/SafeImage';
 export default function WideProductCard({ product }) {
   const addToCart = useCartStore((state) => state.addToCart);
   const cartItems = useCartStore((state) => state.cartItems);
@@ -75,7 +76,7 @@ export default function WideProductCard({ product }) {
           {/* Image Section - Left Side */}
           <div className="p-4 sm:p-8 border-b sm:border-b-0 sm:border-l border-slate-200 flex items-center justify-center bg-white">
             <Link to={`/product/${product.id}`}>
-              <img
+              <SafeImage
                 src={`${import.meta.env.VITE_IMAGES_URL}/${product.image}`}
                 alt={product.name}
                 className="object-contain max-h-48 sm:max-h-56 drop-shadow-lg transition-transform hover:scale-105"

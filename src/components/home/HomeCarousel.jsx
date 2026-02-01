@@ -3,6 +3,7 @@ import { Card, CardContent } from '../ui/card';
 import { Carousel, CarouselContent, CarouselItem } from '../ui/carousel';
 import Autoplay from 'embla-carousel-autoplay';
 import { Skeleton } from '../ui/skeleton';
+import SafeImage from '../common/SafeImage';
 
 export default function HomeCarousel({ banners, loading }) {
   const plugin = useRef(Autoplay({ delay: 3000, stopOnInteraction: false }));
@@ -37,7 +38,7 @@ export default function HomeCarousel({ banners, loading }) {
             return (
               <CarouselItem key={index}>
                 <div className="p-1 h-full">
-                  <img
+                  <SafeImage
                     src={`${import.meta.env.VITE_IMAGES_URL}/${imageUrl}`}
                     alt={banner.title || `Banner ${index + 1}`}
                     className="h-[200px] md:h-[400px] w-full object-cover rounded-md"

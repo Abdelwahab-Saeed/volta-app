@@ -9,6 +9,7 @@ import { useAuthStore } from '@/stores/useAuthStore';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+import SafeImage from './common/SafeImage';
 
 export default function SmallProductCard({ product }) {
   const addToCart = useCartStore((state) => state.addToCart);
@@ -87,7 +88,7 @@ export default function SmallProductCard({ product }) {
             </button>
           </div>
           <Link to={`/product/${product.id}`}>
-            <img
+            <SafeImage
               src={`${import.meta.env.VITE_IMAGES_URL}/${product.image}`}
               alt={product.name}
               className="w-full h-full object-contain transition-transform hover:scale-110 duration-500"

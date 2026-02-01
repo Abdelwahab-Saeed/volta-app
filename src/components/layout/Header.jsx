@@ -24,6 +24,7 @@ import { useComparisonStore } from "@/stores/useComparisonStore";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "@/components/common/LanguageSwitcher";
+import SafeImage from "@/components/common/SafeImage";
 import i18n from '@/i18n';
 
 export default function Header() {
@@ -102,7 +103,7 @@ export default function Header() {
         {/* Logo */}
         <div className="w-55">
           <Link to='/'>
-            <img src={logo} alt="Volta" className="w-full h-auto" />
+            <SafeImage src={logo} alt="Volta" className="w-full h-auto" />
           </Link>
         </div>
 

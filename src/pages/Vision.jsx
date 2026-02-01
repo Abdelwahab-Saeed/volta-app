@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Target, Rocket, CheckCircle2, Award } from 'lucide-react';
+import SafeImage from '@/components/common/SafeImage';
 
 const Vision = () => {
     const { t } = useTranslation();
@@ -35,7 +36,7 @@ const Vision = () => {
                             </h2>
                         </div>
                         <div className="flex-1 bg-white p-2 rounded-2xl shadow-2xl skew-y-2">
-                            <img
+                            <SafeImage
                                 src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop"
                                 alt="Vision"
                                 className="rounded-xl w-full h-[300px] object-cover -skew-y-2"

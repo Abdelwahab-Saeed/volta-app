@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import React from 'react';
+import SafeImage from '../common/SafeImage';
 import { Card, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
 
@@ -19,7 +20,7 @@ export default function OrderCard({ order }) {
           {/* Image Section - Right Side */}
           <div className="w-full md:w-1/3 p-8 flex items-center justify-center bg-gray-50 border-b md:border-b-0 md:border-l">
             {image && (
-              <img
+              <SafeImage
                 src={image}
                 alt={name}
                 className="object-contain max-h-56 drop-shadow-lg"

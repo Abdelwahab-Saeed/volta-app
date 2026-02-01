@@ -5,6 +5,7 @@ import WhiteLogo from '../../assets/Logo-04 2.png';
 import { Facebook, Mail, MapPin } from 'lucide-react';
 import { getCategories } from '@/api/categories';
 import { useTranslation } from 'react-i18next';
+import SafeImage from '../common/SafeImage';
 
 export default function Footer() {
   const { t } = useTranslation();
@@ -50,7 +51,7 @@ export default function Footer() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 text-start">
             {/* Logo and Description */}
             <div className="flex flex-col items-center sm:items-start text-center sm:text-start">
-              <img src={WhiteLogo} alt="Volra White Logo" className="mb-4 w-48 md:w-56" />
+              <SafeImage src={WhiteLogo} alt="Volra White Logo" className="mb-4 w-48 md:w-56" />
               <p className="max-w-xs text-sm md:text-base opacity-90 leading-relaxed">
                 {t('footer.description')}
               </p>

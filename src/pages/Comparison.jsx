@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import SafeImage from "@/components/common/SafeImage";
 
 export default function Comparison() {
     const { t } = useTranslation();
@@ -74,7 +75,7 @@ export default function Comparison() {
                         {comparisonItems.map((product) => (
                             <TableCell key={product.id} className={`${borderStyle}`}>
                                 <div className="max-w-[180px] md:max-w-[250px] mx-auto p-4 text-center">
-                                    <img
+                                    <SafeImage
                                         src={`${import.meta.env.VITE_IMAGES_URL}/${product.image}`}
                                         alt={product.name}
                                         className="w-full h-auto object-contain transition-transform hover:scale-105"

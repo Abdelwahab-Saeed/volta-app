@@ -18,6 +18,7 @@ import { useAuthStore } from '@/stores/useAuthStore';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+import SafeImage from './common/SafeImage';
 
 export default function ProductCard({
   product
@@ -110,7 +111,7 @@ export default function ProductCard({
       {/* Image */}
       <Link to={`/product/${product.id}`}>
         <div className="bg-white p-4 flex items-center justify-center aspect-square">
-          <img
+          <SafeImage
             src={`${import.meta.env.VITE_IMAGES_URL}/${product.image}`}
             alt={product.name}
             className="w-full h-full object-contain"

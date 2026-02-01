@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from 'react-i18next';
+import SafeImage from '../common/SafeImage';
 
 export default function ProductView({
     product,
@@ -33,7 +34,7 @@ export default function ProductView({
             {/* Gallery Section */}
             <div className="space-y-6">
                 <div className="bg-slate-50 border border-slate-100 rounded-3xl p-10 flex items-center justify-center aspect-square relative group overflow-hidden">
-                    <img
+                    <SafeImage
                         src={`${import.meta.env.VITE_IMAGES_URL}/${product.image}`}
                         alt={product.name}
                         className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110"

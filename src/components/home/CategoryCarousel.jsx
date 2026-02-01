@@ -1,4 +1,5 @@
 import React from 'react';
+import SafeImage from '../common/SafeImage';
 import {
   Carousel,
   CarouselContent,
@@ -26,7 +27,7 @@ export default function CategoryCarousel({ categories }) {
             >
               <div className="flex flex-col items-center gap-3">
                 <div className="w-32 h-32 md:w-36 md:h-36 rounded-full border overflow-hidden bg-gray-200">
-                  <img
+                  <SafeImage
                     src={`${import.meta.env.VITE_IMAGES_URL}/${category.image}`}
                     alt={category.name}
                     className="w-full h-full object-cover"

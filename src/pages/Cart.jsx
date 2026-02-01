@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 import { useCartStore } from "@/stores/useCartStore";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import SafeImage from "@/components/common/SafeImage";
 
 export default function Cart() {
     const { t } = useTranslation();
@@ -105,7 +106,7 @@ export default function Cart() {
                                                     <Trash2 className="w-5 h-5" />
                                                 </button>
                                                 <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 p-2">
-                                                    <img
+                                                    <SafeImage
                                                         src={`${import.meta.env.VITE_IMAGES_URL}/${item.product?.image}`}
                                                         alt={item.product?.name}
                                                         className="w-full h-full object-contain"

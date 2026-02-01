@@ -4,6 +4,7 @@ import { useAuthStore } from '@/stores/useAuthStore';
 import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { User, SwitchCamera } from 'lucide-react';
+import SafeImage from '../common/SafeImage';
 import { Button } from '../ui/button';
 
 export default function ProfileForm() {
@@ -85,7 +86,7 @@ export default function ProfileForm() {
                 className="w-full h-full object-cover"
               />
             ) : user?.image ? (
-              <img
+              <SafeImage
                 src={`${import.meta.env.VITE_IMAGES_URL}/${user.image}`}
                 alt={user.name}
                 className="w-full h-full object-cover"
