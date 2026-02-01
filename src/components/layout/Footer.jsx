@@ -97,7 +97,7 @@ export default function Footer() {
             <div className="flex flex-col items-center sm:items-start text-center sm:text-start">
               <h4 className="text-lg md:text-xl font-semibold mb-6">{t('footer.about_volta')}</h4>
               <ul className="space-y-3 opacity-80">
-                {categories.slice(0, 3).map((category, index) => (
+                {/* {categories.slice(0, 3).map((category, index) => (
                   <li key={category.id || index}>
                     <Link
                       to={`/products?category=${category.id}`}
@@ -106,7 +106,7 @@ export default function Footer() {
                       {category.name}
                     </Link>
                   </li>
-                ))}
+                ))} */}
                 <li>
                   <Link to="/about-us" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
                     {t('about_us.title')}
@@ -118,15 +118,15 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/contact" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
+                  <a href="https://wa.me/+201111126804" target="_blank" rel="noreferrer" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
                     {t('footer.contact_us')}
-                  </Link>
+                  </a>
                 </li>
-                <li>
+                {/* <li>
                   <Link to="/privacy-policy" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
                     {t('footer.return_policy')}
                   </Link>
-                </li>
+                </li> */}
               </ul>
             </div>
 
@@ -137,10 +137,10 @@ export default function Footer() {
                 <li>{t('footer.have_questions')}</li>
                 <li className="!mt-2">
                   <a
-                    href="tel:+201212240202"
+                    href="tel:+201111126804"
                     className="hover:text-secondary transition-colors text-xl font-bold block"
                   >
-                    01212240202
+                    01111126804
                   </a>
                 </li>
                 <li>

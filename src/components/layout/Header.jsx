@@ -85,7 +85,7 @@ export default function Header() {
         <div className="flex items-center gap-4">
           <LanguageSwitcher />
         </div>
-        <a href="#" className="hover:underline">{t('header.contact')}</a>
+        <a href="tel:+201111126804" className="hover:underline">{t('header.contact')}</a>
       </div>
 
       {/* --- Main Header --- */}
@@ -225,10 +225,10 @@ export default function Header() {
               </Link>
             ))}
           </ul>
-          <div className="hidden lg:block text-[13px] whitespace-nowrap pe-4">
+          {/* <div className="hidden lg:block text-[13px] whitespace-nowrap pe-4">
             <span className="text-white ms-2">{t('header.hotline')}:</span><br />
             <span className="font-bold">16105</span>
-          </div>
+          </div> */}
         </div>
       </nav>
 
