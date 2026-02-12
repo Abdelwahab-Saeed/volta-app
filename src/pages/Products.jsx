@@ -15,7 +15,7 @@ export default function Products() {
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [sort, setSort] = useState('price_asc');
-  const [selectedCategory, setSelectedCategory] = useState(null);
+
   const [priceRange, setPriceRange] = useState([0, 100000]);
   const [mode, setMode] = useState('grid');
   const [search, setSearch] = useState('');
@@ -28,48 +28,30 @@ export default function Products() {
   // Local state for page to control fetch
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Fetch categories on mount and set initial category from URL
+  // Derive selectedCategory from URL
+  const categoryIdFromUrl = searchParams.get('category');
+  const selectedCategory = categories.find(c => c.id.toString() === categoryIdFromUrl) || null;
+
+  // Fetch categories on mount
   useEffect(() => {
     const fetchCats = async () => {
       try {
         const response = await getCategories();
         const cats = response.data.data || response.data;
         setCategories(cats);
-
-        // Sync with URL param
-        const categoryId = searchParams.get('category');
-        if (categoryId) {
-          const cat = cats.find(c => c.id.toString() === categoryId);
-          if (cat) setSelectedCategory(cat);
-        }
       } catch (err) {
         console.error('Error fetching categories:', err);
       }
     };
     fetchCats();
-  }, []); // Run once
+  }, []);
 
-  // Update URL when selectedCategory changes
-  useEffect(() => {
-    if (selectedCategory) {
-      setSearchParams(params => {
-        params.set('category', selectedCategory.id);
-        return params;
-      });
-    } else {
-      setSearchParams(params => {
-        params.delete('category');
-        return params;
-      });
-    }
-  }, [selectedCategory, setSearchParams]);
-
-  // Fetch products when filters change
+  // Fetch products when filters change (including category from URL)
   useEffect(() => {
     const params = {
       page: currentPage,
-      limit: 12, // Fixed limit or make it dynamic
-      sort: sort === 'price_asc' ? 'asc' : 'desc', // Mapping sort to API expectation
+      limit: 12,
+      sort: sort === 'price_asc' ? 'asc' : 'desc',
       min_price: priceRange[0],
       max_price: priceRange[1],
     };
@@ -78,16 +60,23 @@ export default function Products() {
       params.search = debouncedSearch;
     }
 
-    if (selectedCategory) {
-      params.category = selectedCategory.id;
+    if (categoryIdFromUrl) {
+      params.category = categoryIdFromUrl;
     }
 
     fetchProducts(params);
-  }, [currentPage, selectedCategory, sort, priceRange, debouncedSearch, fetchProducts]);
+  }, [currentPage, categoryIdFromUrl, sort, priceRange, debouncedSearch, fetchProducts]);
 
 
   const handleCategoryChange = (category) => {
-    setSelectedCategory(prev => prev?.id === category.id ? null : category);
+    setSearchParams(params => {
+      if (params.get('category') === category.id.toString()) {
+        params.delete('category');
+      } else {
+        params.set('category', category.id);
+      }
+      return params;
+    });
     setCurrentPage(1);
   };
 
