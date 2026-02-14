@@ -86,7 +86,7 @@ export default function Header() {
         <div className="flex items-center gap-4">
           <LanguageSwitcher />
         </div>
-        <a href="tel:+201111126804" className="hover:underline">{t('header.contact')}</a>
+        <a href="tel:+201222245464" className="hover:underline">{t('header.contact')}</a>
       </div>
 
       {/* --- Main Header --- */}
