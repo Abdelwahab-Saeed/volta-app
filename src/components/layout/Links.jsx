@@ -10,13 +10,13 @@ export default function Links() {
 
     const links = [
         {
-            href: "tel:+201111126804",
+            href: "tel:+201222245464",
             icon: <PhoneCall size={24} />,
             ariaLabel: t('layout.call_us'),
             color: "bg-secondary"
         },
         {
-            href: "https://wa.me/+201222245464",
+            href: "https://wa.me/+201111126804",
             target: "_blank",
             rel: "noreferrer",
             icon: (
