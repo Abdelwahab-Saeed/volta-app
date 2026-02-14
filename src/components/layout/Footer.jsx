@@ -138,10 +138,10 @@ export default function Footer() {
                 <li>{t('footer.have_questions')}</li>
                 <li className="!mt-2">
                   <a
-                    href="tel:+201111126804"
+                    href="tel:+201222245464"
                     className="hover:text-secondary transition-colors text-xl font-bold block"
                   >
-                    01111126804
+                    01222245464
                   </a>
                 </li>
                 <li>
