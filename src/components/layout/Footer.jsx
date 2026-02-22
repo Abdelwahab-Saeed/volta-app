@@ -119,6 +119,11 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
+                  <Link to="/blog" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
+                    {t('footer.blog') || 'Blog'}
+                  </Link>
+                </li>
+                <li>
                   <a href="https://wa.me/+201111126804" target="_blank" rel="noreferrer" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
                     {t('footer.contact_us')}
                   </a>

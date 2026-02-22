@@ -27,7 +27,8 @@
         "my_account": "My Account",
         "visit_profile": "Visit Profile",
         "login_prompt": "Login to your account",
-        "featured_products": "Featured Products"
+        "featured_products": "Featured Products",
+        "blog": "Blog"
     },
     "layout": {
         "call_us": "Call Us",
@@ -48,7 +49,8 @@
         "contact_us": "Contact Us",
         "return_policy": "Return & Exchange Policy",
         "have_questions": "Have questions? Contact us",
-        "location": "Beni Suef - Egypt"
+        "location": "Beni Suef - Egypt",
+        "blog": "Blog"
     },
     "home": {
         "features": {
@@ -334,5 +336,10 @@
                 "Strengthen Volta as a trusted electrical solutions brand"
             ]
         }
+    },
+    "blog": {
+        "no_posts": "No posts available",
+        "read_more": "Read More",
+        "back_to_blog": "Back to Blog"
     }
 }

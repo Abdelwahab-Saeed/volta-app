@@ -29,6 +29,8 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import AboutUs from './pages/AboutUs';
 import Vision from './pages/Vision';
+import Posts from './pages/Posts';
+import PostDetails from './pages/PostDetails';
 import { Toaster } from "@/components/ui/sonner";
 import ScrollToTop from './components/layout/ScrollToTop';
 
@@ -93,6 +95,8 @@ function App() {
 
         <Route path="/about-us" element={<AboutUs />} />
         <Route path="/vision" element={<Vision />} />
+        <Route path="/blog" element={<Posts />} />
+        <Route path="/blog/:id" element={<PostDetails />} />
 
         <Route path='*' element={<NotFoundPage />} />
       </Routes>

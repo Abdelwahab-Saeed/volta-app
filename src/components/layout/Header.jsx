@@ -225,6 +225,9 @@ export default function Header() {
                 {/* Note: Ideally categories should come translated from API */}
               </Link>
             ))}
+            <Link to="/blog" className="cursor-pointer hover:text-secondary whitespace-nowrap">
+              {t('header.blog') || 'Blog'}
+            </Link>
           </ul>
           {/* <div className="hidden lg:block text-[13px] whitespace-nowrap pe-4">
             <span className="text-white ms-2">{t('header.hotline')}:</span><br />
@@ -282,6 +285,11 @@ export default function Header() {
                   </Link>
                 </li>
               ))}
+              <li className="text-gray-700 font-medium hover:text-secondary cursor-pointer">
+                <Link to="/blog" onClick={() => setIsMenuOpen(false)}>
+                  {t('header.blog') || 'Blog'}
+                </Link>
+              </li>
             </ul>
 
             <div className="mt-auto pt-6 border-t flex flex-col gap-4">
