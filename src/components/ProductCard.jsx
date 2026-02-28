@@ -78,9 +78,9 @@ export default function ProductCard({
     setAddingStr(true);
     await addToCart(product);
     ReactPixel.track('AddToCart', {
-      content_ids: [product.id],
+      content_ids: [],
       content_type: 'product',
-      value: product.price,
+      value: 0,
       currency: 'EGP'
     });
     setAddingStr(false);

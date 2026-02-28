@@ -36,9 +36,9 @@ export default function ProductDetails() {
 
     useEffect(() => {
         ReactPixel.track('ViewContent', {
-            content_ids: [product.id],
+            content_ids: [],
             content_type: 'product',
-            value: product.price,
+            value: 0,
             currency: 'EGP'
         });
     }, []);
