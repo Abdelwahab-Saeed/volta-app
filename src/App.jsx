@@ -33,6 +33,15 @@ import Posts from './pages/Posts';
 import PostDetails from './pages/PostDetails';
 import { Toaster } from "@/components/ui/sonner";
 import ScrollToTop from './components/layout/ScrollToTop';
+import ReactPixel from 'react-facebook-pixel';
+
+const options = {
+  autoConfig: true,
+  debug: false,
+};
+
+ReactPixel.init('1991169388498204', {}, options);
+ReactPixel.pageView();
 
 function App() {
   const checkAuth = useAuthStore((state) => state.checkAuth);

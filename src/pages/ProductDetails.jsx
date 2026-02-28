@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import ProductView from "@/components/product/ProductView";
 import SpecialProducts from "@/components/home/SpecialProducts";
+import ReactPixel from 'react-facebook-pixel';
 
 export default function ProductDetails() {
     const { id } = useParams();
@@ -32,6 +33,16 @@ export default function ProductDetails() {
 
     const [addingStr, setAddingStr] = useState(false);
     const { products: allProducts, fetchProducts } = useProductStore();
+
+    useEffect(() => {
+        ReactPixel.track('ViewContent', {
+            content_name: product.name,
+            content_ids: [product.id],
+            content_type: 'product',
+            value: product.price,
+            currency: 'EGP'
+        });
+    }, []);
 
     useEffect(() => {
         fetchProducts();

@@ -9,6 +9,7 @@ import { getCategories } from '@/api/categories';
 import { getProducts } from '@/api/products.api';
 import { useProductStore } from '@/stores/useProductStore';
 import { useBannerStore } from '@/stores/useBannerStore';
+import ReactPixel from 'react-facebook-pixel';
 
 export default function Home() {
   const { t } = useTranslation();
@@ -27,6 +28,10 @@ export default function Home() {
   const [categories, setCategories] = useState([]);
   const [categoriesWithProducts, setCategoriesWithProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    ReactPixel.pageView();
+  }, []);
 
   // Fetch categories, products, and banners on mount
   useEffect(() => {
