@@ -5,6 +5,7 @@ import ProductCard from '@/components/ProductCard';
 import { Loader2, Square, LayoutGrid, StretchHorizontal } from 'lucide-react';
 import WideProductCard from '@/components/WideProductCard';
 import { useTranslation } from 'react-i18next';
+import ReactPixel from 'react-facebook-pixel';
 
 export default function SearchResults() {
     const { t } = useTranslation();
@@ -21,6 +22,10 @@ export default function SearchResults() {
                 search: query,
                 page: currentPage,
                 limit: 12,
+            });
+            // Meta Pixel: Track Search
+            ReactPixel.track('Search', {
+                search_string: query
             });
         }
     }, [query, currentPage, fetchProducts]);

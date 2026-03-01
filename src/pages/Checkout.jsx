@@ -18,6 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import SafeImage from "@/components/common/SafeImage";
 
 import logo from '../assets/volta-logo-02.png';
+import ReactPixel from 'react-facebook-pixel';
 
 export default function Checkout() {
     const navigate = useNavigate();
@@ -53,6 +54,18 @@ export default function Checkout() {
             navigate('/');
         }
     }, [cartItems.length, cartLoading, navigate]);
+
+    // Meta Pixel: Track InitiateCheckout
+    useEffect(() => {
+        if (!cartLoading && cartItems.length > 0) {
+            ReactPixel.track('InitiateCheckout', {
+                content_ids: cartItems.map(item => item.product_id),
+                content_type: 'product',
+                value: getCartTotal(),
+                currency: 'EGP'
+            });
+        }
+    }, [cartLoading, cartItems.length]); // Track only once when cart is loaded and not empty
 
     const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm({
         defaultValues: {

@@ -50,7 +50,7 @@ export default function ProductDetails() {
             setMainImage(product.image);
             setQuantity(1); // Default to 1, not stock
             ReactPixel.track('ViewContent', {
-                content_ids: [product.name],
+                content_ids: [product.id],
                 content_type: 'product',
                 value: product.price,
                 currency: 'EGP'
@@ -111,7 +111,7 @@ export default function ProductDetails() {
         try {
             await addToCart(product, quantity);
             ReactPixel.track('AddToCart', {
-                content_ids: [product.name],
+                content_ids: [product.id],
                 content_type: 'product',
                 value: product.price,
                 currency: 'EGP'
@@ -128,7 +128,7 @@ export default function ProductDetails() {
         try {
             await addToCart(product, quantity);
             ReactPixel.track('InitiateCheckout', {
-                content_ids: [product.name],
+                content_ids: [product.id],
                 content_type: 'product',
                 value: product.price,
                 currency: 'EGP'

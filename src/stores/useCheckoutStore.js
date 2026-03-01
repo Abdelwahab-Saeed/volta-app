@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { checkout } from '@/api/orders.api';
 import { useCartStore } from './useCartStore'; // To clear cart
 import { toast } from 'sonner';
+import ReactPixel from 'react-facebook-pixel';
 
 export const useCheckoutStore = create((set) => ({
     isLoading: false,
@@ -18,6 +19,15 @@ export const useCheckoutStore = create((set) => ({
             set({ success: true, orderData: response.data.data?.order || response.data.data, isLoading: false });
 
             toast.success(response.data.message || 'تم إنشاء الطلب بنجاح');
+
+            // Meta Pixel: Track Purchase
+            const cartStore = useCartStore.getState();
+            ReactPixel.track('Purchase', {
+                content_ids: cartStore.cartItems.map(item => item.product_id),
+                content_type: 'product',
+                value: cartStore.getCartTotal(),
+                currency: 'EGP'
+            });
 
             // Clear cart
             useCartStore.getState().clearCart();

@@ -34,14 +34,24 @@ import PostDetails from './pages/PostDetails';
 import { Toaster } from "@/components/ui/sonner";
 import ScrollToTop from './components/layout/ScrollToTop';
 import ReactPixel from 'react-facebook-pixel';
+import { useLocation } from 'react-router-dom';
 
 const options = {
   autoConfig: true,
   debug: false,
 };
 
-ReactPixel.init('1991169388498204', {}, options);
-ReactPixel.pageView();
+ReactPixel.init(import.meta.env.VITE_META_PIXEL_ID, {}, options);
+
+function PixelTracker() {
+  const location = useLocation();
+
+  useEffect(() => {
+    ReactPixel.pageView();
+  }, [location]);
+
+  return null;
+}
 
 function App() {
   const checkAuth = useAuthStore((state) => state.checkAuth);
@@ -76,6 +86,7 @@ function App() {
 
   return (
     <>
+      <PixelTracker />
       <ScrollToTop />
       <Header />
       <Links />
