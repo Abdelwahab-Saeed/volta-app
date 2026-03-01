@@ -10,6 +10,7 @@ import { useNavigate, Link } from "react-router-dom"
 import { useAuthStore } from "@/stores/useAuthStore"
 import { useState } from "react"
 import { useTranslation } from "react-i18next";
+import { KeyRound, ArrowRight, Loader2 } from "lucide-react";
 
 export default function ForgotPassword() {
     const { t } = useTranslation();

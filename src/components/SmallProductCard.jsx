@@ -66,6 +66,12 @@ export default function SmallProductCard({ product }) {
 
     setAddingStr(true);
     await addToCart(product);
+    ReactPixel.track('AddToCart', {
+      content_ids: [product.id],
+      content_type: 'product',
+      value: product.price,
+      currency: 'EGP'
+    });
     setAddingStr(false);
   };
 
@@ -142,11 +148,11 @@ export default function SmallProductCard({ product }) {
               try {
                 await addToCart(product);
                 ReactPixel.track('InitiateCheckout', {
-                                content_ids: [product.name],
-                                content_type: 'product',
-                                value: product.price,
-                                currency: 'EGP'
-                            });
+                  content_ids: [product.id],
+                  content_type: 'product',
+                  value: product.price,
+                  currency: 'EGP'
+                });
                 navigate('/checkout');
               } catch (error) {
                 console.error(error);
