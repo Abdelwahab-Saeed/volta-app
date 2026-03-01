@@ -78,9 +78,9 @@ export default function ProductCard({
     setAddingStr(true);
     await addToCart(product);
     ReactPixel.track('AddToCart', {
-      content_ids: [],
+      content_ids: [product.name],
       content_type: 'product',
-      value: 0,
+      value: product.price,
       currency: 'EGP'
     });
     setAddingStr(false);
@@ -171,6 +171,12 @@ export default function ProductCard({
                 setAddingStr(true);
                 try {
                   await addToCart(product);
+                  ReactPixel.track('InitiateCheckout', {
+                    content_ids: [product.name],
+                    content_type: 'product',
+                    value: product.price,
+                    currency: 'EGP'
+                });
                   navigate('/checkout');
                 } catch (error) {
                   console.error(error);

@@ -35,15 +35,6 @@ export default function ProductDetails() {
     const { products: allProducts, fetchProducts } = useProductStore();
 
     useEffect(() => {
-        ReactPixel.track('ViewContent', {
-            content_ids: [],
-            content_type: 'product',
-            value: 0,
-            currency: 'EGP'
-        });
-    }, []);
-
-    useEffect(() => {
         fetchProducts();
     }, [fetchProducts]);
 
@@ -58,6 +49,12 @@ export default function ProductDetails() {
         if (product) {
             setMainImage(product.image);
             setQuantity(1); // Default to 1, not stock
+            ReactPixel.track('ViewContent', {
+                content_ids: [product.name],
+                content_type: 'product',
+                value: product.price,
+                currency: 'EGP'
+            });
         }
     }, [product]);
 
@@ -113,6 +110,12 @@ export default function ProductDetails() {
         setAddingStr(true);
         try {
             await addToCart(product, quantity);
+            ReactPixel.track('AddToCart', {
+                content_ids: [product.name],
+                content_type: 'product',
+                value: product.price,
+                currency: 'EGP'
+            });
         } catch (error) {
             console.error(error);
         } finally {
@@ -124,6 +127,12 @@ export default function ProductDetails() {
         setAddingStr(true);
         try {
             await addToCart(product, quantity);
+            ReactPixel.track('InitiateCheckout', {
+                content_ids: [product.name],
+                content_type: 'product',
+                value: product.price,
+                currency: 'EGP'
+            });
             navigate('/checkout');
         } catch (error) {
             console.error(error);

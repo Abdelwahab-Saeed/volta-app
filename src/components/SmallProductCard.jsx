@@ -10,6 +10,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import SafeImage from './common/SafeImage';
+import ReactPixel from 'react-facebook-pixel';
+
 
 export default function SmallProductCard({ product }) {
   const addToCart = useCartStore((state) => state.addToCart);
@@ -139,6 +141,12 @@ export default function SmallProductCard({ product }) {
               setAddingStr(true);
               try {
                 await addToCart(product);
+                ReactPixel.track('InitiateCheckout', {
+                                content_ids: [product.name],
+                                content_type: 'product',
+                                value: product.price,
+                                currency: 'EGP'
+                            });
                 navigate('/checkout');
               } catch (error) {
                 console.error(error);
