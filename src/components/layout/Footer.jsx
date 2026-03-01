@@ -167,6 +167,15 @@ export default function Footer() {
           </div>
         </div>
       </div>
+
+      {/* Sub-footer */}
+      <div className="bg-primary border-t border-white/10 py-4">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-sm opacity-70">
+            Developed and Maintained by Falak Innovation © All Rights Reserved - Volta
+          </p>
+        </div>
+      </div>
     </footer>
   );
 }
