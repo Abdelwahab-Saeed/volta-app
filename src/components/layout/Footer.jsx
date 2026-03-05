@@ -100,6 +100,11 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
+                  <Link to="/shipping-policy" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
+                    {t('shipping_policy.title')}
+                  </Link>
+                </li>
+                <li>
                   <Link to="/blog" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
                     {t('footer.blog') || 'Blog'}
                   </Link>
@@ -109,7 +114,7 @@ export default function Footer() {
                     {t('footer.contact_us')}
                   </a>
                 </li>
-                
+
               </ul>
             </div>
 

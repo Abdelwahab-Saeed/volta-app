@@ -393,5 +393,54 @@
             }
         ],
         "footer_note": "Rest assured — you are working with a company committed to professionalism, integrity, and customer respect."
+    },
+    "shipping_policy": {
+        "title": "Shipping & Delivery Policy",
+        "last_updated": "Last Updated: [02/03/2026]",
+        "description": "At Volta Stabilizer & Electrical Solutions, we partner with shipping companies to handle the delivery of orders, ensuring our customers across Egypt receive reliable service. Please review the following Shipping & Delivery Policy:",
+        "scope_title": "Shipping Scope",
+        "scope_desc": "We ship to all governorates across the Arab Republic of Egypt. Customers will be notified if shipping is unavailable to certain areas.",
+        "processing_title": "Order Processing Time",
+        "processing_items": [
+            "Orders are processed within 1 business day from the date of order confirmation.",
+            "Orders confirmed after 12:00 PM may be processed on the next business day.",
+            "Processing time does not include public holidays or weekends."
+        ],
+        "delivery_time_title": "Delivery Time",
+        "delivery_time_desc": "Delivery time depends on the customer’s location:",
+        "delivery_time_estimate": "Estimated delivery time for customers is 3 to 5 business days. Delivery may take longer during promotional periods or exceptional circumstances.",
+        "fees_title": "Shipping Fees",
+        "fees_items": [
+            "Shipping fees are calculated based on the geographic location and product weight/size.",
+            "Shipping costs are clearly displayed before completing payment.",
+            "Free shipping may be offered during promotions or for orders above a certain value."
+        ],
+        "confirmation_title": "Order Confirmation",
+        "confirmation_items": [
+            "Customers will be contacted to confirm the order before shipping (via phone or SMS).",
+            "If contact cannot be made, the company reserves the right to cancel the order to maintain service quality."
+        ],
+        "receiving_title": "Receiving the Order",
+        "receiving_items": [
+            "Please inspect the product upon delivery.",
+            "If visible damage to the product or packaging is found, the shipping company must be notified immediately and the issue documented.",
+            "Signing for the delivery indicates that the product has been received in apparent good condition."
+        ],
+        "delays_title": "Shipping Delays",
+        "delays_desc": "Delays may occur due to circumstances beyond our control, including:",
+        "delays_items": [
+            "Weather conditions",
+            "Logistic or transport issues",
+            "Seasonal demand or promotional periods",
+            "Emergency situations"
+        ],
+        "delays_footer": "In such cases, we will make every effort to keep the customer informed.",
+        "address_title": "Shipping Address",
+        "address_items": [
+            "Customers are responsible for providing accurate and complete shipping information.",
+            "Incorrect addresses may result in additional reshipping fees."
+        ],
+        "contact_us_title": "Contact Us",
+        "contact_us_text": "We are here to help you choose the most suitable electrical solution for your needs. Do not hesitate to contact us:"
     }
 }
