@@ -89,11 +89,11 @@ export default function Footer() {
                     {t('about_us.title')}
                   </Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link to="/vision" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
                     {t('vision_page.title')}
                   </Link>
-                </li>
+                </li> */}
                 <li>
                   <Link to="/return-policy" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
                     {t('return_policy.title')}
@@ -102,6 +102,11 @@ export default function Footer() {
                 <li>
                   <Link to="/shipping-policy" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
                     {t('shipping_policy.title')}
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/privacy-policy" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
+                    {t('footer.privacy_policy')}
                   </Link>
                 </li>
                 <li>

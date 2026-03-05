@@ -48,6 +48,7 @@
         "about_volta": "About Volta",
         "contact_us": "Contact Us",
         "return_policy": "Return & Exchange Policy",
+        "privacy_policy": "Privacy Policy",
         "have_questions": "Have questions? Contact us",
         "location": "Beni Suef - Egypt",
         "blog": "Blog"
@@ -442,5 +443,44 @@
         ],
         "contact_us_title": "Contact Us",
         "contact_us_text": "We are here to help you choose the most suitable electrical solution for your needs. Do not hesitate to contact us:"
+    },
+    "privacy_policy": {
+        "title": "Privacy Policy",
+        "last_updated": "Last Updated: [02/03/2026]",
+        "welcome": "At Volta Stabilizer & Electrical Solutions, we respect your privacy and are committed to protecting your personal data when you use our website. This policy explains how we collect, use, and safeguard your information when shopping with us.",
+        "collect_title": "Information We Collect",
+        "collect_items": [
+            "Account Information: Name, email address, phone number.",
+            "Order Details: Shipping address, payment method, and products ordered.",
+            "Usage Data: Browsing activity, IP address, device type, and browser information."
+        ],
+        "use_title": "How We Use Your Data",
+        "use_desc": "We use your information to:",
+        "use_items": [
+            "Process orders and manage customer accounts.",
+            "Improve the user experience on our website.",
+            "Communicate with customers regarding orders or promotions.",
+            "Comply with applicable laws and regulations."
+        ],
+        "share_title": "Sharing Your Data",
+        "share_items": [
+            "We do not share your data with any third party for commercial purposes without your consent.",
+            "Data may be shared with shipping companies or payment providers to fulfill orders.",
+            "We comply with legal authorities when required by law."
+        ],
+        "security_title": "Data Security",
+        "security_items": [
+            "We implement technical and organizational measures to protect your data from unauthorized access, theft, or modification.",
+            "While we strive to provide the highest level of security, no system can be guaranteed 100% secure."
+        ],
+        "rights_title": "Your Rights",
+        "rights_items": [
+            "Access, correct, or request deletion of your personal data in accordance with Egyptian law.",
+            "Withdraw consent for processing of your data where consent was previously given."
+        ],
+        "contact_us_title": "Contact Us",
+        "contact_us_text": "We are here to help you choose the most suitable electrical solution for your needs. Do not hesitate to contact us:",
+        "hotline": "Hotline: 01222245464",
+        "address": "Address: Villa 869, Ground Floor – Third District (Consultants District) – New Beni Suef City – Beni Suef Governorate – Egypt"
     }
 }

@@ -33,6 +33,7 @@ import ReturnPolicy from './pages/ReturnPolicy';
 import ShippingPolicy from './pages/ShippingPolicy';
 import Posts from './pages/Posts';
 import PostDetails from './pages/PostDetails';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 import { Toaster } from "@/components/ui/sonner";
 import ScrollToTop from './components/layout/ScrollToTop';
 import ReactPixel from 'react-facebook-pixel';
@@ -119,6 +120,7 @@ function App() {
         <Route path="/vision" element={<Vision />} />
         <Route path="/return-policy" element={<ReturnPolicy />} />
         <Route path="/shipping-policy" element={<ShippingPolicy />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/blog" element={<Posts />} />
         <Route path="/blog/:id" element={<PostDetails />} />
 
