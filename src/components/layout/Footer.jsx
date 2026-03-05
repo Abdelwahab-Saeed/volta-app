@@ -104,11 +104,11 @@ export default function Footer() {
                     {t('footer.contact_us')}
                   </a>
                 </li>
-                {/* <li>
-                  <Link to="/privacy-policy" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
-                    {t('footer.return_policy')}
+                <li>
+                  <Link to="/return-policy" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
+                    {t('return_policy.title')}
                   </Link>
-                </li> */}
+                </li>
               </ul>
             </div>
 

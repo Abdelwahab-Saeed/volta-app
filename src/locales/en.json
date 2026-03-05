@@ -343,5 +343,55 @@
         "no_posts": "No posts available",
         "read_more": "Read More",
         "back_to_blog": "Back to Blog"
+    },
+    "return_policy": {
+        "title": "Return & Refund Policy",
+        "welcome": "Welcome to our official Return & Refund Policy page. We are committed to providing a comfortable and secure shopping experience and ensuring customer satisfaction with the products received. Please review the following Return & Refund Policy carefully:",
+        "important": "Important: You have 14 days from the date of receipt to return the product if the reason is a change of mind, provided that the return conditions are met. In case of a visible defect or damage, you must notify us within 48 hours of receipt.",
+        "general_conditions_title": "1. General Return Conditions",
+        "condition_48h": "For a product to be eligible for return within 48 hours (due to damage or a clear defect), the product must be:",
+        "condition_48h_item": "Complete with all components and in its original packaging, even if the packaging has been opened.",
+        "condition_opinion": "For a product to be eligible for return due to a change of mind, the product must be:",
+        "condition_opinion_item": "In the same condition as received.",
+        "condition_manufacturing": "For a product to be eligible for return due to a manufacturing defect, the following is required:",
+        "condition_manufacturing_items": [
+            "Technical approval from the company’s specialists.",
+            "The product must be complete with all components and in its original packaging, even if the packaging has been opened."
+        ],
+        "periods_title": "2. Return Periods",
+        "periods_desc": "The timeframe for initiating the return process depends on the reason for return:",
+        "periods_items": [
+            "Damaged product or visible defect: Within 48 hours from the date of receipt.",
+            "Change of mind: Within 14 days from the date of receipt.",
+            "Manufacturing defect: Within 30 days from the date of receipt."
+        ],
+        "non_returnable_title": "3. Non-Returnable Products",
+        "non_returnable_desc": "Some products cannot be returned due to their nature, such as:",
+        "non_returnable_item": "Inverter devices that may be damaged due to incorrect installation or connection.",
+        "how_to_start_title": "4. How to Start a Return Process",
+        "how_to_start_desc": "Please follow the steps below to complete your return request:",
+        "steps": [
+            {
+                "title": "Submit a request:",
+                "text": "When you register your return request through our Customer Service representative by contacting 0122224564 or via our social media pages, you will be informed of the scheduled period for collecting the returned item. During this period, the shipping representative will contact you to coordinate the pickup time."
+            },
+            {
+                "title": "Packaging:",
+                "text": "Ensure the product is securely packed in its original packaging along with all accessories and documents."
+            },
+            {
+                "title": "Pickup:",
+                "text": "The shipping representative will contact you to schedule the pickup."
+            },
+            {
+                "title": "Inspection:",
+                "text": "If the return request is approved, the refunded amount will be transferred to your e-wallet or InstaPay account within 48 hours. The complete return process may take 5 to 10 working days."
+            },
+            {
+                "title": "Refund:",
+                "text": "After passing the inspection, the refund process will be completed."
+            }
+        ],
+        "footer_note": "Rest assured — you are working with a company committed to professionalism, integrity, and customer respect."
     }
 }
