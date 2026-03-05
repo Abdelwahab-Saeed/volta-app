@@ -296,45 +296,47 @@
     },
     "about_us": {
         "title": "About Us",
-        "description": "Volta Stabilizer & Electrical Solutions is an Egyptian company specializing in voltage stabilizers and integrated electrical solutions. We serve individuals, businesses, and traders by providing reliable electrical products designed to protect equipment and ensure stable and efficient power performance. At Volta, we are committed to delivering practical solutions tailored to the needs of the Egyptian market, with a strong focus on quality, safety standards, and after-sales support—making us a trusted partner in electrical and power solutions.",
+        "subtitle": "Volta Stabilizer & Electrical Solutions",
+        "description": "Volta Stabilizer & Electrical Solutions is a leading company providing integrated and innovative electrical solutions with extensive experience in the field. Volta is a limited liability company and an extension of Al-Handasia for Electrical Protection, which was established in 2011. Volta is the exclusive agent of the STABILIZER VOLTA brand, offering some of the best voltage stabilizers and transformers in Egypt. It is also the exclusive agent of the VOLTAFAY brand, which provides a wide range of electrical protection devices and related products that have proven their efficiency over years in the Egyptian market.",
         "vision_title": "Our Vision",
-        "vision_text": "To become the leading brand in Egypt for voltage stabilizers and electrical solutions, and the first choice for customers seeking quality, safety, and reliability.",
+        "vision_text": "To be one of the leading companies in voltage stabilization systems and energy solutions in Egypt through continuous innovation and commitment to the highest quality standards.",
         "mission_title": "Our Mission",
-        "mission_text": "To provide advanced electrical solutions that meet the needs of individuals, companies, and traders across Egypt by offering: High-quality, certified products, Competitive pricing, Professional technical support and after-sales service, and Long-term partnerships built on trust and transparency.",
-        "goals_title": "Our Goals",
-        "goals": [
-            "Deliver high-safety voltage stabilizers",
-            "Protect electrical devices from power fluctuations",
-            "Effectively serve the Egyptian market",
-            "Expand our presence nationwide",
-            "Strengthen Volta as a trusted electrical solutions brand"
-        ]
+        "mission_text": "To provide effective and safe electrical solutions that simplify our customers’ lives, while delivering outstanding customer service and continuous technical support.",
+        "what_we_offer_title": "What We Offer?",
+        "what_we_offer_items": [
+            "Stabilizers (voltage regulators) with various capacities for residential, commercial, and industrial use.",
+            "Protection solutions against voltage surges and drops.",
+            "Design and implementation of electrical panels of all types.",
+            "Supply of UPS systems.",
+            "Smart home devices and technologies.",
+            "Technical consultations to select the most suitable solutions.",
+            "Maintenance services and specialized technical support."
+        ],
+        "why_volta_title": "Why Volta?",
+        "why_volta_items": [
+            "High quality and safety standards.",
+            "Practical expertise in electrical solutions.",
+            "Strong warranty.",
+            "Commitment to deadlines and after-sales service.",
+            "Highly trained and specialized technical team.",
+            "Dedicated customer service to meet client requirements."
+        ],
+        "our_clients_title": "Our Clients",
+        "our_clients_text": "We are proud to serve a wide range of clients including individuals, companies, factories, electrical supply stores, and electrical appliance showrooms. We always strive to build long-term relationships based on trust and credibility.",
+        "contact_us_title": "Contact Us",
+        "contact_us_text": "We are here to help you choose the most suitable electrical solution for your needs. Do not hesitate to contact us for technical consultation or a customized quotation.",
+        "hotline": "Hotline: 01222245464",
+        "address": "Address: Villa 869, Ground Floor – Third District (Consultants District) – New Beni Suef City – Beni Suef Governorate – Egypt"
     },
     "vision_page": {
         "title": "Our Vision & Mission",
         "vision": {
             "title": "Our Vision",
-            "text": "To become the leading brand in Egypt for voltage stabilizers and electrical solutions, and the first choice for customers seeking quality, safety, and reliability."
+            "text": "To be one of the leading companies in voltage stabilization systems and energy solutions in Egypt through continuous innovation and commitment to the highest quality standards."
         },
         "mission": {
             "title": "Our Mission",
-            "text": "To provide advanced electrical solutions that meet the needs of individuals, companies, and traders across Egypt by offering:",
-            "items": [
-                "High-quality, certified products",
-                "Competitive pricing",
-                "Professional technical support and after-sales service"
-            ],
-            "commitment": "Long-term partnerships built on trust and transparency."
-        },
-        "goals": {
-            "title": "Our Goals",
-            "items": [
-                "Deliver high-safety voltage stabilizers",
-                "Protect electrical devices from power fluctuations",
-                "Effectively serve the Egyptian market",
-                "Expand our presence nationwide",
-                "Strengthen Volta as a trusted electrical solutions brand"
-            ]
+            "text": "To provide effective and safe electrical solutions that simplify our customers’ lives, while delivering outstanding customer service and continuous technical support."
         }
     },
     "blog": {

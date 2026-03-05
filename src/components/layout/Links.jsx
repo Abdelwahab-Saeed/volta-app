@@ -28,7 +28,7 @@ export default function Links() {
             color: "bg-[#25D366]"
         },
         {
-            href: "https://facebook.com",
+            href: "https://www.facebook.com/voltastabilizer",
             target: "_blank",
             rel: "noreferrer",
             icon: <Facebook size={24} />,

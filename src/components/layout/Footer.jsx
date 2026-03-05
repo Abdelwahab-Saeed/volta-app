@@ -3,25 +3,11 @@ import { Link } from 'react-router-dom';
 import { Input } from '../ui/input';
 import WhiteLogo from '../../assets/Logo-04 2.png';
 import { Facebook, Mail, MapPin } from 'lucide-react';
-import { getCategories } from '@/api/categories';
 import { useTranslation } from 'react-i18next';
 import SafeImage from '../common/SafeImage';
 
 export default function Footer() {
   const { t } = useTranslation();
-  const [categories, setCategories] = useState([]);
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await getCategories();
-        setCategories(response.data.data || response.data);
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-      }
-    };
-    fetchCategories();
-  }, []);
 
   return (
     <footer className="text-white">
@@ -56,7 +42,7 @@ export default function Footer() {
                 {t('footer.description')}
               </p>
               <div className="flex flex-row mt-6">
-                <a href="https://facebook.com" target="_blank" rel="noreferrer">
+                <a href="https://www.facebook.com/voltastabilizer" target="_blank" rel="noreferrer">
                   <Facebook
                     className="border rounded cursor-pointer hover:bg-white/10 transition-colors"
                     fill="white"
@@ -98,16 +84,6 @@ export default function Footer() {
             <div className="flex flex-col items-center sm:items-start text-center sm:text-start">
               <h4 className="text-lg md:text-xl font-semibold mb-6">{t('footer.about_volta')}</h4>
               <ul className="space-y-3 opacity-80">
-                {/* {categories.slice(0, 3).map((category, index) => (
-                  <li key={category.id || index}>
-                    <Link
-                      to={`/products?category=${category.id}`}
-                      className="hover:underline hover:text-secondary transition-colors text-sm md:text-base"
-                    >
-                      {category.name}
-                    </Link>
-                  </li>
-                ))} */}
                 <li>
                   <Link to="/about-us" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
                     {t('about_us.title')}
