@@ -16,7 +16,7 @@ export default function Links() {
             color: "bg-secondary"
         },
         {
-            href: "https://wa.me/+201111126804",
+            href: "https://wa.me/+201025021518",
             target: "_blank",
             rel: "noreferrer",
             icon: (
