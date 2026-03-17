@@ -251,9 +251,9 @@ export default function Header() {
               </DropdownMenu>
             )}
 
-            <Link to="/blog" className="cursor-pointer hover:text-secondary whitespace-nowrap">
+            {/* <Link to="/blog" className="cursor-pointer hover:text-secondary whitespace-nowrap">
               {t('header.blog') || 'Blog'}
-            </Link>
+            </Link> */}
           </ul>
           {/* <div className="hidden lg:block text-[13px] whitespace-nowrap pe-4">
             <span className="text-white ms-2">{t('header.hotline')}:</span><br />
