@@ -12,7 +12,8 @@ import {
   X,
   PhoneCall,
   ArrowUpDown,
-  Handbag
+  Handbag,
+  MoreHorizontal
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useNavigate, Link } from "react-router-dom";
@@ -26,6 +27,12 @@ import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "@/components/common/LanguageSwitcher";
 import SafeImage from "@/components/common/SafeImage";
 import i18n from '@/i18n';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function Header() {
   const { t } = useTranslation();
@@ -219,12 +226,31 @@ export default function Header() {
       <nav className="hidden md:block bg-[#1e2749] text-white px-4 py-2 lg:px-10">
         <div className="flex items-center justify-between">
           <ul className="flex items-center gap-4 lg:gap-7 text-[12px] lg:text-[13px] font-medium py-3 overflow-x-auto no-scrollbar">
-            {categories.map((cat) => (
+            {categories.slice(0, 13).map((cat) => (
               <Link to={`/products?category=${cat.id}`} key={cat.id} className="cursor-pointer hover:text-secondary whitespace-nowrap">
                 {cat.name} {cat.name_ar && i18n.language === 'ar' ? `(${cat.name})` : ''}
-                {/* Note: Ideally categories should come translated from API */}
               </Link>
             ))}
+
+            {categories.length > 13 && (
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center gap-1 cursor-pointer hover:text-secondary outline-none">
+                  <MoreHorizontal size={18} />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="bg-[#1e2749] text-white border-0 min-w-[200px] py-1 shadow-xl">
+                  {categories.slice(13).map((cat) => (
+                    <DropdownMenuItem
+                      key={cat.id}
+                      className="cursor-pointer hover:bg-secondary/20 focus:bg-secondary/20 text-white rounded-none border-0"
+                      onClick={() => navigate(`/products?category=${cat.id}`)}
+                    >
+                      {cat.name} {cat.name_ar && i18n.language === 'ar' ? `(${cat.name})` : ''}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+
             <Link to="/blog" className="cursor-pointer hover:text-secondary whitespace-nowrap">
               {t('header.blog') || 'Blog'}
             </Link>
