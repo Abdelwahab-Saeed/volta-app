@@ -90,9 +90,12 @@ export default function ProductCard({
     <div className="group relative bg-white rounded-lg border border-slate-200 hover:shadow-xl transition-all duration-300">
       {/* Badge */}
       <div className="absolute top-3 left-3 z-10">
-        {product.discount > 0 && (
+        {(product.discount_price || product.discount > 0) && (
           <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
-            -{product.discount}%
+            {product.discount_price
+              ? `-${Math.round((1 - (product.discount_price / product.price)) * 100)}%`
+              : `-${product.discount}%`
+            }
           </span>
         )}
       </div>
@@ -137,8 +140,8 @@ export default function ProductCard({
 
         <div className="mt-3">
           <div className='my-6 flex items-center'>
-            <p className="text-lg font-semibold text-red-700">EGP {product.final_price?.toLocaleString()}</p>
-            {product.discount > 0 ? (
+            <p className="text-lg font-semibold text-red-700">EGP {(product.discount_price ?? product.final_price)?.toLocaleString()}</p>
+            {(product.discount_price || product.discount > 0) ? (
               <p className="text-md text-slate-400 line-through mr-2">EGP {product.price?.toLocaleString()}</p>
             ) : null}
           </div>

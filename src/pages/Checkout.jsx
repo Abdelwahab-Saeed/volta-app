@@ -31,6 +31,7 @@ export default function Checkout() {
         getCartTotal,
         getCartSubtotal,
         fetchCart,
+        getShippingTotal,
         applyCoupon,
         removeCoupon
     } = useCartStore();
@@ -121,7 +122,7 @@ export default function Checkout() {
     // Calculate totals
     const subtotal = getCartSubtotal();
     const total = getCartTotal();
-    const shippingFee = 30.00; // Fixed for now
+    const shippingFee = getShippingTotal();
 
     const finalTotal = total + shippingFee;
 

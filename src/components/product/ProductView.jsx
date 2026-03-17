@@ -6,7 +6,9 @@ import {
     Heart,
     ArrowLeftRight,
     Check,
-    Loader2
+    Loader2,
+    Play,
+    Video
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from 'react-i18next';
@@ -26,8 +28,19 @@ export default function ProductView({
     addingLoading
 }) {
     const { t } = useTranslation();
+    const [selectedImage, setSelectedImage] = React.useState(product.image);
+
+    React.useEffect(() => {
+        setSelectedImage(product.image);
+    }, [product.image]);
+
     const incrementQuantity = () => setQuantity((prev) => prev + 1);
     const decrementQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+
+    const allImages = [
+        { id: 'main', image: product.image },
+        ...(product.extra_images || [])
+    ];
 
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 bg-white p-6 md:p-10 rounded-3xl shadow-sm border border-slate-100">
@@ -35,16 +48,54 @@ export default function ProductView({
             <div className="space-y-6">
                 <div className="bg-slate-50 border border-slate-100 rounded-3xl p-10 flex items-center justify-center aspect-square relative group overflow-hidden">
                     <SafeImage
-                        src={`${import.meta.env.VITE_IMAGES_URL}/${product.image}`}
+                        src={`${import.meta.env.VITE_IMAGES_URL}/${selectedImage}`}
                         alt={product.name}
                         className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110"
                     />
-                    {product.discount > 0 && (
+                    {(product.discount_price || product.discount > 0) && (
                         <div className="absolute top-6 right-6 bg-red-500 text-white px-4 py-1.5 rounded-full font-bold shadow-lg text-lg">
-                            -{product.discount}%
+                            {product.discount_price
+                                ? `-${Math.round((1 - (product.discount_price / product.price)) * 100)}%`
+                                : `-${product.discount}%`
+                            }
                         </div>
                     )}
+                    {product.preview_url && (
+                        <a
+                            href={product.preview_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="absolute bottom-6 left-6 bg-white/90 backdrop-blur-sm text-secondary p-3 rounded-full shadow-lg hover:scale-110 transition-transform flex items-center gap-2 group/video"
+                        >
+                            <Play size={24} fill="currentColor" />
+                            <span className="max-w-0 overflow-hidden group-hover/video:max-w-xs transition-all duration-500 font-bold whitespace-nowrap">
+                                {t('product.watch_video')}
+                            </span>
+                        </a>
+                    )}
                 </div>
+
+                {/* Thumbnails */}
+                {allImages.length > 1 && (
+                    <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+                        {allImages.map((img, idx) => (
+                            <button
+                                key={img.id}
+                                onClick={() => setSelectedImage(img.image)}
+                                className={`flex-shrink-0 w-20 h-20 rounded-xl border-2 transition-all p-1 bg-white ${selectedImage === img.image
+                                    ? 'border-secondary shadow-md scale-105'
+                                    : 'border-slate-100 hover:border-slate-200'
+                                    }`}
+                            >
+                                <SafeImage
+                                    src={`${import.meta.env.VITE_IMAGES_URL}/${img.image}`}
+                                    alt={`${product.name} shadow-${idx}`}
+                                    className="w-full h-full object-contain"
+                                />
+                            </button>
+                        ))}
+                    </div>
+                )}
             </div>
 
             {/* Info Section */}
@@ -56,14 +107,22 @@ export default function ProductView({
 
                     <div className="flex items-center gap-4">
                         <span className="text-4xl font-black text-secondary">
-                            <span dir="ltr">{t('common.currency')} {product.final_price?.toLocaleString()}</span>
+                            <span dir="ltr">{t('common.currency')} {(product.discount_price ?? product.final_price)?.toLocaleString()}</span>
                         </span>
-                        {product.discount > 0 && (
+                        {(product.discount_price || product.discount > 0) && (
                             <span className="text-2xl text-slate-300 line-through">
                                 <span dir="ltr">{t('common.currency')} {product.price?.toLocaleString()}</span>
                             </span>
                         )}
                     </div>
+
+                    {product.shipping_cost > 0 && (
+                        <div className="flex items-center gap-2 text-slate-500 font-medium mt-2">
+                            <span className="bg-slate-100 px-2 py-1 rounded text-xs">
+                                {t('checkout.shipping_fee')}: EGP {product.shipping_cost}
+                            </span>
+                        </div>
+                    )}
                 </div>
 
                 <div className="space-y-4">
@@ -72,6 +131,20 @@ export default function ProductView({
                         {product.description || t('product.no_description')}
                     </p>
                 </div>
+
+                {product.features && product.features.length > 0 && (
+                    <div className="space-y-4">
+                        <h3 className="font-bold text-slate-900 text-lg">{t('product.features_title')}</h3>
+                        <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            {product.features.map(feature => (
+                                <li key={feature.id} className="flex items-center gap-3 text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                    <Check className="h-5 w-5 text-secondary shrink-0" />
+                                    <span className="font-medium">{feature.name}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
 
                 <div className="flex flex-col gap-6 pt-6 border-t border-slate-100">
                     {/* Bundle Offers */}

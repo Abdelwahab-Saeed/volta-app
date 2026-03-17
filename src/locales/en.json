@@ -115,7 +115,9 @@
         "not_found": "Product not found",
         "pieces": "Pieces",
         "per_piece": "per piece",
-        "no_description": "No description available for this product."
+        "no_description": "No description available for this product.",
+        "watch_video": "Watch Video",
+        "features_title": "Product Features"
     },
     "checkout": {
         "shipping_info": "Shipping Information",

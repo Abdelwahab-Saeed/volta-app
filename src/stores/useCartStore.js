@@ -19,7 +19,8 @@ const calculateItemPrice = (item) => {
         }
     }
     // Fallback to regular price * quantity
-    return product.final_price * quantity;
+    const pricePerItem = product.discount_price ?? product.final_price;
+    return pricePerItem * quantity;
 };
 
 export const useCartStore = create(
@@ -215,6 +216,22 @@ export const useCartStore = create(
             getCartSubtotal: () => {
                 const { cartItems } = get();
                 return cartItems.reduce((sum, item) => sum + calculateItemPrice(item), 0);
+            },
+
+            getShippingTotal: () => {
+                const { cartItems } = get();
+                if (!cartItems || cartItems.length === 0) return 0;
+
+                return cartItems.reduce((sum, item) => {
+                    // Prioritize product-level shipping_cost as per user feedback
+                    const pCost = item.product?.shipping_cost;
+                    const iCost = item.shipping_cost;
+
+                    const rawCost = (pCost !== undefined && pCost !== null && pCost !== "") ? pCost : iCost;
+                    const shippingCost = parseFloat(rawCost || 0);
+
+                    return sum + (shippingCost * (item.quantity || 1));
+                }, 0);
             },
 
             getItemPrice: (item) => calculateItemPrice(item)

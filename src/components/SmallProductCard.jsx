@@ -110,9 +110,9 @@ export default function SmallProductCard({ product }) {
         </Link>
         <div className="flex items-center justify-between mb-3">
           <p className="text-lg font-bold text-red-600">
-            {product.final_price?.toLocaleString()} EGP
+            {(product.discount_price ?? product.final_price)?.toLocaleString()} EGP
           </p>
-          {product.discount > 0 ? (
+          {(product.discount_price || product.discount > 0) ? (
             <p className="text-md text-slate-400 line-through mr-2">EGP {product.price?.toLocaleString()}</p>
           ) : null}
         </div>

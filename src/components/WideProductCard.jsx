@@ -99,9 +99,12 @@ export default function WideProductCard({ product }) {
               <div className="flex justify-between items-start mb-2">
                 <Link to={`/product/${product.id}`}>
                   <h3 className="text-xl sm:text-2xl font-bold text-primary hover:text-secondary transition-colors">
-                    {product.name} {product.discount > 0 && (
+                    {product.name} {(product.discount_price || product.discount > 0) && (
                       <span className="bg-secondary text-white px-2 rounded-md text-sm shadow-md mr-2">
-                        {product.discount}%
+                        {product.discount_price
+                          ? `${Math.round((1 - (product.discount_price / product.price)) * 100)}%`
+                          : `${product.discount}%`
+                        }
                       </span>
                     )}
                   </h3>
@@ -188,13 +191,13 @@ export default function WideProductCard({ product }) {
 
               {/* Price Section */}
               <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto gap-1">
-                {product.discount > 0 ? (
+                {(product.discount_price || product.discount > 0) ? (
                   <>
                     <span className="text-sm text-slate-400 line-through order-2 sm:order-1">
                       EGP {product.price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
                     <span className="text-2xl sm:text-3xl font-bold text-red-600 order-1 sm:order-2">
-                      EGP {product.final_price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      EGP {(product.discount_price ?? product.final_price)?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
                   </>
                 ) : (

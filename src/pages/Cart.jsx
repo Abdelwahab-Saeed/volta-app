@@ -28,7 +28,8 @@ export default function Cart() {
         coupon,
         discountAmount,
         getCartTotal,
-        getCartSubtotal
+        getCartSubtotal,
+        getShippingTotal
     } = useCartStore();
 
     const [couponCode, setCouponCode] = useState('');
@@ -65,7 +66,8 @@ export default function Cart() {
 
     // Calculate totals from store
     const subtotal = getCartSubtotal();
-    const total = getCartTotal();
+    const shippingTotal = getShippingTotal();
+    const total = getCartTotal() + shippingTotal;
 
     // Update quantity
     const updateQuantity = (id, newQuantity) => {
@@ -112,7 +114,14 @@ export default function Cart() {
                                                         className="w-full h-full object-contain"
                                                     />
                                                 </div>
-                                                <span className="font-medium text-base md:text-lg text-primary">{item.product?.name}</span>
+                                                <div className="flex flex-col text-start">
+                                                    <span className="font-medium text-base md:text-lg text-primary">{item.product?.name}</span>
+                                                    {(item.shipping_cost || item.product?.shipping_cost) > 0 && (
+                                                        <span className="text-xs text-slate-500">
+                                                            {t('checkout.shipping_fee')}: EGP {item.shipping_cost || item.product?.shipping_cost}
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </div>
                                         </TableCell>
                                         <TableCell className="text-start text-primary text-base md:text-lg">
@@ -173,6 +182,11 @@ export default function Cart() {
                                 <span className="text-lg font-bold">-EGP{discountAmount.toFixed(2)}</span>
                             </div>
                         )}
+
+                        <div className="flex justify-between items-center mb-3">
+                            <span className="text-lg text-gray-600 font-semibold">{t('checkout.shipping_fee')}</span>
+                            <span className="text-lg font-bold text-primary">EGP{shippingTotal.toFixed(2)}</span>
+                        </div>
 
                         <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-300 pt-2">
                             <span className="text-xl font-bold text-primary">{t('cart.total')}</span>

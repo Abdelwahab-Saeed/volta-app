@@ -116,7 +116,9 @@
         "not_found": "المنتج غير موجود",
         "pieces": "قطع",
         "per_piece": "قطعة",
-        "no_description": "لا يوجد وصف متوفر لهذا المنتج حالياً."
+        "no_description": "لا يوجد وصف متوفر لهذا المنتج حالياً.",
+        "watch_video": "شاهد الفيديو",
+        "features_title": "مميزات المنتج"
     },
     "checkout": {
         "shipping_info": "معلومات الشحن",
