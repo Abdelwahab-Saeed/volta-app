@@ -62,7 +62,8 @@
             "members_title": "Member Discount",
             "members_desc": "On every order",
             "support_title": "24/7 Support",
-            "support_desc": "Contact us anytime"
+            "support_desc": "Contact us anytime",
+            "categories": "Categories"
         }
     },
     "cart": {

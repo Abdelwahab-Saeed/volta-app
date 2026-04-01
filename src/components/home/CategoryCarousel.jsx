@@ -8,9 +8,14 @@ import {
   CarouselPrevious,
 } from '../ui/carousel';
 
+import { useTranslation } from 'react-i18next';
+
 export default function CategoryCarousel({ categories }) {
+
+  const { t, i18n } = useTranslation();
   return (
-    <div dir="ltr" className="my-16">
+    <div dir='ltr' className="my-16">
+      <h2 dir={i18n.language === 'ar' ? 'rtl' : 'ltr'} className="text-2xl font-bold mb-6">{t('home.features.categories')}</h2>
       <Carousel
         className="w-full"
         opts={{

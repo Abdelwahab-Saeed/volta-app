@@ -63,7 +63,8 @@
             "members_title": "خصم للأعضاء المسجلين",
             "members_desc": "خصم على كل طلب",
             "support_title": "دعم 24/7",
-            "support_desc": "تواصل معنا في أي وقت"
+            "support_desc": "تواصل معنا في أي وقت",
+            "categories": "الأقسام"
         }
     },
     "cart": {
