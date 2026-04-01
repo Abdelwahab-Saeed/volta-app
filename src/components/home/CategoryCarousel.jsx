@@ -26,7 +26,7 @@ export default function CategoryCarousel({ categories }) {
               className="pl-2 md:pl-4  basis-1/2 lg:basis-1/3 xl:basis-1/4"
             >
               <div className="flex flex-col items-center gap-3">
-                <div className="w-32 h-32 md:w-36 md:h-36 rounded-full border overflow-hidden bg-gray-200">
+                <div className="w-40 h-40 md:w-80 md:h-80 border overflow-hidden bg-gray-200">
                   <SafeImage
                     src={`${import.meta.env.VITE_IMAGES_URL}/${category.image}`}
                     alt={category.name}

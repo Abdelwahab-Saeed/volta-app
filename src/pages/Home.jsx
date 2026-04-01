@@ -77,7 +77,7 @@ export default function Home() {
       <HomeCarousel banners={banners} loading={bannersLoading} />
 
       {/* Show products for first two categories */}
-      {!loading && categoriesWithProducts.map((catGroup) => (
+      {/* {!loading && categoriesWithProducts.map((catGroup) => (
         catGroup.products.length > 0 && (
           <Products
             key={catGroup.id}
@@ -85,7 +85,7 @@ export default function Home() {
             products={catGroup.products}
           />
         )
-      ))}
+      ))} */}
 
       <CategoryCarousel categories={categories} />
       <FeaturesSection />

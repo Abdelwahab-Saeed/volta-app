@@ -57,16 +57,16 @@ export default function Checkout() {
     }, [cartItems.length, cartLoading, navigate]);
 
     // Meta Pixel: Track InitiateCheckout
-    useEffect(() => {
-        if (!cartLoading && cartItems.length > 0) {
-            ReactPixel.track('InitiateCheckout', {
-                content_ids: cartItems.map(item => item.product_id),
-                content_type: 'product',
-                value: getCartTotal(),
-                currency: 'EGP'
-            });
-        }
-    }, [cartLoading, cartItems.length]); // Track only once when cart is loaded and not empty
+    // useEffect(() => {
+    //     if (!cartLoading && cartItems.length > 0) {
+    //         ReactPixel.track('InitiateCheckout', {
+    //             content_ids: cartItems.map(item => item.product_id),
+    //             content_type: 'product',
+    //             value: getCartTotal(),
+    //             currency: 'EGP'
+    //         });
+    //     }
+    // }, [cartLoading, cartItems.length]); // Track only once when cart is loaded and not empty
 
     const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm({
         defaultValues: {
