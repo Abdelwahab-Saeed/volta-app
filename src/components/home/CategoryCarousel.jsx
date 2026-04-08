@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import SafeImage from '../common/SafeImage';
 import {
   Carousel,
@@ -28,20 +29,23 @@ export default function CategoryCarousel({ categories }) {
           {categories.map((category, index) => (
             <CarouselItem
               key={index}
-              className="pl-2 md:pl-4  basis-1/2 lg:basis-1/3 xl:basis-1/4"
+              className="pl-2 md:pl-4 basis-1/2 lg:basis-1/3 xl:basis-1/4"
             >
-              <div className="flex flex-col items-center gap-3">
-                <div className="w-40 h-40 md:w-80 md:h-80 border overflow-hidden bg-gray-200">
+              <Link
+                to={`/products?category=${category.id}`}
+                className="group flex flex-col items-center gap-4 transition-all duration-300"
+              >
+                <div className="w-full aspect-square border-2 border-transparent overflow-hidden bg-slate-50 rounded-2xl shadow-sm group-hover:shadow-2xl group-hover:border-secondary/20 transition-all duration-500">
                   <SafeImage
                     src={`${import.meta.env.VITE_IMAGES_URL}/${category.image}`}
                     alt={category.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
                   />
                 </div>
-                <span className="text-sm md:text-base font-medium text-center">
+                <span className="text-sm md:text-xl font-bold text-center text-slate-800 group-hover:text-secondary transition-colors duration-300">
                   {category.name}
                 </span>
-              </div>
+              </Link>
             </CarouselItem>
           ))}
         </CarouselContent>

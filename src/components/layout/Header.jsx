@@ -255,10 +255,6 @@ export default function Header() {
               {t('header.blog') || 'Blog'}
             </Link> */}
           </ul>
-          {/* <div className="hidden lg:block text-[13px] whitespace-nowrap pe-4">
-            <span className="text-white ms-2">{t('header.hotline')}:</span><br />
-            <span className="font-bold">16105</span>
-          </div> */}
         </div>
       </nav>
 
@@ -322,7 +318,7 @@ export default function Header() {
               <div className="flex justify-between items-center text-secondary">
                 <div className="flex items-center gap-2">
                   <PhoneCall size={18} />
-                  <span className="text-sm font-bold">16105</span>
+                  <a href="tel:+201222245464" className="hover:underline">{t('header.contact')}</a>
                 </div>
               </div>
               <div className="flex justify-center">
