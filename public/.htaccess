@@ -1,0 +1,65 @@
+# ---------------------------------------------------------------------------
+# Volta storefront - Apache runtime config
+#
+# Lives in public/ so `vite build` copies it into dist/ on every build.
+# Do not edit the copy in dist/ - it is deleted and regenerated each build.
+#
+# Requires AllowOverride All on /var/www/volta-app/dist (already set in
+# /etc/httpd/conf.d/volta-eg.com-le-ssl.conf).
+#
+# Deliberately contains NO mod_rewrite directives. The React Router fallback
+# lives in the vhost <Directory> block, and mod_rewrite rulesets are not
+# inherited into .htaccess - declaring RewriteEngine here would disable it
+# and 404 every deep route.
+# ---------------------------------------------------------------------------
+
+
+# --- Compression -----------------------------------------------------------
+# Brotli is tried first; mod_deflate passes the response through untouched if
+# Content-Encoding is already set, so the two do not stack.
+# Both use an explicit MIME allowlist, so already-compressed formats (images,
+# woff2, archives) are never re-compressed.
+
+<IfModule mod_brotli.c>
+    AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/css text/xml
+    AddOutputFilterByType BROTLI_COMPRESS application/javascript application/json
+    AddOutputFilterByType BROTLI_COMPRESS application/xml image/svg+xml
+    AddOutputFilterByType BROTLI_COMPRESS application/manifest+json
+    BrotliCompressionQuality 6
+</IfModule>
+
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
+    AddOutputFilterByType DEFLATE application/javascript application/json
+    AddOutputFilterByType DEFLATE application/xml image/svg+xml
+    AddOutputFilterByType DEFLATE application/manifest+json
+</IfModule>
+
+
+# --- Caching ---------------------------------------------------------------
+# mod_expires is intentionally not used; it would emit a competing
+# Cache-Control max-age alongside the headers set below.
+
+<IfModule mod_setenvif.c>
+    # Vite content-hashes everything it emits into /assets/ (index-<hash>.js).
+    # A changed file gets a new URL, so these can be cached permanently.
+    SetEnvIf Request_URI "^/assets/" VITE_HASHED_ASSET
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header set Cache-Control "public, max-age=31536000, immutable" env=VITE_HASHED_ASSET
+
+    # Unhashed files at the dist/ root (Logo.png, vite.svg, favicons) keep a
+    # short cache - their URL never changes, so a long one would pin stale
+    # copies in user browsers with no way to bust them.
+    <FilesMatch "\.(png|jpe?g|gif|svg|ico|webp|avif)$">
+        Header set Cache-Control "public, max-age=604800" env=!VITE_HASHED_ASSET
+    </FilesMatch>
+
+    # index.html must revalidate every time. It carries the <script> tags
+    # pointing at the hashed bundles; if it is cached, a deploy never reaches
+    # returning visitors.
+    <FilesMatch "\.html$">
+        Header set Cache-Control "no-cache, must-revalidate"
+    </FilesMatch>
+</IfModule>

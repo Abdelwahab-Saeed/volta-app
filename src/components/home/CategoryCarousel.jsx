@@ -37,8 +37,15 @@ export default function CategoryCarousel({ categories }) {
               >
                 <div className="w-full aspect-square border-2 border-transparent overflow-hidden bg-slate-50 rounded-2xl shadow-sm group-hover:shadow-2xl group-hover:border-secondary/20 transition-all duration-500">
                   <SafeImage
-                    src={`${import.meta.env.VITE_IMAGES_URL}/${category.image}`}
+                    // Some categories have no image; without this guard the src
+                    // becomes ".../storage/null" and costs a 404 round-trip
+                    // before the fallback kicks in.
+                    src={category.image ? `${import.meta.env.VITE_IMAGES_URL}/${category.image}` : undefined}
                     alt={category.name}
+                    // Embla renders all slides in the DOM, so without this every
+                    // category image downloads on page load - only ~4 are visible.
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
                   />
                 </div>

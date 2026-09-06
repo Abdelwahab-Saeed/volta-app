@@ -39,8 +39,14 @@ export default function HomeCarousel({ banners, loading }) {
               <CarouselItem key={index}>
                 <div className="p-1 h-full">
                   <SafeImage
-                    src={`${import.meta.env.VITE_IMAGES_URL}/${imageUrl}`}
+                    src={imageUrl ? `${import.meta.env.VITE_IMAGES_URL}/${imageUrl}` : undefined}
                     alt={banner.title || `Banner ${index + 1}`}
+                    // The first banner is the LCP element: load it eagerly and at
+                    // high priority. Embla keeps every slide in the DOM, so the
+                    // rest must be lazy or they compete for bandwidth with it.
+                    loading={index === 0 ? 'eager' : 'lazy'}
+                    fetchPriority={index === 0 ? 'high' : 'auto'}
+                    decoding={index === 0 ? 'sync' : 'async'}
                     className="h-[200px] md:h-[400px] w-full object-cover rounded-md"
                   />
                 </div>

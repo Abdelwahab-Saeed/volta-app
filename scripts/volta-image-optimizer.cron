@@ -1,0 +1,7 @@
+# Regenerate WebP siblings for newly uploaded storage images.
+# Install with:  sudo cp volta-image-optimizer.cron /etc/cron.d/volta-image-optimizer
+#
+# The script is idempotent - it only touches images whose .webp is missing or
+# stale - so a frequent run costs little more than a directory stat.
+
+*/10 * * * * root /usr/bin/bash /var/www/volta-app/scripts/optimize-storage-images.sh >> /var/log/volta-image-optimizer.log 2>&1

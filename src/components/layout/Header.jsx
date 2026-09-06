@@ -110,7 +110,7 @@ export default function Header() {
         {/* Logo */}
         <div className="w-55">
           <Link to='/'>
-            <SafeImage src={logo} alt="Volta" className="w-full h-auto" />
+            <SafeImage src={logo} alt="Volta" loading="eager" fetchPriority="high" className="w-full h-auto" />
           </Link>
         </div>
 
