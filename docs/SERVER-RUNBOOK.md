@@ -52,7 +52,9 @@ cat > /var/www/volta-app/dist/.htaccess <<'HTACCESS'
     AddOutputFilterByType BROTLI_COMPRESS application/javascript application/json
     AddOutputFilterByType BROTLI_COMPRESS application/xml image/svg+xml
     AddOutputFilterByType BROTLI_COMPRESS application/manifest+json
-    BrotliCompressionQuality 6
+    # Do NOT add BrotliCompressionQuality here — mod_brotli tuning directives
+    # are server-config/vhost context only and 500 the entire site from
+    # .htaccess. Default quality 5 is within a couple of percent of 6.
 </IfModule>
 
 <IfModule mod_deflate.c>

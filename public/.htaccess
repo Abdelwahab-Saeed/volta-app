@@ -25,7 +25,10 @@
     AddOutputFilterByType BROTLI_COMPRESS application/javascript application/json
     AddOutputFilterByType BROTLI_COMPRESS application/xml image/svg+xml
     AddOutputFilterByType BROTLI_COMPRESS application/manifest+json
-    BrotliCompressionQuality 6
+    # NOTE: BrotliCompressionQuality must NOT go here. mod_brotli's tuning
+    # directives are "server config, virtual host" context only, and Apache
+    # returns 500 for the whole site if one appears in .htaccess. The default
+    # quality (5) is within a couple of percent of 6 anyway.
 </IfModule>
 
 <IfModule mod_deflate.c>
