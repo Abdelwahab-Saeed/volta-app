@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import ProductView from "@/components/product/ProductView";
 import SpecialProducts from "@/components/home/SpecialProducts";
-import ReactPixel from 'react-facebook-pixel';
+import { trackEvent } from '@/lib/pixel';
 
 export default function ProductDetails() {
     const { id } = useParams();
@@ -49,7 +49,7 @@ export default function ProductDetails() {
         if (product) {
             setMainImage(product.image);
             setQuantity(1); // Default to 1, not stock
-            ReactPixel.track('ViewContent', {
+            trackEvent('ViewContent', {
                 content_ids: [product.id],
                 content_type: 'product',
                 value: product.price,
@@ -110,7 +110,7 @@ export default function ProductDetails() {
         setAddingStr(true);
         try {
             await addToCart(product, quantity);
-            ReactPixel.track('AddToCart', {
+            trackEvent('AddToCart', {
                 content_ids: [product.id],
                 content_type: 'product',
                 value: product.price,
@@ -127,7 +127,7 @@ export default function ProductDetails() {
         setAddingStr(true);
         try {
             await addToCart(product, quantity);
-            // ReactPixel.track('InitiateCheckout', {
+            // trackEvent('InitiateCheckout', {
             //     content_ids: [product.id],
             //     content_type: 'product',
             //     value: product.price,

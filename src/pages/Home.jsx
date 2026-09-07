@@ -8,7 +8,6 @@ import Products from '../components/home/Products';
 import { useCategoryStore } from '@/stores/useCategoryStore';
 import { useProductStore } from '@/stores/useProductStore';
 import { useBannerStore } from '@/stores/useBannerStore';
-import ReactPixel from 'react-facebook-pixel';
 
 export default function Home() {
   const { t } = useTranslation();
@@ -27,10 +26,6 @@ export default function Home() {
   const categories = useCategoryStore((state) => state.categories);
   const categoriesLoading = useCategoryStore((state) => state.loading);
   const fetchCategories = useCategoryStore((state) => state.fetchCategories);
-
-  useEffect(() => {
-    ReactPixel.pageView();
-  }, []);
 
   useEffect(() => {
     // All three fire together. fetchBanners used to run only after categories

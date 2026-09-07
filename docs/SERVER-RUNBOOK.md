@@ -167,13 +167,19 @@ Then append at the end of the same file:
 <IfModule mod_headers.c>
     <FilesMatch "\.(jpe?g|png|webp|gif|svg|ico|avif)$">
         Header append Vary Accept
-        Header set Cache-Control "public, max-age=2592000"
+        Header set Cache-Control "public, max-age=31536000, immutable"
     </FilesMatch>
 </IfModule>
 ```
 
 `Vary: Accept` is required — without it a proxy could hand a WebP to a client
 that cannot read it.
+
+A full year is safe here because Laravel generates a random filename for every
+upload, so a replaced image is a new URL. The one caveat: re-running the
+optimizer with a different `QUALITY` rewrites a `.webp` **at the same URL**, and
+already-cached clients keep the old one until it expires. If you ever need to
+force that, change the quality and delete + regenerate under new names.
 
 ### 2c. Verify the API did not break — before anything else
 

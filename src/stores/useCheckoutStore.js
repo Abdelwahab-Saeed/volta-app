@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { checkout } from '@/api/orders.api';
 import { useCartStore } from './useCartStore'; // To clear cart
 import { toast } from 'sonner';
-import ReactPixel from 'react-facebook-pixel';
+import { trackEvent } from '@/lib/pixel';
 
 export const useCheckoutStore = create((set) => ({
     isLoading: false,
@@ -22,7 +22,7 @@ export const useCheckoutStore = create((set) => ({
 
             // Meta Pixel: Track Purchase
             const cartStore = useCartStore.getState();
-            ReactPixel.track('Purchase', {
+            trackEvent('Purchase', {
                 content_ids: cartStore.cartItems.map(item => item.product_id),
                 content_type: 'product',
                 value: cartStore.getCartTotal(),

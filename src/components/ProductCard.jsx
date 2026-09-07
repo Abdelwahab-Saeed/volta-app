@@ -19,7 +19,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import SafeImage from './common/SafeImage';
-import ReactPixel from 'react-facebook-pixel';
+import { trackEvent } from '@/lib/pixel';
 
 export default function ProductCard({
   product
@@ -77,7 +77,7 @@ export default function ProductCard({
 
     setAddingStr(true);
     await addToCart(product);
-    ReactPixel.track('AddToCart', {
+    trackEvent('AddToCart', {
       content_ids: [product.id],
       content_type: 'product',
       value: product.price,
@@ -178,7 +178,7 @@ export default function ProductCard({
                 setAddingStr(true);
                 try {
                   await addToCart(product);
-                  // ReactPixel.track('InitiateCheckout', {
+                  // trackEvent('InitiateCheckout', {
                   //   content_ids: [product.id],
                   //   content_type: 'product',
                   //   value: product.price,

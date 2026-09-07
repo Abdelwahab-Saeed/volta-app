@@ -41,21 +41,16 @@ const Posts          = lazy(() => import('./pages/Posts'));
 const PostDetails    = lazy(() => import('./pages/PostDetails'));
 const PrivacyPolicy  = lazy(() => import('./pages/PrivacyPolicy'));
 import ScrollToTop from './components/layout/ScrollToTop';
-import ReactPixel from 'react-facebook-pixel';
+import { trackPageView } from './lib/pixel';
 import { useLocation } from 'react-router-dom';
-
-const options = {
-  autoConfig: true,
-  debug: false,
-};
-
-ReactPixel.init(import.meta.env.VITE_META_PIXEL_ID, {}, options);
 
 function PixelTracker() {
   const location = useLocation();
 
+  // Fires on mount too, so the initial page view is covered here and nowhere
+  // else. See src/lib/pixel.js for why the pixel no longer loads at boot.
   useEffect(() => {
-    ReactPixel.pageView();
+    trackPageView();
   }, [location]);
 
   return null;
