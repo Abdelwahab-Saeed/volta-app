@@ -82,6 +82,7 @@ export default function ProductView({
                             <button
                                 key={img.id}
                                 onClick={() => setSelectedImage(img.image)}
+                                aria-label={t('a11y.view_image')}
                                 className={`flex-shrink-0 w-20 h-20 rounded-xl border-2 transition-all p-1 bg-white ${selectedImage === img.image
                                     ? 'border-secondary shadow-md scale-105'
                                     : 'border-slate-100 hover:border-slate-200'
@@ -179,6 +180,7 @@ export default function ProductView({
                         <div className="flex items-center border border-slate-300 rounded-xl h-12 overflow-hidden">
                             <button
                                 onClick={incrementQuantity}
+                                aria-label={t('a11y.increase_quantity')}
                                 className="w-12 h-full flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-300"
                             >
                                 <Plus size={18} />
@@ -194,6 +196,7 @@ export default function ProductView({
                             />
                             <button
                                 onClick={decrementQuantity}
+                                aria-label={t('a11y.decrease_quantity')}
                                 className="w-12 h-full flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-300"
                             >
                                 <Minus size={18} />

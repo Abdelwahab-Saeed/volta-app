@@ -84,7 +84,10 @@
         "product": "المنتج",
         "price": "السعر",
         "quantity": "الكمية",
-        "item_total": "الإجمالي"
+        "item_total": "الإجمالي",
+        "remove": "حذف",
+        "increase_quantity": "زيادة الكمية",
+        "decrease_quantity": "تقليل الكمية"
     },
     "messages": {
         "added_to_cart": "تم إضافة المنتج للسلة",
@@ -486,5 +489,21 @@
         "contact_us_text": "نحن هنا لمساعدتك في اختيار الحل الكهربائي الأنسب لاحتياجاتك. لا تتردد في التواصل معنا",
         "hotline": "الخط الساخن : 01222245464",
         "address": "العنوان : فيلا 869 الدور الأرضي – حى الثالث (حى المستشارين) – مدينة بني سويف الجديدة – محافظة بني سويف - مصر"
+    },
+    "a11y": {
+        "search": "بحث",
+        "open_menu": "فتح القائمة",
+        "close_menu": "إغلاق القائمة",
+        "previous": "السابق",
+        "next": "التالي",
+        "increase_quantity": "زيادة الكمية",
+        "decrease_quantity": "تقليل الكمية",
+        "view_image": "عرض صورة المنتج",
+        "remove_coupon": "إزالة الكوبون",
+        "add_to_wishlist": "إضافة إلى المفضلة",
+        "remove_from_wishlist": "إزالة من المفضلة",
+        "add_to_compare": "إضافة إلى المقارنة",
+        "remove_from_compare": "إزالة من المقارنة",
+        "remove_product": "حذف المنتج"
     }
 }

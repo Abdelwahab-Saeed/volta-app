@@ -83,7 +83,10 @@
         "product": "Product",
         "price": "Price",
         "quantity": "Quantity",
-        "item_total": "Total"
+        "item_total": "Total",
+        "remove": "Remove",
+        "increase_quantity": "Increase quantity",
+        "decrease_quantity": "Decrease quantity"
     },
     "messages": {
         "added_to_cart": "Product added to cart",
@@ -485,5 +488,21 @@
         "contact_us_text": "We are here to help you choose the most suitable electrical solution for your needs. Do not hesitate to contact us:",
         "hotline": "Hotline: 01222245464",
         "address": "Address: Villa 869, Ground Floor – Third District (Consultants District) – New Beni Suef City – Beni Suef Governorate – Egypt"
+    },
+    "a11y": {
+        "search": "Search",
+        "open_menu": "Open menu",
+        "close_menu": "Close menu",
+        "previous": "Previous",
+        "next": "Next",
+        "increase_quantity": "Increase quantity",
+        "decrease_quantity": "Decrease quantity",
+        "view_image": "View product image",
+        "remove_coupon": "Remove coupon",
+        "add_to_wishlist": "Add to wishlist",
+        "remove_from_wishlist": "Remove from wishlist",
+        "add_to_compare": "Add to comparison",
+        "remove_from_compare": "Remove from comparison",
+        "remove_product": "Remove product"
     }
 }

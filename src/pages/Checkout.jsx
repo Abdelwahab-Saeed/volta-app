@@ -453,6 +453,7 @@ export default function Checkout() {
                                             <button
                                                 type="button"
                                                 onClick={handleRemoveCoupon}
+                                            aria-label={t('a11y.remove_coupon')}
                                                 className="absolute end-2 top-1/2 -translate-y-1/2 text-red-500 hover:text-red-700 p-1"
                                             >
                                                 <X className="w-4 h-4" />

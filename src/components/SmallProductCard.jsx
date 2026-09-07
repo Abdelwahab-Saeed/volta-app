@@ -82,6 +82,8 @@ export default function SmallProductCard({ product }) {
           <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
             <button
               onClick={handleWishlistToggle}
+              aria-label={t(isInWishlist ? 'a11y.remove_from_wishlist' : 'a11y.add_to_wishlist')}
+              aria-pressed={isInWishlist}
               className={`p-1.5 bg-white/80 backdrop-blur-sm rounded-full shadow-sm transition-colors ${isInWishlist ? 'text-red-500' : 'hover:text-red-500'
                 }`}
             >
@@ -89,6 +91,8 @@ export default function SmallProductCard({ product }) {
             </button>
             <button
               onClick={handleComparisonToggle}
+              aria-label={t(isInComparison ? 'a11y.remove_from_compare' : 'a11y.add_to_compare')}
+              aria-pressed={isInComparison}
               className={`p-1.5 bg-white/80 backdrop-blur-sm rounded-full shadow-sm transition-colors ${isInComparison ? 'text-primary' : 'hover:text-primary'
                 }`}
             >

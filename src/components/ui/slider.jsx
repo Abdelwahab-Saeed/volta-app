@@ -4,6 +4,14 @@ import { cn } from "@/lib/utils"
 const Slider = ({
   value = [0, 100],
   onValueChange,
+  // Fires once when the drag ends, unlike onValueChange which fires on every
+  // mousemove. Callers that trigger something expensive - a refetch, a URL
+  // update - should listen to this one instead.
+  //
+  // It must be destructured even if unused: anything left in ...props is
+  // spread onto a plain <div>, and React logs "Unknown event handler property
+  // onValueCommit" for a camelCase prop it does not recognise.
+  onValueCommit,
   min = 0,
   max = 100,
   step = 1,
@@ -20,6 +28,9 @@ const Slider = ({
   };
 
   const handleMouseUp = () => {
+    if (isDragging !== null) {
+      onValueCommit?.(value);
+    }
     setIsDragging(null);
   };
 

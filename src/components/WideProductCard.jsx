@@ -112,6 +112,8 @@ export default function WideProductCard({ product }) {
                 <div className="flex gap-2 shrink-0">
                   <button
                     onClick={handleWishlistToggle}
+                    aria-label={t(isInWishlist ? 'a11y.remove_from_wishlist' : 'a11y.add_to_wishlist')}
+                    aria-pressed={isInWishlist}
                     className={`p-2 bg-white rounded-full border border-slate-200 transition-colors ${isInWishlist ? 'text-red-500 bg-red-50 border-red-100' : 'hover:bg-red-50 hover:text-red-500'
                       }`}
                   >
@@ -119,6 +121,8 @@ export default function WideProductCard({ product }) {
                   </button>
                   <button
                     onClick={handleComparisonToggle}
+                    aria-label={t(isInComparison ? 'a11y.remove_from_compare' : 'a11y.add_to_compare')}
+                    aria-pressed={isInComparison}
                     className={`p-2 bg-white rounded-full border border-slate-200 transition-colors ${isInComparison ? 'text-primary bg-blue-50 border-blue-100' : 'hover:bg-blue-50 hover:text-primary'
                       }`}
                   >

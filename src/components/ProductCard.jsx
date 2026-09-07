@@ -104,6 +104,8 @@ export default function ProductCard({
       <div className="absolute top-3 right-3 z-10 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
         <button
           onClick={handleWishlistToggle}
+          aria-label={t(isInWishlist ? 'a11y.remove_from_wishlist' : 'a11y.add_to_wishlist')}
+          aria-pressed={isInWishlist}
           className={`p-2 bg-white rounded-full shadow-md transition-colors ${isInWishlist ? 'text-red-500 bg-red-50' : 'hover:bg-red-50 hover:text-red-500'
             }`}
         >
@@ -111,6 +113,8 @@ export default function ProductCard({
         </button>
         <button
           onClick={handleComparisonToggle}
+          aria-label={t(isInComparison ? 'a11y.remove_from_compare' : 'a11y.add_to_compare')}
+          aria-pressed={isInComparison}
           className={`p-2 bg-white rounded-full shadow-md transition-colors ${isInComparison ? 'text-primary bg-blue-50' : 'hover:bg-blue-50 hover:text-primary'
             }`}
         >

@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Slider } from '@/components/ui/slider';
 import WideProductCard from '@/components/WideProductCard';
-import { getCategories } from '@/api/categories';
+import { useCategoryStore } from '@/stores/useCategoryStore';
 import { Link, useSearchParams } from 'react-router-dom';
 import useDebounce from '@/hooks/useDebounce';
 import { useProductStore } from '@/stores/useProductStore';
@@ -16,14 +16,19 @@ export default function Products() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [sort, setSort] = useState('price_asc');
 
+  // priceRange follows the thumbs live so the labels update while dragging.
+  // appliedPriceRange only moves when the drag ends, and it is what the fetch
+  // effect depends on - otherwise every mousemove fired another API request.
   const [priceRange, setPriceRange] = useState([0, 100000]);
+  const [appliedPriceRange, setAppliedPriceRange] = useState([0, 100000]);
   const [mode, setMode] = useState('grid');
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 500);
 
   // Store
   const { products, pagination, loading, error, fetchProducts } = useProductStore();
-  const [categories, setCategories] = useState([]);
+  const categories = useCategoryStore((state) => state.categories);
+  const fetchCategories = useCategoryStore((state) => state.fetchCategories);
 
   // Local state for page to control fetch
   const [currentPage, setCurrentPage] = useState(1);
@@ -32,19 +37,11 @@ export default function Products() {
   const categoryIdFromUrl = searchParams.get('category');
   const selectedCategory = categories.find(c => c.id.toString() === categoryIdFromUrl) || null;
 
-  // Fetch categories on mount
+  // Served from the shared store: Header has almost always fetched these
+  // already by the time this page mounts, so this resolves without a request.
   useEffect(() => {
-    const fetchCats = async () => {
-      try {
-        const response = await getCategories();
-        const cats = response.data.data || response.data;
-        setCategories(cats);
-      } catch (err) {
-        console.error('Error fetching categories:', err);
-      }
-    };
-    fetchCats();
-  }, []);
+    fetchCategories();
+  }, [fetchCategories]);
 
   // Fetch products when filters change (including category from URL)
   useEffect(() => {
@@ -52,8 +49,8 @@ export default function Products() {
       page: currentPage,
       limit: 12,
       sort: sort === 'price_asc' ? 'asc' : 'desc',
-      min_price: priceRange[0],
-      max_price: priceRange[1],
+      min_price: appliedPriceRange[0],
+      max_price: appliedPriceRange[1],
     };
 
     if (debouncedSearch) {
@@ -65,7 +62,7 @@ export default function Products() {
     }
 
     fetchProducts(params);
-  }, [currentPage, categoryIdFromUrl, sort, priceRange, debouncedSearch, fetchProducts]);
+  }, [currentPage, categoryIdFromUrl, sort, appliedPriceRange, debouncedSearch, fetchProducts]);
 
 
   const handleCategoryChange = (category) => {
@@ -153,7 +150,7 @@ export default function Products() {
                 <Slider
                   value={priceRange}
                   onValueChange={setPriceRange}
-                  onValueCommit={setPriceRange}
+                  onValueCommit={setAppliedPriceRange}
                   min={0}
                   max={100000}
                   step={100}
@@ -181,6 +178,7 @@ export default function Products() {
             <div className="flex items-center gap-2 my-4">
               <button
                 onClick={() => setMode('grid')}
+                aria-label={t('products_page.view_grid')}
                 className={`p-2 border-2 rounded-lg transition-colors ${mode === 'grid'
                   ? 'border-primary bg-blue-50'
                   : 'border-slate-300 hover:bg-slate-50'
@@ -191,6 +189,7 @@ export default function Products() {
 
               <button
                 onClick={() => setMode('stretch')}
+                aria-label={t('products_page.view_list')}
                 className={`p-2 border-2 rounded-lg transition-colors ${mode === 'stretch'
                   ? 'border-primary bg-blue-50'
                   : 'border-slate-300 hover:bg-slate-50'

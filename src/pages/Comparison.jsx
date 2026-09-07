@@ -137,6 +137,7 @@ export default function Comparison() {
                             <TableCell key={product.id} className={`${borderStyle} p-4 text-center`}>
                                 <button
                                     onClick={() => handleRemove(product.id)}
+                                    aria-label={t('a11y.remove_product')}
                                     className="hover:bg-red-50 p-2 rounded-full transition-colors group"
                                 >
                                     <Trash2 className="text-gray-400 group-hover:text-red-500 transition-colors" size={28} />

@@ -26,12 +26,12 @@ export function SortDropdown({ onChange }) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger >
-
-        <button className="p-2 border bg-muted flex gap-20 justify-between">
-          <span>{options[0].value === sort ? options[0].label : options[1].label}</span>
-          <ChevronDown />
-        </button>
+      {/* The trigger renders its own <button>. Nesting another one inside it
+          is invalid HTML and breaks keyboard and screen-reader behaviour, so
+          the styling goes on the trigger itself. */}
+      <DropdownMenuTrigger className="p-2 border bg-muted flex gap-20 justify-between">
+        <span>{options[0].value === sort ? options[0].label : options[1].label}</span>
+        <ChevronDown />
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className="w-48">

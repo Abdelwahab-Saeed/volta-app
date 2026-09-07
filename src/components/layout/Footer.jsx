@@ -42,7 +42,7 @@ export default function Footer() {
                 {t('footer.description')}
               </p>
               <div className="flex flex-row mt-6">
-                <a href="https://www.facebook.com/voltastabilizer" target="_blank" rel="noreferrer">
+                <a href="https://www.facebook.com/voltastabilizer" target="_blank" rel="noreferrer" aria-label={t('layout.follow_facebook')}>
                   <Facebook
                     className="border rounded cursor-pointer hover:bg-white/10 transition-colors"
                     fill="white"

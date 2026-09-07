@@ -4,8 +4,10 @@ import { Card, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import SmallProductCard from '../SmallProductCard';
+import { useTranslation } from 'react-i18next';
 
 export default function SpecialProducts({ title, products }) {
+  const { t } = useTranslation();
   const [api, setApi] = useState();
 
   const scrollPrev = useCallback(() => {
@@ -24,12 +26,14 @@ export default function SpecialProducts({ title, products }) {
           <button
             onClick={scrollNext}
             className="w-8 h-8 rounded-full border flex items-center justify-center hover:bg-gray-100"
+            aria-label={t('a11y.next')}
           >
             <ChevronRight className="w-4 h-4" />
           </button>
           <button
             onClick={scrollPrev}
             className="w-8 h-8 rounded-full border flex items-center justify-center hover:bg-gray-100"
+            aria-label={t('a11y.previous')}
           >
             <ChevronLeft className="w-4 h-4" />
           </button>

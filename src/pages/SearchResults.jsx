@@ -56,6 +56,7 @@ export default function SearchResults() {
                     <div className="flex items-center gap-2">
                         <button
                             onClick={() => setMode('grid')}
+                aria-label={t('products_page.view_grid')}
                             className={`p-2 border-2 rounded-lg transition-colors ${mode === 'grid'
                                 ? 'border-primary bg-blue-50'
                                 : 'border-slate-300 hover:bg-slate-50'
@@ -66,6 +67,7 @@ export default function SearchResults() {
 
                         <button
                             onClick={() => setMode('stretch')}
+                aria-label={t('products_page.view_list')}
                             className={`p-2 border-2 rounded-lg transition-colors ${mode === 'stretch'
                                 ? 'border-primary bg-blue-50'
                                 : 'border-slate-300 hover:bg-slate-50'

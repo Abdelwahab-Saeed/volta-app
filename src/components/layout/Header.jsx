@@ -97,6 +97,7 @@ export default function Header() {
         <button
           className="md:hidden p-2 text-gray-600"
           onClick={() => setIsMenuOpen(true)}
+          aria-label={t('a11y.open_menu')}
         >
           <Menu size={28} />
         </button>
@@ -126,6 +127,7 @@ export default function Header() {
           <button
             onClick={handleSearch}
             className="bg-secondary h-full px-4 flex items-center justify-center text-white"
+            aria-label={t('a11y.search')}
           >
             <Search size={20} />
           </button>
@@ -181,15 +183,15 @@ export default function Header() {
           {/* Icons */}
           <div className="flex items-center gap-3 md:gap-5">
             <div className="relative cursor-pointer block">
-              <Link to='/comparison'> <ArrowUpDown size={24} className="" /> </Link>
+              <Link to='/comparison' aria-label={t('comparison.title')}> <ArrowUpDown size={24} className="" /> </Link>
               <Badge count={comparisonCount} />
             </div>
             <div className="relative cursor-pointer">
-              <Link to='/wishlist'> <Heart size={24} /> </Link>
+              <Link to='/wishlist' aria-label={t('wishlist.title')}> <Heart size={24} /> </Link>
               <Badge count={wishlistCount} />
             </div>
             <div className="relative cursor-pointer">
-              <Link to='/cart'> <Handbag size={24} /> </Link>
+              <Link to='/cart' aria-label={t('cart.title')}> <Handbag size={24} /> </Link>
               <Badge count={cartCount} />
             </div>
           </div>
@@ -210,6 +212,7 @@ export default function Header() {
           <button
             onClick={handleSearch}
             className="bg-secondary h-full px-4 text-white"
+            aria-label={t('a11y.search')}
           >
             <Search size={18} />
           </button>
@@ -271,7 +274,7 @@ export default function Header() {
         <div className="fixed inset-0 z-50 flex md:hidden">
           <div className="fixed inset-0 bg-black/50" onClick={() => setIsMenuOpen(false)} />
           <div className="relative w-72 max-w-[80%] bg-white h-full shadow-xl flex flex-col p-6 animate-in slide-in-from-inline-end">
-            <button onClick={() => setIsMenuOpen(false)} className="self-end mb-6"><X /></button>
+            <button onClick={() => setIsMenuOpen(false)} className="self-end mb-6" aria-label={t('a11y.close_menu')}><X /></button>
 
             <div className="flex items-center gap-3 mb-8 pb-6 border-b">
               <div className="bg-gray-100 p-3 rounded-full"><User /></div>
