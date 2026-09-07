@@ -504,5 +504,14 @@
         "add_to_compare": "Add to comparison",
         "remove_from_compare": "Remove from comparison",
         "remove_product": "Remove product"
+    },
+    "seo": {
+        "home_title": "Volta | Voltage Stabilizers & Electrical Solutions in Egypt",
+        "home_description": "Volta Stabilizer & Electrical Solutions - voltage stabilizers, transformers and electrical protection devices in Egypt. Exclusive agent for STABILIZER VOLTA and VOLTAFAY.",
+        "products_description": "Browse Volta voltage stabilizers, transformers, inverters and electrical protection devices. Nationwide delivery across Egypt.",
+        "about_description": "Volta Stabilizer & Electrical Solutions is an extension of Al-Handasia for Electrical Protection, founded in 2011, and the exclusive agent for STABILIZER VOLTA and VOLTAFAY in Egypt.",
+        "vision_description": "Our vision and mission: leading voltage stabilization systems and energy solutions in Egypt through continuous innovation and the highest quality standards.",
+        "blog_description": "News, guides and articles from Volta on electrical protection and voltage stabilization.",
+        "default_description": "Volta Stabilizer & Electrical Solutions - voltage stabilizers and integrated electrical solutions in Egypt."
     }
 }

@@ -1,9 +1,15 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ShieldCheck, Clock, Package, HelpCircle, CheckCircle2 } from 'lucide-react';
+import useSeo from '@/hooks/useSeo';
 
 const ReturnPolicy = () => {
     const { t } = useTranslation();
+  useSeo({
+    title: t('return_policy.title'),
+    description: t('seo.default_description'),
+  });
+
 
     return (
         <div className="bg-gray-50 min-h-screen">

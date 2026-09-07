@@ -1,0 +1,21 @@
+# https://www.volta-eg.com/robots.txt
+
+User-agent: *
+Allow: /
+
+# Account, checkout and auth pages: nothing indexable, and crawling them
+# wastes budget on routes that redirect to login anyway.
+Disallow: /cart
+Disallow: /checkout
+Disallow: /profile
+Disallow: /orders
+Disallow: /addresses
+Disallow: /wishlist
+Disallow: /comparison
+Disallow: /offers
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password
+
+Sitemap: https://www.volta-eg.com/sitemap.xml

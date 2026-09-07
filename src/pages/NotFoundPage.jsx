@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import useSeo from '@/hooks/useSeo';
 
 export default function NotFoundPage() {
   const { t } = useTranslation();
+  useSeo({ title: t('not_found.title'), noindex: true });
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <h1 className="text-6xl font-bold text-gray-800 mb-4">404</h1>

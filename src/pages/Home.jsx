@@ -3,19 +3,16 @@ import { useTranslation } from 'react-i18next';
 import HomeCarousel from '../components/home/HomeCarousel';
 import CategoryCarousel from '../components/home/CategoryCarousel';
 import FeaturesSection from '../components/home/FeaturesSection';
-import SpecialProducts from '../components/home/SpecialProducts';
-import Products from '../components/home/Products';
 import { useCategoryStore } from '@/stores/useCategoryStore';
-import { useProductStore } from '@/stores/useProductStore';
 import { useBannerStore } from '@/stores/useBannerStore';
+import useSeo from '@/hooks/useSeo';
 
 export default function Home() {
   const { t } = useTranslation();
-  // API data state
-  const {
-    fetchProducts,
-    fetchBestSellingProducts,
-  } = useProductStore();
+  useSeo({
+    title: t('seo.home_title'),
+    description: t('seo.home_description'),
+  });
 
   const {
     banners,
@@ -28,17 +25,19 @@ export default function Home() {
   const fetchCategories = useCategoryStore((state) => state.fetchCategories);
 
   useEffect(() => {
-    // All three fire together. fetchBanners used to run only after categories
-    // and their products had resolved, which pushed the LCP banner image two
-    // round trips later than it needed to be.
+    // Both fire together. fetchBanners used to run only after categories and
+    // their products had resolved, which pushed the LCP banner image two round
+    // trips later than it needed to be.
     fetchBanners();
     fetchCategories();
-    fetchBestSellingProducts();
 
-    // The per-category product fetch that used to live here has been removed:
-    // it made one request per category and the block that rendered it (below)
-    // is commented out, so the results were discarded. Restore both together.
-  }, [fetchBanners, fetchCategories, fetchBestSellingProducts]);
+    // Removed, because nothing on this page renders their results:
+    //   fetchBestSellingProducts()  - only SpecialProducts uses it, and that
+    //                                 component is not rendered here
+    //   the per-category product fetch - one request per category, feeding the
+    //                                 commented-out <Products> block below
+    // Restore each alongside the component that displays it.
+  }, [fetchBanners, fetchCategories]);
 
   return (
     <div className="container mx-auto px-4 md:px-6 lg:px-8">

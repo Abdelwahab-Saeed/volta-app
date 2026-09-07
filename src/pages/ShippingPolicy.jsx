@@ -1,9 +1,15 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Truck, Clock, ShieldCheck, MapPin, AlertCircle, Phone } from 'lucide-react';
+import useSeo from '@/hooks/useSeo';
 
 const ShippingPolicy = () => {
     const { t } = useTranslation();
+  useSeo({
+    title: t('shipping_policy.title'),
+    description: t('seo.default_description'),
+  });
+
 
     return (
         <div className="bg-gray-50 min-h-screen">

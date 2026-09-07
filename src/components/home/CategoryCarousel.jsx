@@ -45,7 +45,7 @@ export default function CategoryCarousel({ categories, loading = false }) {
                 // gap-4, same text line height.
                 <div className="flex flex-col items-center gap-4" aria-hidden="true">
                   <div className="w-full aspect-square animate-pulse rounded-2xl bg-slate-100" />
-                  <span className="h-6 w-24 animate-pulse rounded bg-slate-100 md:h-7" />
+                  <span className="h-10 w-24 animate-pulse rounded bg-slate-100 md:h-14" />
                 </div>
               ) : (
               <Link
@@ -66,7 +66,11 @@ export default function CategoryCarousel({ categories, loading = false }) {
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
                   />
                 </div>
-                <span className="text-sm md:text-xl font-bold text-center text-slate-800 group-hover:text-secondary transition-colors duration-300">
+                {/* Fixed two-line box (h-10 = 2x the text-sm line height,
+                    h-14 = 2x text-xl). Category names vary in length and wrap
+                    unpredictably in Arabic, so without a fixed height the row
+                    height depends on the data and shifts when it arrives. */}
+                <span className="line-clamp-2 h-10 md:h-14 text-sm md:text-xl font-bold text-center text-slate-800 group-hover:text-secondary transition-colors duration-300">
                   {category.name}
                 </span>
               </Link>

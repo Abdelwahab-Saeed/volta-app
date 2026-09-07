@@ -2,9 +2,15 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Target, Rocket, CheckCircle2, Award } from 'lucide-react';
 import SafeImage from '@/components/common/SafeImage';
+import useSeo from '@/hooks/useSeo';
 
 const Vision = () => {
     const { t } = useTranslation();
+  useSeo({
+    title: t('vision_page.title'),
+    description: t('seo.vision_description'),
+  });
+
 
     return (
         <div className="bg-white min-h-screen">

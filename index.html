@@ -18,7 +18,82 @@
     <link rel="preconnect" href="https://api.volta-eg.com" />
     <link rel="preconnect" href="https://api.volta-eg.com" crossorigin />
 
-    <title>Volta</title>
+    <!--
+      Defaults for crawlers and for the moment before React mounts. Pages
+      override these at runtime via the useSeo hook (src/hooks/useSeo.js),
+      which updates these exact tags in place rather than adding duplicates.
+      Copy is taken from the site's own about/footer content, in Arabic to
+      match the default document language.
+    -->
+    <title>فولتا | مثبتات الجهد الكهربائي وحلول الكهرباء في مصر</title>
+    <meta
+      name="description"
+      content="شركة فولتا للاستبليزر وحلول الكهرباء - متخصصون في مثبتات الجهد الكهربائي (الاستبليزر)، المحولات، وأجهزة الحماية الكهربائية في مصر. الوكيل الحصري لماركتي STABILIZER VOLTA و VOLTAFAY."
+    />
+    <link rel="canonical" href="https://www.volta-eg.com/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Volta" />
+    <meta property="og:locale" content="ar_EG" />
+    <meta property="og:url" content="https://www.volta-eg.com/" />
+    <meta property="og:title" content="فولتا | مثبتات الجهد الكهربائي وحلول الكهرباء في مصر" />
+    <meta
+      property="og:description"
+      content="متخصصون في مثبتات الجهد الكهربائي (الاستبليزر)، المحولات، وأجهزة الحماية الكهربائية في مصر."
+    />
+    <meta property="og:image" content="https://www.volta-eg.com/Logo.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!--
+      Organization + WebSite structured data. Static, so it is present even for
+      crawlers that do not execute JavaScript - which is the whole problem with
+      this app being client-rendered.
+    -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://www.volta-eg.com/#organization",
+            "name": "Volta",
+            "alternateName": "شركة فولتا للاستبليزر وحلول الكهرباء",
+            "url": "https://www.volta-eg.com/",
+            "logo": "https://www.volta-eg.com/Logo.png",
+            "foundingDate": "2011",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Beni Suef",
+              "addressCountry": "EG"
+            },
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "telephone": "+201222245464",
+              "contactType": "customer service",
+              "areaServed": "EG",
+              "availableLanguage": ["ar", "en"]
+            },
+            "sameAs": ["https://www.facebook.com/voltastabilizer"]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://www.volta-eg.com/#website",
+            "url": "https://www.volta-eg.com/",
+            "name": "Volta",
+            "inLanguage": "ar",
+            "publisher": { "@id": "https://www.volta-eg.com/#organization" },
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://www.volta-eg.com/search?q={search_term_string}"
+              },
+              "query-input": "required name=search_term_string"
+            }
+          }
+        ]
+      }
+    </script>
 
     <!--
       Sets the text direction before the first paint.
@@ -48,6 +123,51 @@
         } catch (e) {
           /* private mode or storage disabled - keep the markup defaults */
         }
+      })();
+    </script>
+    <!--
+      Starts the banner request, and then the banner image download, before the
+      JS bundle has finished downloading.
+
+      The banner is the LCP element, and its URL is only known after an API
+      call. The chain was strictly serial: HTML -> bundle -> parse -> React
+      render -> GET /banners -> GET the image. On a throttled phone that put
+      LCP past four seconds even though the image itself is ~33 KB.
+
+      This runs the API call in parallel with the bundle download and injects a
+      preload for the image the moment the URL is known, so by the time React
+      mounts the image is usually already in the cache. useBannerStore awaits
+      this promise instead of issuing its own request.
+
+      URLs come from Vite's %VITE_*% substitution - same values the app uses,
+      so the preload href matches what SafeImage requests and the browser does
+      not download the image twice.
+    -->
+    <script>
+      (function () {
+        var API = '%VITE_API_URL%';
+        var IMAGES = '%VITE_IMAGES_URL%';
+        if (!API || API.indexOf('%') === 0) return;
+
+        window.__voltaBanners = fetch(API + '/banners')
+          .then(function (res) { return res.ok ? res.json() : null; })
+          .then(function (payload) {
+            var data = payload && payload.data;
+            var items = Array.isArray(data) ? data : (data && data.items) || [];
+            var first = items[0];
+            var image = first && (typeof first === 'string' ? first : first.image);
+
+            if (image && IMAGES) {
+              var link = document.createElement('link');
+              link.rel = 'preload';
+              link.as = 'image';
+              link.href = IMAGES + '/' + image;
+              link.setAttribute('fetchpriority', 'high');
+              document.head.appendChild(link);
+            }
+            return items;
+          })
+          .catch(function () { return null; });
       })();
     </script>
   </head>

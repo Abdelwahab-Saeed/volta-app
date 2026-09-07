@@ -1,9 +1,15 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ShieldCheck, Zap, TrendingUp, Users } from 'lucide-react';
+import useSeo from '@/hooks/useSeo';
 
 const AboutUs = () => {
     const { t } = useTranslation();
+  useSeo({
+    title: t('about_us.title'),
+    description: t('seo.about_description'),
+  });
+
 
     const iconMap = [
         <ShieldCheck className="text-secondary" size={40} />,

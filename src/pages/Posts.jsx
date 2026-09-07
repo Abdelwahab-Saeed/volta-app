@@ -3,9 +3,15 @@ import { getPosts } from '@/api/posts.api';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Loader2, Square, ChevronRight } from 'lucide-react';
+import useSeo from '@/hooks/useSeo';
 
 export default function Posts() {
     const { t } = useTranslation();
+  useSeo({
+    title: t('header.blog'),
+    description: t('seo.blog_description'),
+  });
+
     const [posts, setPosts] = useState([]);
     const [pagination, setPagination] = useState(null);
     const [loading, setLoading] = useState(true);

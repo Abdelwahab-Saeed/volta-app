@@ -14,6 +14,8 @@ import { useTranslation } from "react-i18next";
 import ProductView from "@/components/product/ProductView";
 import SpecialProducts from "@/components/home/SpecialProducts";
 import { trackEvent } from '@/lib/pixel';
+import useSeo from '@/hooks/useSeo';
+import useProductJsonLd from '@/hooks/useProductJsonLd';
 
 export default function ProductDetails() {
     const { id } = useParams();
@@ -33,6 +35,16 @@ export default function ProductDetails() {
 
     const [addingStr, setAddingStr] = useState(false);
     const { products: allProducts, fetchProducts } = useProductStore();
+
+    useSeo({
+        title: product?.name,
+        description: product?.description || t('seo.default_description'),
+        image: product?.image
+            ? `${import.meta.env.VITE_IMAGES_URL}/${product.image}`
+            : undefined,
+        type: 'product',
+    });
+    useProductJsonLd(product);
 
     useEffect(() => {
         fetchProducts();

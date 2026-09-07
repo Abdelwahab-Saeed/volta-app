@@ -1,9 +1,15 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ShieldCheck, Database, Eye, Share2, Lock, UserCheck, PhoneCall } from 'lucide-react';
+import useSeo from '@/hooks/useSeo';
 
 const PrivacyPolicy = () => {
     const { t } = useTranslation();
+  useSeo({
+    title: t('privacy_policy.title'),
+    description: t('seo.default_description'),
+  });
+
 
     return (
         <div className="bg-gray-50 min-h-screen">

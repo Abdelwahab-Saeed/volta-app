@@ -32,7 +32,11 @@ export default function HomeCarousel({ banners, loading }) {
         onMouseEnter={plugin.current.stop}
         onMouseLeave={plugin.current.reset}
       >
-        <CarouselContent className="h-100">
+        {/* Must match the skeleton above and the image below exactly. This was
+            h-100 (25rem / 400px) at every breakpoint while the image inside is
+            200px on mobile - so the container jumped 200px when the banners
+            loaded, and left 200px of dead space under the image. */}
+        <CarouselContent className="h-[200px] md:h-[400px]">
           {banners.map((banner, index) => {
             const imageUrl = typeof banner === 'string' ? banner : banner.image;
             return (

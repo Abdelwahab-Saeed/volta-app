@@ -9,6 +9,7 @@ import { useCategoryStore } from '@/stores/useCategoryStore';
 import { Link, useSearchParams } from 'react-router-dom';
 import useDebounce from '@/hooks/useDebounce';
 import { useProductStore } from '@/stores/useProductStore';
+import useSeo from '@/hooks/useSeo';
 import { useTranslation } from 'react-i18next';
 
 export default function Products() {
@@ -36,6 +37,15 @@ export default function Products() {
   // Derive selectedCategory from URL
   const categoryIdFromUrl = searchParams.get('category');
   const selectedCategory = categories.find(c => c.id.toString() === categoryIdFromUrl) || null;
+
+  // Category views are distinct listings and self-canonicalise, matching the
+  // ?category= URLs in sitemap.xml. Without the override they would all
+  // canonicalise to /products and collapse into one indexed page.
+  useSeo({
+    title: selectedCategory?.name || t('products_page.all_products'),
+    description: t('seo.products_description'),
+    canonical: categoryIdFromUrl ? `/products?category=${categoryIdFromUrl}` : '/products',
+  });
 
   // Served from the shared store: Header has almost always fetched these
   // already by the time this page mounts, so this resolves without a request.

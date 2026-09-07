@@ -358,7 +358,12 @@ Still outstanding:
 - **Locale files** — `ar.json` (33 KB) and `en.json` (26 KB) are both bundled into
   the entry, but a visitor only ever uses one.
 - **Upload size cap** — the admin panel still accepts 1.5 MB PNGs.
-- **SEO** — the HTML reaches crawlers as an empty `<div id="root">`. No meta-tag
-  library fixes that; it needs prerendering or SSR.
+- **SEO** — meta tags, robots.txt, sitemap.xml and structured data are done, but
+  page *content* still reaches crawlers as an empty `<div id="root">`. Google
+  renders JS and will see it; most other crawlers will not. Only prerendering or
+  SSR fixes that.
+- **Sitemap freshness** — `public/sitemap.xml` is generated, not live. Re-run
+  `node scripts/generate-sitemap.mjs` and rebuild whenever products or
+  categories change, otherwise new products never get submitted to Google.
 - **Dead files** — `components/example.jsx` and `components/component-example.jsx`
   are unreferenced.
