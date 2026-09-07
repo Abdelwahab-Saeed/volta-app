@@ -1,40 +1,45 @@
 import './App.css';
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import { useAuthStore } from './stores/useAuthStore';
 import { useCartStore } from './stores/useCartStore';
 import { useWishlistStore } from './stores/useWishlistStore';
 import { useComparisonStore } from './stores/useComparisonStore';
 import { Route, Routes } from 'react-router-dom';
 import Header from './components/layout/Header';
-import Register from './pages/Register';
 import Footer from './components/layout/Footer';
-import Login from './pages/Login';
-import Home from './pages/Home';
-import Products from './pages/Products';
-import NotFoundPage from './pages/NotFoundPage';
-import SearchResults from './pages/SearchResults';
-import Offers from './pages/Offers';
-import Comparison from './pages/Comparison';
-import Cart from './pages/Cart';
-import Checkout from './pages/Checkout';
-import ProfileLayout from './components/profile/ProfileLayout';
-import Profile from './pages/Profile';
-import Orders from './pages/Orders';
-import Address from './pages/Address';
-import Wishlist from './pages/Wishlist';
 import Links from './components/layout/Links';
 import ProtectedRoute from './components/auth/ProtectedRoute';
-import ProductDetails from './pages/ProductDetails';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
-import AboutUs from './pages/AboutUs';
-import Vision from './pages/Vision';
-import ReturnPolicy from './pages/ReturnPolicy';
-import ShippingPolicy from './pages/ShippingPolicy';
-import Posts from './pages/Posts';
-import PostDetails from './pages/PostDetails';
-import PrivacyPolicy from './pages/PrivacyPolicy';
 import { Toaster } from "@/components/ui/sonner";
+
+// Home stays a static import: it is the landing route, and lazy-loading it
+// would cost an extra round trip before anything paints. Every other route is
+// split out, so its code only downloads when someone navigates there.
+import Home from './pages/Home';
+
+const Register       = lazy(() => import('./pages/Register'));
+const Login          = lazy(() => import('./pages/Login'));
+const Products       = lazy(() => import('./pages/Products'));
+const NotFoundPage   = lazy(() => import('./pages/NotFoundPage'));
+const SearchResults  = lazy(() => import('./pages/SearchResults'));
+const Offers         = lazy(() => import('./pages/Offers'));
+const Comparison     = lazy(() => import('./pages/Comparison'));
+const Cart           = lazy(() => import('./pages/Cart'));
+const Checkout       = lazy(() => import('./pages/Checkout'));
+const ProfileLayout  = lazy(() => import('./components/profile/ProfileLayout'));
+const Profile        = lazy(() => import('./pages/Profile'));
+const Orders         = lazy(() => import('./pages/Orders'));
+const Address        = lazy(() => import('./pages/Address'));
+const Wishlist       = lazy(() => import('./pages/Wishlist'));
+const ProductDetails = lazy(() => import('./pages/ProductDetails'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const ResetPassword  = lazy(() => import('./pages/ResetPassword'));
+const AboutUs        = lazy(() => import('./pages/AboutUs'));
+const Vision         = lazy(() => import('./pages/Vision'));
+const ReturnPolicy   = lazy(() => import('./pages/ReturnPolicy'));
+const ShippingPolicy = lazy(() => import('./pages/ShippingPolicy'));
+const Posts          = lazy(() => import('./pages/Posts'));
+const PostDetails    = lazy(() => import('./pages/PostDetails'));
+const PrivacyPolicy  = lazy(() => import('./pages/PrivacyPolicy'));
 import ScrollToTop from './components/layout/ScrollToTop';
 import ReactPixel from 'react-facebook-pixel';
 import { useLocation } from 'react-router-dom';
@@ -93,6 +98,9 @@ function App() {
       <ScrollToTop />
       <Header />
       <Links />
+      {/* min-h-[60vh] keeps the footer from jumping up while a route chunk is
+          still downloading. */}
+      <Suspense fallback={<div className="min-h-[60vh]" aria-busy="true" />}>
       <Routes>
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
@@ -126,6 +134,7 @@ function App() {
 
         <Route path='*' element={<NotFoundPage />} />
       </Routes>
+      </Suspense>
       <Footer />
       <Toaster richColors position="top-center" />
     </>

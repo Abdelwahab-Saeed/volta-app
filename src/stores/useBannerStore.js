@@ -3,7 +3,11 @@ import { getBanners } from '@/api/banners.api';
 
 export const useBannerStore = create((set) => ({
     banners: [],
-    loading: false,
+    // Starts true so HomeCarousel renders its 200/400px skeleton on the very
+    // first paint. With false it returned null, then swapped to the skeleton a
+    // tick later - inserting 400px at the top of the page and shifting
+    // everything below it.
+    loading: true,
     error: null,
 
     fetchBanners: async () => {

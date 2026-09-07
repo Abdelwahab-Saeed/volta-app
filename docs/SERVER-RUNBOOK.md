@@ -336,15 +336,23 @@ isolated and carries its own rollback.
 
 ## Still outstanding after this runbook
 
-Code-side work, not covered here:
+Done in code (ships with the next `git pull` + `npm run build`):
 
-- **CLS 0.46** — the header nav, category carousel and banner all render as empty
-  containers that grow when the API responds. Needs skeletons reserving the final
-  height. This is the worst metric on the site.
-- **926 KB single JS bundle** — needs `React.lazy` per route plus `manualChunks`.
-- **`getCategories()` fires twice** — once in `Header.jsx`, once in `Home.jsx`.
-- **Banner request waterfall** — `fetchBanners()` only starts after the categories
-  request resolves, delaying the LCP image by a full round trip.
+- CLS skeletons for the header nav, category carousel and banner
+- Route-level code splitting — homepage JS+CSS 1029 KB → 740 KB raw
+  (302 KB → 227 KB gzip)
+- `getCategories()` deduplicated into a shared store
+- Banner waterfall removed; two dead product requests deleted
+- Homepage API requests: 6 → 3
+
+Still outstanding:
+
 - **`ar-EG` direction bug** — `i18n.js` compares `lng === 'ar'`, but browsers report
-  `ar-EG`, flipping Arabic users to LTR after JS loads.
+  `ar-EG`, flipping Arabic users to LTR after JS loads. Both a UX bug and a CLS source.
+- **Locale files** — `ar.json` (33 KB) and `en.json` (26 KB) are both bundled into
+  the entry, but a visitor only ever uses one.
 - **Upload size cap** — the admin panel still accepts 1.5 MB PNGs.
+- **SEO** — the HTML reaches crawlers as an empty `<div id="root">`. No meta-tag
+  library fixes that; it needs prerendering or SSR.
+- **Dead files** — `components/example.jsx` and `components/component-example.jsx`
+  are unreferenced.

@@ -10,13 +10,22 @@ import {
 } from '../ui/carousel';
 
 import { useTranslation } from 'react-i18next';
+import { isRTL } from '@/i18n';
 
-export default function CategoryCarousel({ categories }) {
+export default function CategoryCarousel({ categories, loading = false }) {
 
   const { t, i18n } = useTranslation();
+
+  // While the request is in flight the carousel would otherwise render as an
+  // empty row, then jump to full height when the data lands and shove
+  // everything below it down the page. These placeholders occupy exactly the
+  // same box as a real slide, so nothing moves.
+  const items = loading
+    ? Array.from({ length: 4 }).map((_, i) => ({ id: `skeleton-${i}`, skeleton: true }))
+    : categories;
   return (
     <div dir='ltr' className="my-16">
-      <h2 dir={i18n.language === 'ar' ? 'rtl' : 'ltr'} className="text-2xl font-bold mb-6">{t('home.features.categories')}</h2>
+      <h2 dir={isRTL(i18n.language) ? 'rtl' : 'ltr'} className="text-2xl font-bold mb-6">{t('home.features.categories')}</h2>
       <Carousel
         className="w-full"
         opts={{
@@ -26,11 +35,19 @@ export default function CategoryCarousel({ categories }) {
         }}
       >
         <CarouselContent className="-ml-2 md:-ml-4">
-          {categories.map((category, index) => (
+          {items.map((category, index) => (
             <CarouselItem
-              key={index}
+              key={category.id ?? index}
               className="pl-2 md:pl-4 basis-1/2 lg:basis-1/3 xl:basis-1/4"
             >
+              {category.skeleton ? (
+                // Mirrors the real slide exactly: same aspect-square box, same
+                // gap-4, same text line height.
+                <div className="flex flex-col items-center gap-4" aria-hidden="true">
+                  <div className="w-full aspect-square animate-pulse rounded-2xl bg-slate-100" />
+                  <span className="h-6 w-24 animate-pulse rounded bg-slate-100 md:h-7" />
+                </div>
+              ) : (
               <Link
                 to={`/products?category=${category.id}`}
                 className="group flex flex-col items-center gap-4 transition-all duration-300"
@@ -53,6 +70,7 @@ export default function CategoryCarousel({ categories }) {
                   {category.name}
                 </span>
               </Link>
+              )}
             </CarouselItem>
           ))}
         </CarouselContent>

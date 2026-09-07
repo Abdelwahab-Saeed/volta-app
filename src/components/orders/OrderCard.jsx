@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { baseLanguage } from '@/i18n';
 import React from 'react';
 import SafeImage from '../common/SafeImage';
 import { Card, CardContent } from '../ui/card';
@@ -11,7 +12,7 @@ export default function OrderCard({ order }) {
   const name = firstItem ? firstItem.name : t('orders.order_number') + order.id;
 
   const totalItems = order.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
-  const date = new Date(order.created_at).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : 'en-US');
+  const date = new Date(order.created_at).toLocaleDateString(baseLanguage(i18n.language) === 'ar' ? 'ar-EG' : 'en-US');
 
   return (
     <Card className="border border-slate-200 overflow-hidden hover:shadow-lg transition-shadow">

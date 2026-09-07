@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import HomeCarousel from '../components/home/HomeCarousel';
 import CategoryCarousel from '../components/home/CategoryCarousel';
 import FeaturesSection from '../components/home/FeaturesSection';
 import SpecialProducts from '../components/home/SpecialProducts';
 import Products from '../components/home/Products';
-import { getCategories } from '@/api/categories';
-import { getProducts } from '@/api/products.api';
+import { useCategoryStore } from '@/stores/useCategoryStore';
 import { useProductStore } from '@/stores/useProductStore';
 import { useBannerStore } from '@/stores/useBannerStore';
 import ReactPixel from 'react-facebook-pixel';
@@ -25,52 +24,26 @@ export default function Home() {
     loading: bannersLoading
   } = useBannerStore();
 
-  const [categories, setCategories] = useState([]);
-  const [categoriesWithProducts, setCategoriesWithProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const categories = useCategoryStore((state) => state.categories);
+  const categoriesLoading = useCategoryStore((state) => state.loading);
+  const fetchCategories = useCategoryStore((state) => state.fetchCategories);
 
   useEffect(() => {
     ReactPixel.pageView();
   }, []);
 
-  // Fetch categories, products, and banners on mount
   useEffect(() => {
-    const fetchHomeData = async () => {
-      setLoading(true);
-      try {
-        // 1. Fetch Categories
-        const response = await getCategories();
-        const cats = response.data.data || response.data;
-        setCategories(cats);
+    // All three fire together. fetchBanners used to run only after categories
+    // and their products had resolved, which pushed the LCP banner image two
+    // round trips later than it needed to be.
+    fetchBanners();
+    fetchCategories();
+    fetchBestSellingProducts();
 
-        // 2. Fetch products for first two categories
-        const firstTwo = cats.slice(0, 2);
-        const productsFetched = await Promise.all(
-          firstTwo.map(async (cat) => {
-            try {
-              const prodRes = await getProducts({ category: cat.id, limit: 4 });
-              const items = prodRes.data.data?.items || (Array.isArray(prodRes.data.data) ? prodRes.data.data : []);
-              return { ...cat, products: items };
-            } catch (err) {
-              console.error(`Error fetching products for category ${cat.id}:`, err);
-              return { ...cat, products: [] };
-            }
-          })
-        );
-        setCategoriesWithProducts(productsFetched);
-
-        // 3. Keep other global fetches if needed for other parts (like SpecialProducts)
-        fetchBestSellingProducts();
-        fetchBanners();
-      } catch (err) {
-        console.error('Error fetching categories:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchHomeData();
-  }, [fetchBestSellingProducts, fetchBanners]);
+    // The per-category product fetch that used to live here has been removed:
+    // it made one request per category and the block that rendered it (below)
+    // is commented out, so the results were discarded. Restore both together.
+  }, [fetchBanners, fetchCategories, fetchBestSellingProducts]);
 
   return (
     <div className="container mx-auto px-4 md:px-6 lg:px-8">
@@ -87,7 +60,7 @@ export default function Home() {
         )
       ))} */}
 
-      <CategoryCarousel categories={categories} />
+      <CategoryCarousel categories={categories} loading={categoriesLoading} />
       <FeaturesSection />
     </div>
   );

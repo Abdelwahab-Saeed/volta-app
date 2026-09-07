@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useNavigate, Link } from "react-router-dom";
-import { getCategories } from "@/api/categories";
+import { useCategoryStore } from "@/stores/useCategoryStore";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useCartStore } from "@/stores/useCartStore";
 import { useWishlistStore } from "@/stores/useWishlistStore";
@@ -26,7 +26,7 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "@/components/common/LanguageSwitcher";
 import SafeImage from "@/components/common/SafeImage";
-import i18n from '@/i18n';
+import i18n, { baseLanguage } from '@/i18n';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,7 +44,9 @@ export default function Header() {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
-  const [categories, setCategories] = useState([]);
+  const categories = useCategoryStore((state) => state.categories);
+  const categoriesLoading = useCategoryStore((state) => state.loading);
+  const fetchCategories = useCategoryStore((state) => state.fetchCategories);
 
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -75,16 +77,8 @@ export default function Header() {
   };
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await getCategories();
-        setCategories(response.data.data || response.data);
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-      }
-    };
     fetchCategories();
-  }, []);
+  }, [fetchCategories]);
 
   return (
     <header className="w-full font-sans border-b">
@@ -225,10 +219,24 @@ export default function Header() {
       {/* --- Desktop Navigation (Hidden on Mobile) --- */}
       <nav className="hidden md:block bg-[#1e2749] text-white px-4 py-2 lg:px-10">
         <div className="flex items-center justify-between">
-          <ul className="flex items-center gap-4 lg:gap-7 text-[12px] lg:text-[13px] font-medium py-3 overflow-x-auto no-scrollbar">
+          {/* min-h-11 holds the bar at its final height while the categories
+              request is in flight. Without it the nav collapses to padding-only
+              on first paint and pushes the entire page down when data lands -
+              a layout shift at the very top of the viewport, which is the most
+              expensive kind CLS measures. */}
+          <ul className="flex items-center gap-4 lg:gap-7 text-[12px] lg:text-[13px] font-medium py-3 min-h-11 overflow-x-auto no-scrollbar">
+            {categoriesLoading &&
+              Array.from({ length: 8 }).map((_, i) => (
+                <li
+                  key={`cat-skeleton-${i}`}
+                  aria-hidden="true"
+                  className="h-3 w-16 shrink-0 animate-pulse rounded bg-white/15"
+                />
+              ))}
+
             {categories.slice(0, 13).map((cat) => (
               <Link to={`/products?category=${cat.id}`} key={cat.id} className="cursor-pointer hover:text-secondary whitespace-nowrap">
-                {cat.name} {cat.name_ar && i18n.language === 'ar' ? `(${cat.name})` : ''}
+                {cat.name} {cat.name_ar && baseLanguage(i18n.language) === 'ar' ? `(${cat.name})` : ''}
               </Link>
             ))}
 
@@ -244,7 +252,7 @@ export default function Header() {
                       className="cursor-pointer hover:bg-secondary/20 focus:bg-secondary/20 text-white rounded-none border-0"
                       onClick={() => navigate(`/products?category=${cat.id}`)}
                     >
-                      {cat.name} {cat.name_ar && i18n.language === 'ar' ? `(${cat.name})` : ''}
+                      {cat.name} {cat.name_ar && baseLanguage(i18n.language) === 'ar' ? `(${cat.name})` : ''}
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>

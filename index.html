@@ -4,7 +4,52 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/Logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!--
+      Open the connection to the API before the bundle has even parsed. Every
+      above-the-fold image (banner, categories) and every first-paint request
+      goes to this origin, so the TLS handshake is otherwise paid late and on
+      the critical path.
+
+      Two entries on purpose: the crossorigin one serves the CORS requests
+      axios makes, the plain one serves <img> loads, and a connection opened
+      for one cannot be reused by the other.
+    -->
+    <link rel="preconnect" href="https://api.volta-eg.com" />
+    <link rel="preconnect" href="https://api.volta-eg.com" crossorigin />
+
     <title>Volta</title>
+
+    <!--
+      Sets the text direction before the first paint.
+
+      The document defaults to Arabic/RTL above, but i18next resolves the real
+      language from localStorage or the browser only after the JS bundle loads.
+      Without this, an English visitor sees the whole page rendered RTL and then
+      flip to LTR - a full-page layout shift, which is the most expensive thing
+      CLS can measure.
+
+      Deliberately mirrors the resolution order in src/i18n.js: same storage
+      key, same supported list, same "en" fallback. Keep the two in sync.
+    -->
+    <script>
+      (function () {
+        try {
+          var supported = ['ar', 'en'];
+          var rtl = ['ar', 'he', 'fa', 'ur'];
+          var stored = localStorage.getItem('i18nextLng');
+          var base = String(stored || navigator.language || 'en')
+            .split('-')[0]
+            .toLowerCase();
+          if (supported.indexOf(base) === -1) base = 'en';
+          var el = document.documentElement;
+          el.setAttribute('lang', base);
+          el.setAttribute('dir', rtl.indexOf(base) !== -1 ? 'rtl' : 'ltr');
+        } catch (e) {
+          /* private mode or storage disabled - keep the markup defaults */
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
