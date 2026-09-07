@@ -245,7 +245,13 @@ export default function Header() {
 
             {categories.length > 13 && (
               <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center gap-1 cursor-pointer hover:text-secondary outline-none">
+                {/* Renders a <button> containing only an icon, so it needs an
+                    explicit name - a screen reader would otherwise announce it
+                    as just "button". */}
+                <DropdownMenuTrigger
+                  aria-label={t('a11y.more_categories')}
+                  className="flex items-center gap-1 cursor-pointer hover:text-secondary outline-none"
+                >
                   <MoreHorizontal size={18} />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="bg-[#1e2749] text-white border-0 min-w-[200px] py-1 shadow-xl">

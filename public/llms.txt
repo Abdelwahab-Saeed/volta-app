@@ -1,0 +1,36 @@
+# Volta — Voltage Stabilizers & Electrical Solutions
+
+> Volta (شركة فولتا للاستبليزر وحلول الكهرباء) is an Egyptian company specialising in voltage stabilizers, transformers, inverters, ATS units and electrical protection devices. It is the exclusive agent for the STABILIZER VOLTA and VOLTAFAY brands, is based in Beni Suef, Egypt, and is an extension of Al-Handasia for Electrical Protection, founded in 2011.
+
+volta-eg.com is an online store. The interface is bilingual, Arabic and English, with Arabic as the default. Prices are in Egyptian pounds (EGP). The catalogue, categories and banners are served from an API at api.volta-eg.com, so page content is rendered client-side.
+
+## Main pages
+
+- [Home](https://www.volta-eg.com/): Featured banners and the full category list
+- [All products](https://www.volta-eg.com/products): Complete catalogue, filterable by category, price range and search term
+- [About us](https://www.volta-eg.com/about-us): Company background, history and the brands it represents
+- [Vision and mission](https://www.volta-eg.com/vision): What the company aims to do
+- [Blog](https://www.volta-eg.com/blog): Articles and guides on electrical protection and voltage stabilization
+
+## Product range
+
+Individual products live at `https://www.volta-eg.com/product/{id}` and category listings at `https://www.volta-eg.com/products?category={id}`. Categories include voltage stabilizers (automatic, auto-manual, three-phase, imported Pro), inverters, smart devices, ATS units, electrical panels, electric shock protection, frequency inverters, and sensors.
+
+- [Sitemap](https://www.volta-eg.com/sitemap.xml): Every indexable URL, including all product and category pages
+
+## Policies
+
+- [Return and refund policy](https://www.volta-eg.com/return-policy)
+- [Shipping and delivery policy](https://www.volta-eg.com/shipping-policy)
+- [Privacy policy](https://www.volta-eg.com/privacy-policy)
+
+## Contact
+
+- Phone: +20 122 224 5464
+- WhatsApp: +20 102 502 1518
+- [Facebook](https://www.facebook.com/voltastabilizer)
+- Location: Beni Suef, Egypt
+
+## Optional
+
+- [robots.txt](https://www.volta-eg.com/robots.txt): Crawling rules. Cart, checkout, authentication and account pages are disallowed and contain no useful content.
