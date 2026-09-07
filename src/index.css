@@ -14,16 +14,27 @@
   --popover-foreground: oklch(0.147 0.004 49.25);
   --primary: oklch(0.3049 0.0739 269.12);
   --primary-foreground: oklch(0.97 0.014 254.604);
-  --secondary: oklch(0.667 0.1223 233.26);
+  /* Darkened from oklch(0.667) / #31a0d3, which was 2.96:1 on white and
+     failed WCAG AA both as text and as a button background under white text.
+     Same hue and chroma, lower lightness: #007fb0, 4.50:1 both ways. */
+  --secondary: oklch(0.561 0.1223 233.26);
+  /* The original brand blue. Too light for text on white (2.96:1) but the
+     correct choice ON the dark navy surfaces, where the darkened --secondary
+     drops to 3.2:1. Header nav: 4.92:1. Footer: 4.58:1. */
+  --secondary-on-dark: oklch(0.667 0.1223 233.26);
   --secondary-foreground: oklch(0.21 0.006 285.885);
   --muted: oklch(0.97 0.001 106.424);
-  --muted-foreground: oklch(0.553 0.013 58.071);
+  /* 0.553 gave 4.47:1 on the #F6F7F9 panels in FeaturesSection - just under
+     the 4.5:1 AA threshold. This is a 0.001 lightness change. */
+  --muted-foreground: oklch(0.552 0.013 58.071);
   --accent: oklch(0.97 0.001 106.424);
   --accent-foreground: oklch(0.216 0.006 56.043);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.923 0.003 48.717);
   --input: oklch(0.923 0.003 48.717);
-  --ring: oklch(0.709 0.01 56.259);
+  /* Focus indicators are UI components and need 3:1 against the page.
+     0.709 gave 2.59:1. */
+  --ring: oklch(0.669 0.01 56.259);
   --chart-1: oklch(0.809 0.105 251.813);
   --chart-2: oklch(0.623 0.214 259.815);
   --chart-3: oklch(0.546 0.245 262.881);
@@ -100,6 +111,7 @@
   --color-muted: var(--muted);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-secondary: var(--secondary);
+  --color-secondary-on-dark: var(--secondary-on-dark);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary: var(--primary);
   --color-popover-foreground: var(--popover-foreground);

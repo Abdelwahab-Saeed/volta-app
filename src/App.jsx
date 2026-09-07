@@ -93,6 +93,9 @@ function App() {
       <ScrollToTop />
       <Header />
       <Links />
+      {/* <main> is the document's main landmark. Without it, assistive tech has
+          no way to skip the header and jump straight to page content. */}
+      <main id="main">
       {/* min-h-[60vh] keeps the footer from jumping up while a route chunk is
           still downloading. */}
       <Suspense fallback={<div className="min-h-[60vh]" aria-busy="true" />}>
@@ -130,6 +133,7 @@ function App() {
         <Route path='*' element={<NotFoundPage />} />
       </Routes>
       </Suspense>
+      </main>
       <Footer />
       <Toaster richColors position="top-center" />
     </>

@@ -58,22 +58,22 @@ export default function Footer() {
               <h4 className="text-lg md:text-xl font-semibold mb-6">{t('footer.my_account')}</h4>
               <ul className="space-y-3 opacity-80">
                 <li>
-                  <Link to="/orders" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
+                  <Link to="/orders" className="hover:underline hover:text-secondary-on-dark transition-colors text-sm md:text-base">
                     {t('footer.track_order')}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/register" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
+                  <Link to="/register" className="hover:underline hover:text-secondary-on-dark transition-colors text-sm md:text-base">
                     {t('footer.create_account')}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/orders" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
+                  <Link to="/orders" className="hover:underline hover:text-secondary-on-dark transition-colors text-sm md:text-base">
                     {t('footer.my_orders')}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/wishlist" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
+                  <Link to="/wishlist" className="hover:underline hover:text-secondary-on-dark transition-colors text-sm md:text-base">
                     {t('footer.wishlist')}
                   </Link>
                 </li>
@@ -85,37 +85,37 @@ export default function Footer() {
               <h4 className="text-lg md:text-xl font-semibold mb-6">{t('footer.about_volta')}</h4>
               <ul className="space-y-3 opacity-80">
                 <li>
-                  <Link to="/about-us" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
+                  <Link to="/about-us" className="hover:underline hover:text-secondary-on-dark transition-colors text-sm md:text-base">
                     {t('about_us.title')}
                   </Link>
                 </li>
                 {/* <li>
-                  <Link to="/vision" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
+                  <Link to="/vision" className="hover:underline hover:text-secondary-on-dark transition-colors text-sm md:text-base">
                     {t('vision_page.title')}
                   </Link>
                 </li> */}
                 <li>
-                  <Link to="/return-policy" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
+                  <Link to="/return-policy" className="hover:underline hover:text-secondary-on-dark transition-colors text-sm md:text-base">
                     {t('return_policy.title')}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/shipping-policy" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
+                  <Link to="/shipping-policy" className="hover:underline hover:text-secondary-on-dark transition-colors text-sm md:text-base">
                     {t('shipping_policy.title')}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/privacy-policy" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
+                  <Link to="/privacy-policy" className="hover:underline hover:text-secondary-on-dark transition-colors text-sm md:text-base">
                     {t('footer.privacy_policy')}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/blog" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
+                  <Link to="/blog" className="hover:underline hover:text-secondary-on-dark transition-colors text-sm md:text-base">
                     {t('footer.blog') || 'Blog'}
                   </Link>
                 </li>
                 <li>
-                  <a href="https://wa.me/+201111126804" target="_blank" rel="noreferrer" className="hover:underline hover:text-secondary transition-colors text-sm md:text-base">
+                  <a href="https://wa.me/+201111126804" target="_blank" rel="noreferrer" className="hover:underline hover:text-secondary-on-dark transition-colors text-sm md:text-base">
                     {t('footer.contact_us')}
                   </a>
                 </li>
@@ -131,7 +131,7 @@ export default function Footer() {
                 <li className="!mt-2">
                   <a
                     href="tel:+201222245464"
-                    className="hover:text-secondary transition-colors text-xl font-bold block"
+                    className="hover:text-secondary-on-dark transition-colors text-xl font-bold block"
                   >
                     01222245464
                   </a>
@@ -139,7 +139,7 @@ export default function Footer() {
                 <li>
                   <a
                     href="mailto:info@volta-eg.com"
-                    className="hover:text-secondary transition-colors flex items-center justify-center sm:justify-start gap-2"
+                    className="hover:text-secondary-on-dark transition-colors flex items-center justify-center sm:justify-start gap-2"
                   >
                     <Mail size="20" />
                     info@volta-eg.com
@@ -159,7 +159,7 @@ export default function Footer() {
       <div className="bg-primary border-t border-white/10 py-4">
         <div className="container mx-auto px-4 text-center">
           <p className="text-sm opacity-70">
-            Developed and Maintained by <a href='https://falak-innovation.com/' target='blank' className="hover:underline hover:text-secondary transition-colors" >
+            Developed and Maintained by <a href='https://falak-innovation.com/' target='blank' className="hover:underline hover:text-secondary-on-dark transition-colors" >
               Falak Innovation
             </a> © All Rights Reserved - Volta
           </p>

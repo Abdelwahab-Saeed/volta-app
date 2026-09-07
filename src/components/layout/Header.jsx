@@ -237,20 +237,26 @@ export default function Header() {
                 />
               ))}
 
+            {/* A <ul> may only contain <li> (plus <script>/<template>), so the
+                links and the overflow menu each need an <li> wrapper - screen
+                readers otherwise fail to announce the list and its item count. */}
             {categories.slice(0, 13).map((cat) => (
-              <Link to={`/products?category=${cat.id}`} key={cat.id} className="cursor-pointer hover:text-secondary whitespace-nowrap">
-                {cat.name} {cat.name_ar && baseLanguage(i18n.language) === 'ar' ? `(${cat.name})` : ''}
-              </Link>
+              <li key={cat.id} className="shrink-0">
+                <Link to={`/products?category=${cat.id}`} className="cursor-pointer hover:text-secondary-on-dark whitespace-nowrap">
+                  {cat.name} {cat.name_ar && baseLanguage(i18n.language) === 'ar' ? `(${cat.name})` : ''}
+                </Link>
+              </li>
             ))}
 
             {categories.length > 13 && (
+              <li className="shrink-0">
               <DropdownMenu>
                 {/* Renders a <button> containing only an icon, so it needs an
                     explicit name - a screen reader would otherwise announce it
                     as just "button". */}
                 <DropdownMenuTrigger
                   aria-label={t('a11y.more_categories')}
-                  className="flex items-center gap-1 cursor-pointer hover:text-secondary outline-none"
+                  className="flex items-center gap-1 cursor-pointer hover:text-secondary-on-dark outline-none"
                 >
                   <MoreHorizontal size={18} />
                 </DropdownMenuTrigger>
@@ -266,9 +272,10 @@ export default function Header() {
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
+              </li>
             )}
 
-            {/* <Link to="/blog" className="cursor-pointer hover:text-secondary whitespace-nowrap">
+            {/* <Link to="/blog" className="cursor-pointer hover:text-secondary-on-dark whitespace-nowrap">
               {t('header.blog') || 'Blog'}
             </Link> */}
           </ul>
