@@ -29,8 +29,6 @@ export default function HomeCarousel({ banners, loading }) {
           align: 'start',
           loop: true,
         }}
-        onMouseEnter={plugin.current.stop}
-        onMouseLeave={plugin.current.reset}
       >
         {/* Must match the skeleton above and the image below exactly. This was
             h-100 (25rem / 400px) at every breakpoint while the image inside is
