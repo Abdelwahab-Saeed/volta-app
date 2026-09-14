@@ -20,9 +20,48 @@ import SafeImage from "@/components/common/SafeImage";
 import logo from '../assets/volta-logo-02.png';
 import { trackEvent } from '@/lib/pixel';
 
+const GOVERNORATES = [
+    { en: "Cairo", ar: "القاهرة" },
+    { en: "Alexandria", ar: "الإسكندرية" },
+    { en: "Port Said", ar: "بورسعيد" },
+    { en: "Suez", ar: "السويس" },
+    { en: "Damietta", ar: "دمياط" },
+    { en: "Dakahlia", ar: "الدقهلية" },
+    { en: "Sharqia", ar: "الشرقية" },
+    { en: "Qalyubia", ar: "القليوبية" },
+    { en: "Kafr El Sheikh", ar: "كفر الشيخ" },
+    { en: "Gharbia", ar: "الغربية" },
+    { en: "Monufia", ar: "المنوفية" },
+    { en: "Beheira", ar: "البحيرة" },
+    { en: "Ismailia", ar: "الإسماعيلية" },
+    { en: "Giza", ar: "الجيزة" },
+    { en: "Beni Suef", ar: "بني سويف" },
+    { en: "Fayoum", ar: "الفيوم" },
+    { en: "Minya", ar: "المنيا" },
+    { en: "Assiut", ar: "أسيوط" },
+    { en: "Sohag", ar: "سوهاج" },
+    { en: "Qena", ar: "قنا" },
+    { en: "Luxor", ar: "الأقصر" },
+    { en: "Aswan", ar: "أسوان" },
+    { en: "Red Sea", ar: "البحر الأحمر" },
+    { en: "New Valley", ar: "الوادي الجديد" },
+    { en: "Matrouh", ar: "مطروح" },
+    { en: "North Sinai", ar: "شمال سيناء" },
+    { en: "South Sinai", ar: "جنوب سيناء" }
+];
+
+const getMatchedGovernorate = (dbValue) => {
+    if (!dbValue) return "";
+    const lowerVal = dbValue.toLowerCase().trim();
+    const gov = GOVERNORATES.find(g => 
+        g.en.toLowerCase() === lowerVal || g.ar === dbValue.trim()
+    );
+    return gov ? gov.en : dbValue;
+};
+
 export default function Checkout() {
     const navigate = useNavigate();
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const {
         cartItems,
         cartLoading,
@@ -71,8 +110,8 @@ export default function Checkout() {
     const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm({
         defaultValues: {
             full_name: user?.name || "",
-            phone_number: user?.phone || "",
-            phone_number_backup: "",
+            phone_number: user?.phone_number || "",
+            phone_number_backup: user?.backup_phone_number || "",
             state: "",
             city: "",
             shipping_way: "home",
@@ -87,7 +126,7 @@ export default function Checkout() {
     useEffect(() => {
         if (user) {
             setValue('full_name', user.name || "");
-            setValue('phone_number', user.phone || "");
+            setValue('phone_number', user.phone_number || "");
         }
     }, [user, setValue]);
 
@@ -110,12 +149,13 @@ export default function Checkout() {
     useEffect(() => {
         if (addresses && addresses.length > 0) {
             const firstAddress = addresses[0];
-            setValue('state', firstAddress.state || "");
-            setValue('city', firstAddress.city || "");
+            setValue('state', getMatchedGovernorate(firstAddress.city) || "");
+            setValue('city', firstAddress.state || "");
             const fullAddress = [firstAddress.address_line_1, firstAddress.address_line_2].filter(Boolean).join(' ');
             setValue('address_line', fullAddress || "");
             if (firstAddress.recipient_name) setValue('full_name', firstAddress.recipient_name);
             if (firstAddress.phone_number) setValue('phone_number', firstAddress.phone_number);
+            if (firstAddress.backup_phone_number) setValue('phone_number_backup', firstAddress.backup_phone_number);
         }
     }, [addresses, setValue]);
 
@@ -257,14 +297,20 @@ export default function Checkout() {
                                         <Label htmlFor="state" className="text-start block mb-2">
                                             {t('checkout.state')}
                                         </Label>
-                                        <Input
+                                        <select
                                             id="state"
-                                            placeholder={t('checkout.state_placeholder')}
-                                            className="text-start"
+                                            className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-start bg-white"
                                             {...register("state", {
                                                 required: t('checkout.state_required')
                                             })}
-                                        />
+                                        >
+                                            <option value="" disabled>{t('checkout.state_placeholder')}</option>
+                                            {GOVERNORATES.map((gov) => (
+                                                <option key={gov.en} value={gov.en}>
+                                                    {i18n.language === 'ar' ? gov.ar : gov.en}
+                                                </option>
+                                            ))}
+                                        </select>
                                         {errors.state && (
                                             <p className="text-red-500 text-sm mt-1 text-start">
                                                 {errors.state.message}

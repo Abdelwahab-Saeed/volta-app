@@ -2,12 +2,24 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Input } from '../ui/input';
 import WhiteLogo from '../../assets/Logo-04 2.png';
-import { Facebook, Mail, MapPin } from 'lucide-react';
+import { Facebook, Mail, MapPin, Instagram, Twitter, Youtube } from 'lucide-react';
+import { getSettings } from '../../api/settings.api';
 import { useTranslation } from 'react-i18next';
 import SafeImage from '../common/SafeImage';
 
 export default function Footer() {
   const { t } = useTranslation();
+  const [settings, setSettings] = useState({});
+
+  useEffect(() => {
+    getSettings()
+      .then((res) => {
+        setSettings(res.data);
+      })
+      .catch((err) => {
+        console.error('Failed to fetch settings', err);
+      });
+  }, []);
 
   return (
     <footer className="text-white">
@@ -41,15 +53,32 @@ export default function Footer() {
               <p className="max-w-xs text-sm md:text-base opacity-90 leading-relaxed">
                 {t('footer.description')}
               </p>
-              <div className="flex flex-row mt-6">
-                <a href="https://www.facebook.com/voltastabilizer" target="_blank" rel="noreferrer" aria-label={t('layout.follow_facebook')}>
-                  <Facebook
-                    className="border rounded cursor-pointer hover:bg-white/10 transition-colors"
-                    fill="white"
-                    size="34"
-                    strokeWidth="0.5"
-                  />
-                </a>
+              <div className="flex flex-row gap-3 mt-6 flex-wrap">
+                {settings.facebook && (
+                  <a href={settings.facebook} target="_blank" rel="noreferrer" aria-label="Facebook">
+                    <Facebook className="border rounded p-1 cursor-pointer hover:bg-white/10 transition-colors" color="white" size="34" strokeWidth="1.5" />
+                  </a>
+                )}
+                {settings.instagram && (
+                  <a href={settings.instagram} target="_blank" rel="noreferrer" aria-label="Instagram">
+                    <Instagram className="border rounded p-1 cursor-pointer hover:bg-white/10 transition-colors" color="white" size="34" strokeWidth="1.5" />
+                  </a>
+                )}
+                {settings.twitter && (
+                  <a href={settings.twitter} target="_blank" rel="noreferrer" aria-label="Twitter">
+                    <Twitter className="border rounded p-1 cursor-pointer hover:bg-white/10 transition-colors" color="white" size="34" strokeWidth="1.5" />
+                  </a>
+                )}
+                {settings.youtube && (
+                  <a href={settings.youtube} target="_blank" rel="noreferrer" aria-label="Youtube">
+                    <Youtube className="border rounded p-1 cursor-pointer hover:bg-white/10 transition-colors" color="white" size="34" strokeWidth="1.5" />
+                  </a>
+                )}
+                {settings.tiktok && (
+                  <a href={settings.tiktok} target="_blank" rel="noreferrer" aria-label="TikTok" className="border rounded p-1 cursor-pointer hover:bg-white/10 transition-colors flex items-center justify-center text-white" style={{ width: '34px', height: '34px' }}>
+                    <span className="text-[10px] font-bold">TT</span>
+                  </a>
+                )}
               </div>
             </div>
 
@@ -145,9 +174,9 @@ export default function Footer() {
                     info@volta-eg.com
                   </a>
                 </li>
-                <li className="flex items-center justify-center sm:justify-start gap-2">
+                <li className="flex items-center justify-center sm:justify-start gap-2 text-center sm:text-start">
                   <MapPin size="20" className="flex-shrink-0" />
-                  <span>{t('footer.location')}</span>
+                  <span>{settings.location || t('footer.location')}</span>
                 </li>
               </ul>
             </div>
