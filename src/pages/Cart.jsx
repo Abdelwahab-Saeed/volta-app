@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { useLocalize } from "@/lib/localize";
 import {
     Table,
     TableBody,
@@ -18,6 +19,7 @@ import SafeImage from "@/components/common/SafeImage";
 
 export default function Cart() {
     const { t } = useTranslation();
+    const tr = useLocalize();
     const {
         cartItems,
         removeFromCart,
@@ -110,12 +112,12 @@ export default function Cart() {
                                                 <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 p-2">
                                                     <SafeImage
                                                         src={`${import.meta.env.VITE_IMAGES_URL}/${item.product?.image}`}
-                                                        alt={item.product?.name}
+                                                        alt={tr(item.product, 'name')}
                                                         className="w-full h-full object-contain"
                                                     />
                                                 </div>
                                                 <div className="flex flex-col text-start">
-                                                    <span className="font-medium text-base md:text-lg text-primary">{item.product?.name}</span>
+                                                    <span className="font-medium text-base md:text-lg text-primary">{tr(item.product, 'name')}</span>
                                                     {(item.shipping_cost || item.product?.shipping_cost) > 0 && (
                                                         <span className="text-xs text-slate-500">
                                                             {t('checkout.shipping_fee')}: EGP {item.shipping_cost || item.product?.shipping_cost}

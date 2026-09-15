@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getPost } from '@/api/posts.api';
 import { useTranslation } from 'react-i18next';
+import { useLocalize } from '@/lib/localize';
 import { Loader2, ArrowLeft, Square } from 'lucide-react';
 
 export default function PostDetails() {
     const { id } = useParams();
     const { t } = useTranslation();
+    const tr = useLocalize();
     const [post, setPost] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -59,14 +61,14 @@ export default function PostDetails() {
             <div className="bg-light-background px-4 md:px-10 lg:px-40 py-8">
                 <div>
                     <h1 className="text-2xl md:text-3xl font-bold text-primary mb-4">
-                        {post.title}
+                        {tr(post, 'title')}
                     </h1>
                     <div className="flex flex-wrap gap-2 items-center text-primary text-sm md:text-base">
                         <Link to="/" className="hover:underline">{t('header.home')}</Link>
                         <Square fill='true' size={8} />
                         <Link to="/blog" className="hover:underline">{t('footer.blog') || 'Blog'}</Link>
                         <Square fill='true' size={8} />
-                        <span className="text-slate-500 truncate max-w-[200px] md:max-w-md"> {post.title} </span>
+                        <span className="text-slate-500 truncate max-w-[200px] md:max-w-md"> {tr(post, 'title')} </span>
                     </div>
                 </div>
             </div>
@@ -85,17 +87,17 @@ export default function PostDetails() {
                     <div className="rounded-3xl overflow-hidden shadow-lg border border-slate-100 mb-10">
                         <img
                             src={`${import.meta.env.VITE_IMAGES_URL}/${post.image}`}
-                            alt={post.title}
+                            alt={tr(post, 'title')}
                             className="w-full h-auto object-cover max-h-[600px]"
                         />
                     </div>
 
                     <article className="prose prose-lg max-w-none">
                         <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-8 leading-tight">
-                            {post.title}
+                            {tr(post, 'title')}
                         </h2>
                         <div className="text-slate-700 leading-relaxed whitespace-pre-line text-lg">
-                            {post.description}
+                            {tr(post, 'description')}
                         </div>
                     </article>
                 </div>

@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { baseLanguage } from '@/i18n';
+import { useLocalize } from '@/lib/localize';
 import React from 'react';
 import SafeImage from '../common/SafeImage';
 import { Card, CardContent } from '../ui/card';
@@ -7,9 +8,10 @@ import { Button } from '../ui/button';
 
 export default function OrderCard({ order }) {
   const { t, i18n } = useTranslation();
+  const tr = useLocalize();
   const firstItem = order.items?.[0]?.product;
   const image = firstItem ? `${import.meta.env.VITE_IMAGES_URL}/${firstItem.image}` : '';
-  const name = firstItem ? firstItem.name : t('orders.order_number') + order.id;
+  const name = firstItem ? tr(firstItem, 'name') : t('orders.order_number') + order.id;
 
   const totalItems = order.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
   const date = new Date(order.created_at).toLocaleDateString(baseLanguage(i18n.language) === 'ar' ? 'ar-EG' : 'en-US');

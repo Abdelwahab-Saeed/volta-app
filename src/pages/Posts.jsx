@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { getPosts } from '@/api/posts.api';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useLocalize } from '@/lib/localize';
 import { Loader2, Square, ChevronRight } from 'lucide-react';
 import useSeo from '@/hooks/useSeo';
 
 export default function Posts() {
     const { t } = useTranslation();
+    const tr = useLocalize();
   useSeo({
     title: t('header.blog'),
     description: t('seo.blog_description'),
@@ -84,16 +86,16 @@ export default function Posts() {
                                     <div className="aspect-video w-full overflow-hidden">
                                         <img
                                             src={`${import.meta.env.VITE_IMAGES_URL}/${post.image}`}
-                                            alt={post.title}
+                                            alt={tr(post, 'title')}
                                             className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                                         />
                                     </div>
                                     <div className="p-6 flex flex-col flex-1">
                                         <h2 className="text-xl font-bold text-slate-800 mb-3 line-clamp-2">
-                                            {post.title}
+                                            {tr(post, 'title')}
                                         </h2>
                                         <p className="text-slate-600 mb-6 line-clamp-3 text-sm flex-1">
-                                            {post.description}
+                                            {tr(post, 'description')}
                                         </p>
                                         <Link
                                             to={`/blog/${post.id}`}

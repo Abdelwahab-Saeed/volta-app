@@ -11,10 +11,12 @@ import {
 
 import { useTranslation } from 'react-i18next';
 import { isRTL } from '@/i18n';
+import { useLocalize } from '@/lib/localize';
 
 export default function CategoryCarousel({ categories, loading = false }) {
 
   const { t, i18n } = useTranslation();
+  const tr = useLocalize();
 
   // While the request is in flight the carousel would otherwise render as an
   // empty row, then jump to full height when the data lands and shove
@@ -58,7 +60,7 @@ export default function CategoryCarousel({ categories, loading = false }) {
                     // becomes ".../storage/null" and costs a 404 round-trip
                     // before the fallback kicks in.
                     src={category.image ? `${import.meta.env.VITE_IMAGES_URL}/${category.image}` : undefined}
-                    alt={category.name}
+                    alt={tr(category, 'name')}
                     // Embla renders all slides in the DOM, so without this every
                     // category image downloads on page load - only ~4 are visible.
                     loading="lazy"
@@ -71,7 +73,7 @@ export default function CategoryCarousel({ categories, loading = false }) {
                     unpredictably in Arabic, so without a fixed height the row
                     height depends on the data and shifts when it arrives. */}
                 <span className="line-clamp-2 h-10 md:h-14 text-sm md:text-xl font-bold text-center text-slate-800 group-hover:text-secondary transition-colors duration-300">
-                  {category.name}
+                  {tr(category, 'name')}
                 </span>
               </Link>
               )}

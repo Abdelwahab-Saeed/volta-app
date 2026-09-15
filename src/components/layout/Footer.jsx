@@ -6,9 +6,28 @@ import { Facebook, Mail, MapPin, Instagram, Twitter, Youtube } from 'lucide-reac
 import { getSettings } from '../../api/settings.api';
 import { useTranslation } from 'react-i18next';
 import SafeImage from '../common/SafeImage';
+import { useLocalize } from '@/lib/localize';
+
+// lucide-react has no TikTok icon, so use the brand glyph as an inline SVG
+function TikTokIcon({ size = 24, className = '' }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
+    </svg>
+  );
+}
 
 export default function Footer() {
   const { t } = useTranslation();
+  const tr = useLocalize();
   const [settings, setSettings] = useState({});
 
   useEffect(() => {
@@ -75,8 +94,8 @@ export default function Footer() {
                   </a>
                 )}
                 {settings.tiktok && (
-                  <a href={settings.tiktok} target="_blank" rel="noreferrer" aria-label="TikTok" className="border rounded p-1 cursor-pointer hover:bg-white/10 transition-colors flex items-center justify-center text-white" style={{ width: '34px', height: '34px' }}>
-                    <span className="text-[10px] font-bold">TT</span>
+                  <a href={settings.tiktok} target="_blank" rel="noreferrer" aria-label="TikTok">
+                    <TikTokIcon className="border rounded p-1.5 cursor-pointer hover:bg-white/10 transition-colors text-white" size={34} />
                   </a>
                 )}
               </div>
@@ -176,7 +195,7 @@ export default function Footer() {
                 </li>
                 <li className="flex items-center justify-center sm:justify-start gap-2 text-center sm:text-start">
                   <MapPin size="20" className="flex-shrink-0" />
-                  <span>{settings.location || t('footer.location')}</span>
+                  <span>{tr(settings, 'location') || t('footer.location')}</span>
                 </li>
               </ul>
             </div>

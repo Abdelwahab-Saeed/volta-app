@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import SafeImage from "@/components/common/SafeImage";
+import { useLocalize } from "@/lib/localize";
 
 import logo from '../assets/volta-logo-02.png';
 import { trackEvent } from '@/lib/pixel';
@@ -62,6 +63,7 @@ const getMatchedGovernorate = (dbValue) => {
 export default function Checkout() {
     const navigate = useNavigate();
     const { t, i18n } = useTranslation();
+    const tr = useLocalize();
     const {
         cartItems,
         cartLoading,
@@ -467,12 +469,12 @@ export default function Checkout() {
                                         <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 p-2">
                                             <SafeImage
                                                 src={`${import.meta.env.VITE_IMAGES_URL}/${item.product?.image}`}
-                                                alt={item.product?.name}
+                                                alt={tr(item.product, 'name')}
                                                 className="w-full h-full object-contain"
                                             />
                                         </div>
                                         <div className="flex-1 text-start">
-                                            <p className="font-medium text-gray-800 line-clamp-2">{item.product?.name}</p>
+                                            <p className="font-medium text-gray-800 line-clamp-2">{tr(item.product, 'name')}</p>
                                             <p className="text-sm text-gray-600 mt-1">
                                                 {item.quantity} x EGP{(useCartStore.getState().getItemPrice(item) / item.quantity).toFixed(2)}
                                             </p>

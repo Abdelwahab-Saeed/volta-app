@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from 'react-i18next';
+import { useLocalize } from '@/lib/localize';
 import SafeImage from '../common/SafeImage';
 
 export default function ProductView({
@@ -28,6 +29,7 @@ export default function ProductView({
     addingLoading
 }) {
     const { t } = useTranslation();
+    const tr = useLocalize();
     const [selectedImage, setSelectedImage] = React.useState(product.image);
 
     React.useEffect(() => {
@@ -49,7 +51,7 @@ export default function ProductView({
                 <div className="bg-slate-50 border border-slate-100 rounded-3xl p-10 flex items-center justify-center aspect-square relative group overflow-hidden">
                     <SafeImage
                         src={`${import.meta.env.VITE_IMAGES_URL}/${selectedImage}`}
-                        alt={product.name}
+                        alt={tr(product, 'name')}
                         className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110"
                     />
                     {(product.discount_price || product.discount > 0) && (
@@ -90,7 +92,7 @@ export default function ProductView({
                             >
                                 <SafeImage
                                     src={`${import.meta.env.VITE_IMAGES_URL}/${img.image}`}
-                                    alt={`${product.name} shadow-${idx}`}
+                                    alt={`${tr(product, 'name')} shadow-${idx}`}
                                     className="w-full h-full object-contain"
                                 />
                             </button>
@@ -103,7 +105,7 @@ export default function ProductView({
             <div className="flex flex-col gap-8">
                 <div>
                     <h1 className="text-4xl font-extrabold text-slate-900 mb-4 leading-tight">
-                        {product.name}
+                        {tr(product, 'name')}
                     </h1>
 
                     <div className="flex items-center gap-4">
@@ -129,7 +131,7 @@ export default function ProductView({
                 <div className="space-y-4">
                     <h3 className="font-bold text-slate-900 text-lg">{t('product.description')}</h3>
                     <p className="text-slate-600 leading-relaxed text-lg whitespace-pre-line">
-                        {product.description || t('product.no_description')}
+                        {tr(product, 'description') || t('product.no_description')}
                     </p>
                 </div>
 
@@ -140,7 +142,7 @@ export default function ProductView({
                             {product.features.map(feature => (
                                 <li key={feature.id} className="flex items-center gap-3 text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-100">
                                     <Check className="h-5 w-5 text-secondary shrink-0" />
-                                    <span className="font-medium">{feature.name}</span>
+                                    <span className="font-medium">{tr(feature, 'name')}</span>
                                 </li>
                             ))}
                         </ul>

@@ -11,9 +11,11 @@ import useDebounce from '@/hooks/useDebounce';
 import { useProductStore } from '@/stores/useProductStore';
 import useSeo from '@/hooks/useSeo';
 import { useTranslation } from 'react-i18next';
+import { useLocalize } from '@/lib/localize';
 
 export default function Products() {
   const { t } = useTranslation();
+  const tr = useLocalize();
   const [searchParams, setSearchParams] = useSearchParams();
   const [sort, setSort] = useState('price_asc');
 
@@ -42,7 +44,7 @@ export default function Products() {
   // ?category= URLs in sitemap.xml. Without the override they would all
   // canonicalise to /products and collapse into one indexed page.
   useSeo({
-    title: selectedCategory?.name || t('products_page.all_products'),
+    title: tr(selectedCategory, 'name') || t('products_page.all_products'),
     description: t('seo.products_description'),
     canonical: categoryIdFromUrl ? `/products?category=${categoryIdFromUrl}` : '/products',
   });
@@ -97,7 +99,7 @@ export default function Products() {
       <div className="bg-light-background px-4 md:px-10 lg:px-40 py-8">
         <div>
           <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4">
-            {selectedCategory?.name || t('products_page.all_products')}
+            {tr(selectedCategory, 'name') || t('products_page.all_products')}
           </h1>
           <div className="flex gap-2 items-center text-primary text-sm md:text-base">
             <Link to="/" className="hover:underline">{t('header.home')}</Link>
@@ -139,7 +141,7 @@ export default function Products() {
                       ? 'text-primary text-lg md:text-xl'
                       : 'text-slate-700'
                       }`}>
-                      {category.name}
+                      {tr(category, 'name')}
                     </span>
                     <Checkbox
                       checked={selectedCategory?.id === category.id}
@@ -180,7 +182,7 @@ export default function Products() {
         {/* Main Content */}
         <div className="w-full lg:w-9/12">
           <h2 className="text-2xl md:text-3xl mb-4 font-bold text-slate-800">
-            {selectedCategory?.name || t('products_page.all_products')}
+            {tr(selectedCategory, 'name') || t('products_page.all_products')}
           </h2>
           <hr className="border-slate-200 mb-4" />
 

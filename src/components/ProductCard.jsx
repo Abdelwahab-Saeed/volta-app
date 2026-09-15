@@ -18,6 +18,7 @@ import { useAuthStore } from '@/stores/useAuthStore';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+import { useLocalize } from '@/lib/localize';
 import SafeImage from './common/SafeImage';
 import { trackEvent } from '@/lib/pixel';
 
@@ -38,6 +39,7 @@ export default function ProductCard({
   const navigate = useNavigate();
 
   const { t } = useTranslation();
+  const tr = useLocalize();
   const handleWishlistToggle = async (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -127,7 +129,7 @@ export default function ProductCard({
         <div className="bg-white p-4 flex items-center justify-center aspect-square">
           <SafeImage
             src={`${import.meta.env.VITE_IMAGES_URL}/${product.image}`}
-            alt={product.name}
+            alt={tr(product, 'name')}
             className="w-full h-full object-contain"
           />
         </div>
@@ -137,7 +139,7 @@ export default function ProductCard({
       <div className="p-4 border-t border-slate-100">
         <Link to={`/product/${product.id}`}>
           <h3 className="text-slate-800 font-bold mb-1 hover:text-primary transition-colors text-lg truncate">
-            {product.name}
+            {tr(product, 'name')}
           </h3>
         </Link>
 

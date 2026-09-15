@@ -26,7 +26,7 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "@/components/common/LanguageSwitcher";
 import SafeImage from "@/components/common/SafeImage";
-import i18n, { baseLanguage } from '@/i18n';
+import { useLocalize } from '@/lib/localize';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,6 +36,7 @@ import {
 
 export default function Header() {
   const { t } = useTranslation();
+  const tr = useLocalize();
   const user = useAuthStore((state) => state.user);
   const cartCount = useCartStore((state) => state.cartItems?.length || 0);
   const wishlistCount = useWishlistStore((state) => state.wishlistItems?.length || 0);
@@ -243,7 +244,7 @@ export default function Header() {
             {categories.slice(0, 13).map((cat) => (
               <li key={cat.id} className="shrink-0">
                 <Link to={`/products?category=${cat.id}`} className="cursor-pointer hover:text-secondary-on-dark whitespace-nowrap">
-                  {cat.name} {cat.name_ar && baseLanguage(i18n.language) === 'ar' ? `(${cat.name})` : ''}
+                  {tr(cat, 'name')}
                 </Link>
               </li>
             ))}
@@ -267,7 +268,7 @@ export default function Header() {
                       className="cursor-pointer hover:bg-secondary/20 focus:bg-secondary/20 text-white rounded-none border-0"
                       onClick={() => navigate(`/products?category=${cat.id}`)}
                     >
-                      {cat.name} {cat.name_ar && baseLanguage(i18n.language) === 'ar' ? `(${cat.name})` : ''}
+                      {tr(cat, 'name')}
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
@@ -327,7 +328,7 @@ export default function Header() {
               {categories.map((cat) => (
                 <li key={cat.id} className="text-gray-700 font-medium hover:text-secondary cursor-pointer">
                   <Link to={`/products?category=${cat.id}`} onClick={() => setIsMenuOpen(false)}>
-                    {cat.name}
+                    {tr(cat, 'name')}
                   </Link>
                 </li>
               ))}

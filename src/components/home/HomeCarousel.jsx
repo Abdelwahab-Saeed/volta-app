@@ -4,9 +4,11 @@ import { Carousel, CarouselContent, CarouselItem } from '../ui/carousel';
 import Autoplay from 'embla-carousel-autoplay';
 import { Skeleton } from '../ui/skeleton';
 import SafeImage from '../common/SafeImage';
+import { useLocalize } from '@/lib/localize';
 
 export default function HomeCarousel({ banners, loading }) {
   const plugin = useRef(Autoplay({ delay: 3000, stopOnInteraction: false }));
+  const tr = useLocalize();
 
   if (loading) {
     return (
@@ -42,7 +44,7 @@ export default function HomeCarousel({ banners, loading }) {
                 <div className="p-1 h-full">
                   <SafeImage
                     src={imageUrl ? `${import.meta.env.VITE_IMAGES_URL}/${imageUrl}` : undefined}
-                    alt={banner.title || `Banner ${index + 1}`}
+                    alt={tr(banner, 'title') || `Banner ${index + 1}`}
                     // The first banner is the LCP element: load it eagerly and at
                     // high priority. Embla keeps every slide in the DOM, so the
                     // rest must be lazy or they compete for bandwidth with it.

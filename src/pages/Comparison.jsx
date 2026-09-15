@@ -12,10 +12,12 @@ import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useLocalize } from "@/lib/localize";
 import SafeImage from "@/components/common/SafeImage";
 
 export default function Comparison() {
     const { t } = useTranslation();
+    const tr = useLocalize();
     const comparisonItems = useComparisonStore((state) => state.comparisonItems);
     const removeFromComparison = useComparisonStore((state) => state.removeFromComparison);
     const addToCart = useCartStore((state) => state.addToCart);
@@ -77,10 +79,10 @@ export default function Comparison() {
                                 <div className="max-w-[180px] md:max-w-[250px] mx-auto p-4 text-center">
                                     <SafeImage
                                         src={`${import.meta.env.VITE_IMAGES_URL}/${product.image}`}
-                                        alt={product.name}
+                                        alt={tr(product, 'name')}
                                         className="w-full h-auto object-contain transition-transform hover:scale-105"
                                     />
-                                    <p className="mt-4 font-bold text-primary text-sm md:text-base">{product.name}</p>
+                                    <p className="mt-4 font-bold text-primary text-sm md:text-base">{tr(product, 'name')}</p>
                                 </div>
                             </TableCell>
                         ))}
@@ -91,7 +93,7 @@ export default function Comparison() {
                         {comparisonItems.map((product) => (
                             <TableCell key={product.id} className={`${borderStyle} p-4`}>
                                 <p className="text-gray-600 text-sm md:text-base leading-relaxed text-right line-clamp-4">
-                                    {product.description || t('comparison.no_description')}
+                                    {tr(product, 'description') || t('comparison.no_description')}
                                 </p>
                             </TableCell>
                         ))}

@@ -12,6 +12,7 @@ import { useAuthStore } from '@/stores/useAuthStore';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+import { useLocalize } from '@/lib/localize';
 import SafeImage from './common/SafeImage';
 import { trackEvent } from '@/lib/pixel';
 
@@ -31,6 +32,7 @@ export default function WideProductCard({ product }) {
   const navigate = useNavigate();
 
   const { t } = useTranslation();
+  const tr = useLocalize();
   const handleWishlistToggle = async (e) => {
     e.preventDefault();
     if (!isAuthenticated) {
@@ -87,7 +89,7 @@ export default function WideProductCard({ product }) {
             <Link to={`/product/${product.id}`}>
               <SafeImage
                 src={`${import.meta.env.VITE_IMAGES_URL}/${product.image}`}
-                alt={product.name}
+                alt={tr(product, 'name')}
                 className="object-contain max-h-48 sm:max-h-56 drop-shadow-lg transition-transform hover:scale-105"
               />
             </Link>
@@ -99,7 +101,7 @@ export default function WideProductCard({ product }) {
               <div className="flex justify-between items-start mb-2">
                 <Link to={`/product/${product.id}`}>
                   <h3 className="text-xl sm:text-2xl font-bold text-primary hover:text-secondary transition-colors">
-                    {product.name} {(product.discount_price || product.discount > 0) && (
+                    {tr(product, 'name')} {(product.discount_price || product.discount > 0) && (
                       <span className="bg-secondary text-white px-2 rounded-md text-sm shadow-md mr-2">
                         {product.discount_price
                           ? `${Math.round((1 - (product.discount_price / product.price)) * 100)}%`
@@ -131,9 +133,9 @@ export default function WideProductCard({ product }) {
                 </div>
               </div>
 
-              {product.description && (
+              {tr(product, 'description') && (
                 <p className="text-sm text-slate-600 text-start line-clamp-2 sm:line-clamp-3 mb-4">
-                  {product.description}
+                  {tr(product, 'description')}
                 </p>
               )}
             </div>

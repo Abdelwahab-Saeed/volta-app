@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useLocalize } from '@/lib/localize';
 
 const SITE_URL = 'https://www.volta-eg.com';
 const SCRIPT_ID = 'product-jsonld';
@@ -12,6 +13,10 @@ const SCRIPT_ID = 'product-jsonld';
  * otherwise a stale product would still be described on the next page.
  */
 export default function useProductJsonLd(product) {
+    // Changes identity with the language, so the data is re-emitted in the
+    // language the visitor switched to.
+    const tr = useLocalize();
+
     useEffect(() => {
         if (!product?.id) return undefined;
 
@@ -23,8 +28,8 @@ export default function useProductJsonLd(product) {
         const data = {
             '@context': 'https://schema.org',
             '@type': 'Product',
-            name: product.name,
-            description: product.description || undefined,
+            name: tr(product, 'name'),
+            description: tr(product, 'description') || undefined,
             image: image ? [image] : undefined,
             sku: String(product.id),
             brand: { '@type': 'Brand', name: 'Volta' },
@@ -52,5 +57,5 @@ export default function useProductJsonLd(product) {
         document.head.appendChild(script);
 
         return () => script.remove();
-    }, [product]);
+    }, [product, tr]);
 }

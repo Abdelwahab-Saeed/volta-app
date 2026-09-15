@@ -11,6 +11,7 @@ import { useAuthStore } from "@/stores/useAuthStore";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { useLocalize } from "@/lib/localize";
 import ProductView from "@/components/product/ProductView";
 import SpecialProducts from "@/components/home/SpecialProducts";
 import { trackEvent } from '@/lib/pixel';
@@ -21,6 +22,7 @@ export default function ProductDetails() {
     const { id } = useParams();
     const navigate = useNavigate();
     const { t } = useTranslation();
+    const tr = useLocalize();
     const { selectedProduct: product, fetchProductById, loading, error, clearSelectedProduct } = useProductStore();
     const [quantity, setQuantity] = useState(1);
     const [mainImage, setMainImage] = useState("");
@@ -37,8 +39,8 @@ export default function ProductDetails() {
     const { products: allProducts, fetchProducts } = useProductStore();
 
     useSeo({
-        title: product?.name,
-        description: product?.description || t('seo.default_description'),
+        title: tr(product, 'name'),
+        description: tr(product, 'description') || t('seo.default_description'),
         image: product?.image
             ? `${import.meta.env.VITE_IMAGES_URL}/${product.image}`
             : undefined,
@@ -161,7 +163,7 @@ export default function ProductDetails() {
                 <ChevronRight size={14} className="flex-shrink-0 rtl:rotate-180" />
                 <Link to="/products" className="hover:text-secondary">{t('header.products')}</Link>
                 <ChevronRight size={14} className="flex-shrink-0 rtl:rotate-180" />
-                <span className="text-gray-900 font-medium truncate max-w-[200px]">{product.name}</span>
+                <span className="text-gray-900 font-medium truncate max-w-[200px]">{tr(product, 'name')}</span>
             </div>
 
             {/* Main Product View */}
