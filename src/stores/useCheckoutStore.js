@@ -22,12 +22,13 @@ export const useCheckoutStore = create((set) => ({
 
             // Meta Pixel: Track Purchase
             const cartStore = useCartStore.getState();
+            const orderId = response.data.data?.order?.id || response.data.data?.id;
             trackEvent('Purchase', {
-                content_ids: cartStore.cartItems.map(item => item.product_id),
+                content_ids: cartStore.cartItems.map(item => String(item.product_id)),
                 content_type: 'product',
                 value: cartStore.getCartTotal(),
                 currency: 'EGP'
-            });
+            }, { eventID: String(orderId) });
 
             // Clear cart
             useCartStore.getState().clearCart();
