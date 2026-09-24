@@ -6,6 +6,7 @@ import FeaturesSection from '../components/home/FeaturesSection';
 import { useCategoryStore } from '@/stores/useCategoryStore';
 import { useBannerStore } from '@/stores/useBannerStore';
 import useSeo from '@/hooks/useSeo';
+import api from '@/api/axios';
 
 export default function Home() {
   const { t } = useTranslation();
@@ -38,6 +39,11 @@ export default function Home() {
     //                                 commented-out <Products> block below
     // Restore each alongside the component that displays it.
   }, [fetchBanners, fetchCategories]);
+
+  useEffect(() => {
+    // Send Home PageView to the backend for Meta integration
+    api.post('/track/pageview', { url: window.location.href }).catch(() => {});
+  }, []);
 
   return (
     <div className="container mx-auto px-4 md:px-6 lg:px-8">
