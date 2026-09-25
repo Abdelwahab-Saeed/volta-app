@@ -1,229 +1,215 @@
-import ProductCard from '@/components/ProductCard';
-import stabilizer from '../assets/home/stabilizer.png';
-import { ChevronDown, LayoutGrid, Search, Square, StretchHorizontal } from 'lucide-react';
-import { SortDropdown } from '@/components/ui/SortDropdown';
-import { useState } from 'react';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Slider } from '@/components/ui/slider';
-import WideProductCard from '@/components/WideProductCard';
+import { useState, useEffect, useCallback } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Clock, Tag, Package, ShoppingBag, ArrowLeft, Loader2 } from 'lucide-react';
+import { getOffers } from '@/api/offers.api';
+import { useLocalize } from '@/lib/localize';
+import SafeImage from '@/components/common/SafeImage';
+
+const TYPE_CONFIG = {
+    percentage:    { label: 'نسبة خصم', labelEn: 'Discount %',   color: 'from-purple-500 to-purple-700',  badge: 'bg-purple-100 text-purple-700' },
+    fixed:         { label: 'خصم ثابت', labelEn: 'Fixed Off',     color: 'from-blue-500 to-blue-700',      badge: 'bg-blue-100 text-blue-700' },
+    bundle:        { label: 'باقة',      labelEn: 'Bundle Deal',   color: 'from-orange-500 to-orange-700',  badge: 'bg-orange-100 text-orange-700' },
+    buy_x_get_y:   { label: 'اشترِ X',  labelEn: 'Buy X Get Y',   color: 'from-green-500 to-green-700',    badge: 'bg-green-100 text-green-700' },
+    spend_x_get_y: { label: 'اصرف X',   labelEn: 'Spend & Save',  color: 'from-pink-500 to-pink-700',      badge: 'bg-pink-100 text-pink-700' },
+};
+
+function getOfferSummary(offer, lang) {
+    switch (offer.type) {
+        case 'percentage':
+            return lang === 'ar' ? `خصم ${offer.value}% على المنتجات المختارة` : `${offer.value}% off on selected products`;
+        case 'fixed':
+            return lang === 'ar' ? `خصم ${offer.value} ج.م على المنتجات المختارة` : `EGP ${offer.value} off selected products`;
+        case 'bundle':
+            return lang === 'ar' ? `اشترِ الباقة كاملة بسعر ${offer.bundle_price} ج.م` : `Get the full bundle for EGP ${offer.bundle_price}`;
+        case 'buy_x_get_y':
+            return lang === 'ar'
+                ? `اشترِ ${offer.buy_quantity} واحصل على ${offer.get_quantity} مجاناً`
+                : `Buy ${offer.buy_quantity} get ${offer.get_quantity} free`;
+        case 'spend_x_get_y':
+            return lang === 'ar'
+                ? `اصرف ${offer.min_spend} ج.م واحصل على خصم ${offer.discount_amount} ج.م`
+                : `Spend EGP ${offer.min_spend} get EGP ${offer.discount_amount} off`;
+        default:
+            return '';
+    }
+}
+
+function Countdown({ expiresAt }) {
+    const [timeLeft, setTimeLeft] = useState('');
+
+    useEffect(() => {
+        if (!expiresAt) return;
+        const update = () => {
+            const diff = new Date(expiresAt) - new Date();
+            if (diff <= 0) { setTimeLeft('انتهى العرض'); return; }
+            const d = Math.floor(diff / 86400000);
+            const h = Math.floor((diff % 86400000) / 3600000);
+            const m = Math.floor((diff % 3600000) / 60000);
+            setTimeLeft(d > 0 ? `${d}ي ${h}س ${m}د` : `${h}س ${m}د`);
+        };
+        update();
+        const timer = setInterval(update, 60000);
+        return () => clearInterval(timer);
+    }, [expiresAt]);
+
+    if (!expiresAt || !timeLeft) return null;
+    return (
+        <div className="flex items-center gap-1 text-orange-600 text-xs font-bold">
+            <Clock className="w-3 h-3" />
+            <span>{timeLeft}</span>
+        </div>
+    );
+}
+
+function OfferCard({ offer }) {
+    const { i18n } = useTranslation();
+    const tr = useLocalize();
+    const config = TYPE_CONFIG[offer.type] || TYPE_CONFIG.fixed;
+
+    return (
+        <Link
+            to={`/offers/${offer.id}`}
+            className="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100 flex flex-col"
+        >
+            {/* Image */}
+            <div className="relative overflow-hidden h-48">
+                {offer.image ? (
+                    <SafeImage
+                        src={`${import.meta.env.VITE_IMAGES_URL}/${offer.image}`}
+                        alt={tr(offer, 'name')}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                ) : (
+                    <div className={`w-full h-full bg-gradient-to-br ${config.color} flex items-center justify-center`}>
+                        <Tag className="w-16 h-16 text-white/60" />
+                    </div>
+                )}
+                {/* Type badge */}
+                <div className="absolute top-3 start-3">
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${config.badge} backdrop-blur-sm`}>
+                        {i18n.language === 'ar' ? config.label : config.labelEn}
+                    </span>
+                </div>
+                {/* Products count */}
+                {offer.products && offer.products.length > 0 && (
+                    <div className="absolute top-3 end-3 bg-white/90 backdrop-blur-sm rounded-full px-2 py-1 flex items-center gap-1">
+                        <Package className="w-3 h-3 text-gray-600" />
+                        <span className="text-xs font-bold text-gray-700">{offer.products.length}</span>
+                    </div>
+                )}
+            </div>
+
+            {/* Content */}
+            <div className="p-4 flex flex-col flex-1">
+                <h3 className="font-bold text-gray-900 text-lg mb-1 line-clamp-1">
+                    {tr(offer, 'name')}
+                </h3>
+                <p className="text-sm text-gray-500 mb-3 line-clamp-2 flex-1">
+                    {getOfferSummary(offer, i18n.language)}
+                </p>
+
+                <div className="flex items-center justify-between mt-auto pt-3 border-t border-gray-100">
+                    <Countdown expiresAt={offer.expires_at} />
+                    <span className="text-primary text-sm font-bold flex items-center gap-1 group-hover:gap-2 transition-all">
+                        {i18n.language === 'ar' ? 'عرض التفاصيل' : 'View Offer'}
+                        <ArrowLeft className="w-4 h-4 rotate-180 rtl:rotate-0" />
+                    </span>
+                </div>
+            </div>
+        </Link>
+    );
+}
 
 export default function Offers() {
-    const { t } = useTranslation();
-    const [sort, setSort] = useState('price_asc');
-    const [selectedCategory, setSelectedCategory] = useState('SVC 5-20 kVA');
-    const [priceRange, setPriceRange] = useState([40136, 135900]);
-    const [mode, setMode] = useState('grid');
+    const { t, i18n } = useTranslation();
+    const [offers, setOffers] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState(1);
+    const [lastPage, setLastPage] = useState(1);
 
-    const categories = [
-        'SVC 2 kVA',
-        'SVC 2 kVA',
-        'SVC 2 kVA',
-        'SVC 5 kVA',
-        'SVC 10 kVA',
-        'SVC 5-20 kVA',
-    ];
+    const loadOffers = useCallback(async (p = 1) => {
+        setLoading(true);
+        try {
+            const res = await getOffers(p);
+            const data = res.data?.data;
+            if (data) {
+                setOffers(prev => p === 1 ? data.data : [...prev, ...data.data]);
+                setLastPage(data.last_page);
+                setPage(p);
+            }
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
 
-    const products = [
-        {
-            name: `${t('products_page.all_products')} 1`,
-            image: stabilizer,
-            price: 1000,
-            discount: 10,
-        },
-        {
-            name: `${t('products_page.all_products')} 2`,
-            image: stabilizer,
-            price: 1000,
-            discount: 15,
-        },
-        {
-            name: `${t('products_page.all_products')} 3`,
-            image: stabilizer,
-            price: 1000,
-            discount: 5,
-        },
-        {
-            name: `${t('products_page.all_products')} 4`,
-            image: stabilizer,
-            price: 1000,
-            discount: 12,
-        },
-        {
-            name: `${t('products_page.all_products')} 5`,
-            image: stabilizer,
-            price: 1000,
-            discount: 22,
-        },
-        {
-            name: `${t('products_page.all_products')} 6`,
-            image: stabilizer,
-            price: 1000,
-            discount: 18,
-        },
-    ];
-
-    const handleCategoryChange = (category) => {
-        setSelectedCategory(category === selectedCategory ? null : category);
-    };
+    useEffect(() => { loadOffers(1); }, [loadOffers]);
 
     return (
         <>
-            <div className="bg-light-background px-4 md:px-10 lg:px-40 py-8">
-                <div>
-                    <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4">{t('offers.title')}</h1>
-                    <div className="flex gap-2 text-base md:text-lg text-primary">
-                        <Link to="/" className="hover:underline">{t('header.home')}</Link>
+            {/* Hero */}
+            <div className="bg-gradient-to-r from-primary to-secondary px-4 md:px-10 lg:px-40 py-12">
+                <div className="text-white">
+                    <div className="flex items-center gap-2 text-white/70 text-sm mb-3">
+                        <Link to="/" className="hover:text-white transition-colors">{t('header.home')}</Link>
                         <span>/</span>
-                        <span>{t('offers.title')}</span>
+                        <span className="text-white">{t('offers.title')}</span>
                     </div>
+                    <h1 className="text-3xl md:text-5xl font-black mb-3">{t('offers.title')}</h1>
+                    <p className="text-white/80 text-lg">
+                        {i18n.language === 'ar' ? 'اكتشف أفضل العروض والخصومات الحصرية' : 'Discover the best exclusive deals and discounts'}
+                    </p>
                 </div>
             </div>
-            <div className="flex flex-col lg:flex-row justify-center px-4 md:px-10 lg:px-20 py-12 gap-8">
-                {/* Filter Sidebar */}
-                <aside className="w-full lg:w-3/12">
-                    <div className="bg-white sticky top-4">
-                        {/* Search Bar */}
-                        <div className=" pb-4 border-slate-100">
-                            <div className="relative">
-                                <input
-                                    type="text"
-                                    placeholder={t('products_page.search')}
-                                    className="w-full py-3 px-4 pr-11 border rounded-lg border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-400 focus:bg-white transition-all rtl:pr-4 rtl:pl-11"
-                                />
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-primary rtl:left-auto rtl:right-3" />
-                            </div>
-                        </div>
 
-                        {/* Categories Section */}
-                        <div className="p-4 md:p-6 bg-light-background rounded-xl">
-                            <h3 className="text-lg md:text-xl font-bold text-primary border-b-2 pb-4 mb-4">
-                                {t('products_page.categories')}
-                            </h3>
-                            <div className="space-y-1">
-                                {categories.map((category, index) => (
-                                    <label
-                                        key={index}
-                                        className="flex items-center justify-between py-2 px-2 rounded-lg cursor-pointer transition-all hover:bg-slate-50"
-                                    >
-                                        <span className={`text-base md:text-lg font-medium transition-colors ${selectedCategory === category
-                                            ? 'text-primary text-lg md:text-xl'
-                                            : 'text-slate-700'
-                                            }`}>
-                                            {category}
-                                        </span>
-                                        <Checkbox
-                                            checked={selectedCategory === category}
-                                            onCheckedChange={() => handleCategoryChange(category)}
-                                            className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 border-2 border-slate-300 rounded h-5 w-5"
-                                        />
-                                    </label>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Price Range Section */}
-                        <div className="p-4 md:p-6 mt-6 bg-light-background rounded-xl">
-                            <h3 className="text-lg md:text-xl font-bold border-b-2 pb-4 text-primary mb-6">
-                                {t('products_page.price')}
-                            </h3>
-                            <div className="px-1">
-                                <Slider
-                                    value={priceRange}
-                                    onValueChange={setPriceRange}
-                                    min={40136}
-                                    max={135900}
-                                    step={100}
-                                    dir="rtl"
-                                    className="mb-6"
-                                />
-                                <div className="flex items-center justify-center gap-2 mt-6 text-sm md:text-base">
-                                    <div className="flex-1 bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-center">
-                                        <span className="text-slate-800 font-semibold" dir="ltr">
-                                            {t('common.currency')}{priceRange[1].toLocaleString()}
-                                        </span>
-                                    </div>
-                                    <div className="w-6 h-0.5 bg-slate-300"></div>
-                                    <div className="flex-1 bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-center">
-                                        <span className="text-slate-800 font-semibold" dir="ltr">
-                                            {t('common.currency')}{priceRange[0].toLocaleString()}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            {/* Content */}
+            <div className="px-4 md:px-10 lg:px-20 py-12">
+                {loading && offers.length === 0 ? (
+                    <div className="flex justify-center items-center py-24">
+                        <Loader2 className="w-10 h-10 text-primary animate-spin" />
                     </div>
-                </aside>
-
-                {/* Main Content */}
-                <div className="w-full lg:w-9/12">
-                    <h2 className="text-2xl md:text-3xl mb-4 font-bold text-slate-800">{t('offers.available_offers')}</h2>
-                    <hr className="border-slate-200 mb-4" />
-
-                    <div className="flex justify-between items-baseline">
-                        <div className="flex items-center gap-2 my-4">
-                            <button
-                                onClick={() => setMode('grid')}
-                aria-label={t('products_page.view_grid')}
-                                className={`p-2 border-2 rounded-lg transition-colors ${mode === 'grid'
-                                    ? 'border-primary bg-blue-50'
-                                    : 'border-slate-300 hover:bg-slate-50'
-                                    }`}
-                            >
-                                <LayoutGrid size={24} className={`${mode === 'grid' ? 'text-primary' : 'text-slate-400'}`} />
-                            </button>
-
-                            <button
-                                onClick={() => setMode('stretch')}
-                aria-label={t('products_page.view_list')}
-                                className={`p-2 border-2 rounded-lg transition-colors ${mode === 'stretch'
-                                    ? 'border-primary bg-blue-50'
-                                    : 'border-slate-300 hover:bg-slate-50'
-                                    }`}
-                            >
-                                <StretchHorizontal size={24} className={`${mode === 'stretch' ? 'text-primary' : 'text-slate-400'}`} />
-                            </button>
-                        </div>
-
-                        <div className="flex gap-4">
-                            <SortDropdown onChange={setSort} />
-                            <button className="px-4 py-2 border border-slate-300 bg-slate-50 rounded-lg flex items-center gap-2 hover:bg-slate-100 transition-colors">
-                                <span className="font-medium text-slate-700">36</span>
-                                <ChevronDown size={18} className="text-slate-600" />
-                            </button>
-                        </div>
+                ) : offers.length === 0 ? (
+                    <div className="text-center py-24">
+                        <ShoppingBag className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                        <h2 className="text-xl font-bold text-gray-500">
+                            {i18n.language === 'ar' ? 'لا توجد عروض متاحة حالياً' : 'No active offers at the moment'}
+                        </h2>
+                        <p className="text-gray-400 mt-2">
+                            {i18n.language === 'ar' ? 'تابعنا لاحقاً للاطلاع على أفضل العروض' : 'Check back later for amazing deals'}
+                        </p>
                     </div>
+                ) : (
+                    <>
+                        <div className="flex items-center justify-between mb-8">
+                            <h2 className="text-2xl font-bold text-gray-800">
+                                {i18n.language === 'ar' ? 'العروض المتاحة' : t('offers.available_offers')}
+                                <span className="mr-2 text-lg font-normal text-gray-400">({offers.length})</span>
+                            </h2>
+                        </div>
 
-
-                    {mode === 'grid' ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
-                            {products.map((product, index) => (
-                                <ProductCard key={index} product={product} />
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                            {offers.map(offer => (
+                                <OfferCard key={offer.id} offer={offer} />
                             ))}
                         </div>
-                    ) : (
-                        <div className="my-6">
-                            {products.map((product, index) => (
-                                <WideProductCard key={index} product={product} />
-                            ))}
-                        </div>
-                    )}
 
-                    {/* Pagination */}
-                    <div className="flex justify-center flex-wrap gap-2 my-8" dir="ltr">
-                        {[1, 2, 3, 4, 5, 6, 7].map((page) => (
-                            <button
-                                key={page}
-                                className={`w-10 h-10 rounded-lg font-medium transition-colors ${page === 1
-                                    ? 'bg-secondary text-white hover:bg-blue-600'
-                                    : 'border border-slate-300 text-primary hover:bg-slate-50'
-                                    }`}
-                            >
-                                {page}
-                            </button>
-                        ))}
-                    </div>
-                </div>
+                        {/* Load more */}
+                        {page < lastPage && (
+                            <div className="flex justify-center mt-10">
+                                <button
+                                    onClick={() => loadOffers(page + 1)}
+                                    disabled={loading}
+                                    className="px-8 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 transition-all disabled:opacity-50 flex items-center gap-2"
+                                >
+                                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                                    {i18n.language === 'ar' ? 'تحميل المزيد' : 'Load More'}
+                                </button>
+                            </div>
+                        )}
+                    </>
+                )}
             </div>
         </>
     );
