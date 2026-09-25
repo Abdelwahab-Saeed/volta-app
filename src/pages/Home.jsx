@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import HomeCarousel from '../components/home/HomeCarousel';
 import CategoryCarousel from '../components/home/CategoryCarousel';
 import FeaturesSection from '../components/home/FeaturesSection';
+import HomeOffersSection from '../components/home/HomeOffersSection';
 import { useCategoryStore } from '@/stores/useCategoryStore';
 import { useBannerStore } from '@/stores/useBannerStore';
 import useSeo from '@/hooks/useSeo';
@@ -48,18 +49,7 @@ export default function Home() {
   return (
     <div className="container mx-auto px-4 md:px-6 lg:px-8">
       <HomeCarousel banners={banners} loading={bannersLoading} />
-
-      {/* Show products for first two categories */}
-      {/* {!loading && categoriesWithProducts.map((catGroup) => (
-        catGroup.products.length > 0 && (
-          <Products
-            key={catGroup.id}
-            title={catGroup.name}
-            products={catGroup.products}
-          />
-        )
-      ))} */}
-
+      <HomeOffersSection />
       <CategoryCarousel categories={categories} loading={categoriesLoading} />
       <FeaturesSection />
     </div>

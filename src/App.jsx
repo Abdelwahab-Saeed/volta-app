@@ -22,6 +22,7 @@ const Products       = lazy(() => import('./pages/Products'));
 const NotFoundPage   = lazy(() => import('./pages/NotFoundPage'));
 const SearchResults  = lazy(() => import('./pages/SearchResults'));
 const Offers         = lazy(() => import('./pages/Offers'));
+const OfferDetails   = lazy(() => import('./pages/OfferDetails'));
 const Comparison     = lazy(() => import('./pages/Comparison'));
 const Cart           = lazy(() => import('./pages/Cart'));
 const Checkout       = lazy(() => import('./pages/Checkout'));
@@ -110,7 +111,8 @@ function App() {
         {/* Protected Routes */}
         <Route path='/products' element={<Products />} />
         <Route path='/search' element={<SearchResults />} />
-        <Route path='/offers' element={<ProtectedRoute><Offers /></ProtectedRoute>} />
+        <Route path='/offers' element={<Offers />} />
+        <Route path='/offers/:id' element={<OfferDetails />} />
         <Route path='/comparison' element={<ProtectedRoute><Comparison /></ProtectedRoute>} />
         <Route path='/cart' element={<Cart />} />
         <Route path='/checkout' element={<Checkout />} />

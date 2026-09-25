@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
-import { Loader2, X } from "lucide-react";
+import { Loader2, X, Tag } from "lucide-react";
 
 import { useCartStore } from "@/stores/useCartStore";
 import { useCheckoutStore } from "@/stores/useCheckoutStore";
@@ -62,8 +62,13 @@ const getMatchedGovernorate = (dbValue) => {
 
 export default function Checkout() {
     const navigate = useNavigate();
+    const location = useLocation();
     const { t, i18n } = useTranslation();
     const tr = useLocalize();
+
+    // Offer passed from OfferDetails page via navigation state
+    const offerFromState = location.state?.offer || null;
+    const offerIdFromState = location.state?.offer_id || null;
     const {
         cartItems,
         cartLoading,
@@ -163,9 +168,73 @@ export default function Checkout() {
 
     // Calculate totals
     const subtotal = getCartSubtotal();
-    const total = getCartTotal();
-    const shippingFee = getShippingTotal();
 
+    // Calculate offer discount dynamically on frontend
+    const calculateOfferDiscount = () => {
+        if (!offerFromState) return 0;
+        let discount = 0;
+        const offer = offerFromState;
+        const offerProductIds = offer.products?.map(p => p.id) || [];
+        const getLinePrice = (item) => useCartStore.getState().getItemPrice(item);
+        const getUnitPrice = (item) => getLinePrice(item) / (item.quantity || 1);
+        
+        switch (offer.type) {
+            case 'percentage':
+                cartItems.forEach(item => {
+                    if (offerProductIds.length === 0 || offerProductIds.includes(item.product_id)) {
+                        discount += getLinePrice(item) * (offer.value / 100);
+                    }
+                });
+                break;
+            case 'fixed':
+                cartItems.forEach(item => {
+                    if (offerProductIds.length === 0 || offerProductIds.includes(item.product_id)) {
+                        discount += Math.min(offer.value * item.quantity, getLinePrice(item));
+                    }
+                });
+                break;
+            case 'bundle':
+                const cartProductIds = cartItems.map(i => i.product_id);
+                const allPresent = offerProductIds.length > 0 && offerProductIds.every(id => cartProductIds.includes(id));
+                if (allPresent && offer.bundle_price !== null) {
+                    let bundleSubtotal = 0;
+                    cartItems.forEach(item => {
+                        if (offerProductIds.includes(item.product_id)) {
+                            bundleSubtotal += getLinePrice(item);
+                        }
+                    });
+                    discount = Math.max(0, bundleSubtotal - offer.bundle_price);
+                }
+                break;
+            case 'buy_x_get_y':
+                cartItems.forEach(item => {
+                    if (offerProductIds.length === 0 || offerProductIds.includes(item.product_id)) {
+                        if (item.quantity >= offer.buy_quantity) {
+                            const freeSets = Math.floor(item.quantity / offer.buy_quantity);
+                            const freeQty = freeSets * offer.get_quantity;
+                            if (!offer.get_product_id) {
+                                discount += freeQty * getUnitPrice(item);
+                            }
+                        }
+                    }
+                });
+                break;
+            case 'spend_x_get_y':
+                if (subtotal >= offer.min_spend) {
+                    discount = parseFloat(offer.discount_amount || 0);
+                }
+                break;
+        }
+        return discount;
+    };
+
+    const offerDiscountAmount = calculateOfferDiscount();
+    
+    // If offer is applied, it overrides any coupon discount
+    const activeDiscount = offerFromState ? offerDiscountAmount : discountAmount;
+
+    const total = Math.max(0, subtotal - activeDiscount);
+    const shippingFee = getShippingTotal();
     const finalTotal = total + shippingFee;
 
     // Form submission
@@ -180,6 +249,7 @@ export default function Checkout() {
             const payload = {
                 ...data,
                 coupon_code: coupon ? coupon.code : (data.coupon_code || null),
+                offer_id: offerIdFromState || null,
                 items: cartItems.map(item => ({
                     product_id: item.product_id,
                     quantity: item.quantity
@@ -483,7 +553,8 @@ export default function Checkout() {
                                 ))}
                             </div>
 
-                            {/* Coupon Section */}
+                            {/* Coupon Section — hidden if offer applied */}
+                            {!offerIdFromState && (
                             <div className="mb-6 pt-4 border-t">
                                 <Label className="text-start block mb-2 font-semibold">
                                     {t('cart.coupon_code')}
@@ -523,25 +594,50 @@ export default function Checkout() {
                                     </p>
                                 )}
                             </div>
+                            )}
+
+                            {/* Applied Offer Banner */}
+                            {offerFromState && (
+                                <div className="mb-6 pt-4 border-t">
+                                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-start gap-3">
+                                        <Tag className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
+                                        <div>
+                                            <p className="font-bold text-blue-800 text-sm">
+                                                {i18n.language === 'ar' ? 'عرض مطبق:' : 'Offer Applied:'}
+                                                {' '}{offerFromState.name_ar || offerFromState.name_en}
+                                            </p>
+                                            <p className="text-xs text-blue-600 mt-0.5">
+                                                {i18n.language === 'ar'
+                                                    ? 'سيتم احتساب الخصم تلقائياً عند إتمام الطلب'
+                                                    : 'Discount will be calculated automatically on order completion'}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
 
                             {/* Price Summary */}
+
                             <div className="space-y-3 pt-4 border-t">
-                                <div className="flex justify-between text-gray-600">
-                                    <span className="text-start">{t('cart.subtotal')}</span>
+                                <div className="flex justify-between text-gray-600 line-through decoration-red-500 opacity-70">
+                                    <span className="text-start">{t('cart.subtotal')} (قبل الخصم)</span>
                                     <span>EGP{subtotal.toFixed(2)}</span>
                                 </div>
-                                {discountAmount > 0 && (
-                                    <div className="flex justify-between text-green-600">
-                                        <span className="text-start">{t('cart.discount')}</span>
-                                        <span>-EGP{discountAmount.toFixed(2)}</span>
+                                {activeDiscount > 0 && (
+                                    <div className="flex justify-between text-green-600 font-bold bg-green-50 p-2 rounded-lg">
+                                        <span className="text-start flex items-center gap-2">
+                                            <Tag className="w-4 h-4" />
+                                            {offerFromState ? (i18n.language === 'ar' ? 'خصم العرض' : 'Offer Discount') : t('cart.discount')}
+                                        </span>
+                                        <span>-EGP{activeDiscount.toFixed(2)}</span>
                                     </div>
                                 )}
                                 <div className="flex justify-between text-gray-600">
                                     <span className="text-start">{t('checkout.shipping_fee')}</span>
                                     <span>EGP{shippingFee.toFixed(2)}</span>
                                 </div>
-                                <div className="flex justify-between text-lg font-bold text-gray-800 pt-3 border-t">
-                                    <span className="text-start">{t('cart.total')}</span>
+                                <div className="flex justify-between text-xl font-black text-primary pt-3 border-t">
+                                    <span className="text-start">{t('cart.total')} (بعد الخصم)</span>
                                     <span>EGP{finalTotal.toFixed(2)}</span>
                                 </div>
                             </div>
