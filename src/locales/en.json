@@ -36,9 +36,6 @@
         "follow_facebook": "Follow us on Facebook"
     },
     "footer": {
-        "subscribe": "Subscribe Now",
-        "email_placeholder": "Enter your email",
-        "newsletter_title": "Subscribe to our newsletter",
         "description": "Volta is a platform where you can buy products easily and quickly with guaranteed fast delivery and distinguished services",
         "my_account": "My Account",
         "track_order": "Track Order",
@@ -63,7 +60,58 @@
             "members_desc": "On every order",
             "support_title": "24/7 Support",
             "support_desc": "Contact us anytime",
-            "categories": "Categories"
+            "categories": "Categories",
+            "label": "Why shop with Volta"
+        },
+        "hero": {
+            "label": "Offers and announcements",
+            "slide": "Slide {{current}} of {{total}}",
+            "go_to": "Go to slide {{number}}"
+        },
+        "categories": {
+            "eyebrow": "Shop by category",
+            "subtitle": "Everything you need to protect your appliances and keep your power stable at home and at work",
+            "view_all": "All products"
+        },
+        "offers": {
+            "eyebrow": "Limited time"
+        },
+        "about": {
+            "title": "Protecting your appliances from power fluctuations",
+            "text": "Volta Stabilizers & Power Solutions specialises in voltage stabilizers and complete electrical solutions in the Egyptian market, with devices in every capacity for homes, businesses and industry.",
+            "point_volta": "Exclusive agent of STABILIZER VOLTA voltage stabilizers and transformers",
+            "point_voltafay": "Exclusive agent of VOLTAFAY electrical protection devices",
+            "point_support": "Technical advice to pick the right solution, plus specialised maintenance and support",
+            "more": "More about us",
+            "shop": "Shop products",
+            "image_alt": "Volta voltage stabilizer",
+            "since": "Power solutions experience since"
+        },
+        "certificates": {
+            "eyebrow": "Quality & accreditation",
+            "title": "Our certificates",
+            "subtitle": "Accreditations and certificates that back the quality of our products and our commitment to standards",
+            "open": "View certificate: {{title}}",
+            "close": "Close"
+        },
+        "partners": {
+            "eyebrow": "Trusted by many",
+            "title": "Our partners & clients",
+            "subtitle": "We work with trusted brands, and clients across many sectors rely on us",
+            "partners_label": "Our partners",
+            "clients_label": "Some of our clients"
+        },
+        "team": {
+            "eyebrow": "The people behind Volta",
+            "title": "Our team",
+            "subtitle": "Specialists who help you from choosing the right device through installation and maintenance",
+            "linkedin": "{{name}}'s LinkedIn profile"
+        },
+        "contact": {
+            "title": "Not sure which stabilizer you need?",
+            "subtitle": "Talk to us and our technical team will help you pick the right capacity for your home or business.",
+            "whatsapp": "Chat on WhatsApp",
+            "call": "Call us"
         }
     },
     "cart": {

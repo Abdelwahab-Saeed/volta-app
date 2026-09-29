@@ -24,6 +24,9 @@ The API is the separate `volta-back` repo; its `docs/offers-and-money.md` explai
   savings/free, red only for problems. Offers without an image use `OfferPlaceholder`.
 - Layout must work in RTL and LTR: use `start`/`end`/`ms`/`me` utilities and `rtl:`/`ltr:` variants, not left/right.
 - Every user-facing string goes through `t()` with keys in both `ar.json` and `en.json`.
+- Home page sections live in `src/components/home` and share `SectionHeading` and `Reveal`. Partners & clients,
+  certificates and team come from the admin (`/api/partners`, `/api/certificates`, `/api/team`) and hide themselves
+  when empty. Keep motion behind `prefers-reduced-motion` (see the `.reveal` / `.marquee-*` rules in `index.css`).
 
 ## Git
 Don't push to `main` directly; work on a branch and open a PR. Offers/cart/checkout changes must ship together with
