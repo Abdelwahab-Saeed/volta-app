@@ -1,9 +1,7 @@
 import { Suspense, lazy, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Award, Maximize2 } from 'lucide-react';
+import { Award, Maximize2, Shield, Star } from 'lucide-react';
 import SafeImage from '../common/SafeImage';
-import SectionHeading from './SectionHeading';
-import Reveal from './Reveal';
 import useApiList from '@/hooks/useApiList';
 import { getCertificates } from '@/api/company.api';
 import { useLocalize } from '@/lib/localize';
@@ -12,6 +10,7 @@ const CertificateDialog = lazy(() => import('./CertificateDialog'));
 
 const imageSrc = (path) => `${import.meta.env.VITE_IMAGES_URL}/${path}`;
 
+/* ─── single card ──────────────────────────────────────────────── */
 function CertificateCard({ certificate, onOpen }) {
   const { t } = useTranslation();
   const tr = useLocalize();
@@ -23,74 +22,167 @@ function CertificateCard({ certificate, onOpen }) {
       type="button"
       onClick={onOpen}
       aria-label={t('home.certificates.open', { title })}
-      className="group flex h-full w-full flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white text-start shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-secondary/30 hover:shadow-[0_20px_45px_-24px_rgba(30,39,73,0.5)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-secondary cursor-pointer"
+      className="cert-card group relative flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white text-start cursor-pointer select-none shadow-sm"
+      style={{ width: 220, minWidth: 220, flexShrink: 0 }}
     >
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-b from-slate-50 to-slate-100 p-4">
+      {/* glow ring on hover */}
+      <span className="cert-glow pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100" aria-hidden="true" />
+
+      {/* image area */}
+      <div className="relative flex items-center justify-center overflow-hidden rounded-t-2xl bg-slate-50 p-5" style={{ height: 160 }}>
         <SafeImage
           src={imageSrc(certificate.image)}
           alt=""
-          className="h-full w-full object-contain drop-shadow-md transition-transform duration-500 group-hover:scale-[1.03]"
+          className="max-h-full w-auto object-contain drop-shadow-md transition-transform duration-500 group-hover:scale-[1.08]"
         />
-        <span aria-hidden="true" className="absolute top-3 end-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-primary opacity-0 shadow-sm transition-opacity group-hover:opacity-100">
-          <Maximize2 className="h-4 w-4" />
+        {/* expand icon */}
+        <span aria-hidden="true" className="absolute top-2.5 end-2.5 flex h-8 w-8 items-center justify-center rounded-full bg-white text-primary shadow-sm opacity-0 transition-all duration-300 group-hover:opacity-100">
+          <Maximize2 className="h-3.5 w-3.5" />
         </span>
+        {/* year badge */}
         {certificate.issued_year && (
-          <span className="absolute bottom-3 start-3 rounded-full bg-primary px-2.5 py-1 text-xs font-bold text-white">
+          <span className="absolute bottom-2.5 start-2.5 rounded-full bg-primary px-2.5 py-0.5 text-[11px] font-bold text-white shadow">
             {certificate.issued_year}
           </span>
         )}
       </div>
-      <div className="flex flex-1 items-start gap-3 p-4 md:p-5">
-        <span aria-hidden="true" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary/10 text-secondary">
-          <Award className="h-5 w-5" />
+
+      {/* text area */}
+      <div className="flex flex-1 items-start gap-2.5 px-4 py-3.5">
+        <span aria-hidden="true" className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+          <Award className="h-4 w-4" />
         </span>
         <div className="min-w-0">
-          <h3 className="font-bold text-primary leading-snug line-clamp-2">{title}</h3>
-          {issuer && <p className="mt-1 text-sm text-muted-foreground line-clamp-1">{issuer}</p>}
+          <h3 className="text-sm font-bold text-primary leading-snug line-clamp-2">{title}</h3>
+          {issuer && <p className="mt-0.5 text-xs text-muted-foreground line-clamp-1">{issuer}</p>}
         </div>
       </div>
     </button>
   );
 }
 
+/* ─── marquee row ──────────────────────────────────────────────── */
+function MarqueeRow({ items, onOpen, reverse = false, speed = 12 }) {
+  const [paused, setPaused] = useState(false);
+
+  // Repeat 4× so the track always overfills any screen — no gaps ever.
+  // translateX(-50%) moves exactly 2 sets, landing back at the identical view → seamless.
+  const repeated = [...items, ...items, ...items, ...items];
+
+  return (
+    <div
+      className="relative overflow-hidden"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      <div
+        className="flex gap-4"
+        style={{
+          animation: `cert-scroll-${reverse ? 'reverse' : 'forward'} ${items.length * speed}s linear infinite`,
+          animationPlayState: paused ? 'paused' : 'running',
+          width: 'max-content',
+        }}
+      >
+        {repeated.map((cert, i) => (
+          <CertificateCard
+            key={`${cert.id}-${i}`}
+            certificate={cert}
+            onOpen={() => onOpen(cert)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ─── section ──────────────────────────────────────────────────── */
 export default function CertificatesSection() {
   const { t } = useTranslation();
   const { items } = useApiList(getCertificates);
-  // `selected` outlives `isOpen` so the dialog keeps its content while it animates closed.
   const [selected, setSelected] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
 
   if (items.length === 0) return null;
 
+  const handleOpen = (cert) => { setSelected(cert); setIsOpen(true); };
+
+  // Split into two rows (alternating) when enough items, else one row
+  const row1 = items.length >= 4 ? items.filter((_, i) => i % 2 === 0) : items;
+  const row2 = items.length >= 4 ? items.filter((_, i) => i % 2 !== 0) : null;
+
   return (
-    <section aria-labelledby="home-certificates" className="py-10 md:py-14">
-      <SectionHeading
-        id="home-certificates"
-        eyebrow={t('home.certificates.eyebrow')}
-        title={t('home.certificates.title')}
-        subtitle={t('home.certificates.subtitle')}
-      />
+    <>
+      {/* Keyframe styles injected once */}
+      <style>{`
+        @keyframes cert-scroll-forward {
+          0%   { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        @keyframes cert-scroll-reverse {
+          0%   { transform: translateX(-50%); }
+          100% { transform: translateX(0); }
+        }
+        .cert-card {
+          transition: transform 0.35s cubic-bezier(.22,.68,0,1.2), box-shadow 0.35s ease, border-color 0.35s ease;
+        }
+        .cert-card:hover {
+          transform: translateY(-6px) scale(1.03);
+          box-shadow: 0 24px 60px -12px rgba(30, 39, 73, 0.18);
+          border-color: rgba(35, 48, 116, 0.3);
+        }
+        .cert-glow {
+          background: radial-gradient(ellipse at 50% 0%, rgba(35,48,116,0.06) 0%, transparent 70%);
+        }
+      `}</style>
 
-      {/* Centred rows so a few certificates don't hug one side */}
-      <ul className="flex flex-wrap justify-center gap-4 md:gap-6">
-        {items.map((certificate, index) => (
-          <Reveal
-            as="li"
-            key={certificate.id}
-            delay={Math.min(index, 3) * 80}
-            className="w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)] xl:w-[calc(25%-1.125rem)]"
+      <section
+        aria-labelledby="home-certificates"
+        className="relative overflow-hidden bg-white py-16 md:py-24"
+      >
+
+        {/* Centered heading */}
+        <div className="mb-10 md:mb-14 px-6 text-center">
+          <p className="mb-3 inline-flex items-center gap-2 text-xs md:text-sm font-bold tracking-widest uppercase" style={{ color: '#233074' }}>
+            <Shield className="h-4 w-4" />
+            {t('home.certificates.eyebrow')}
+            <Shield className="h-4 w-4" />
+          </p>
+          <h2
+            id="home-certificates"
+            className="text-3xl md:text-4xl lg:text-5xl font-black leading-tight text-primary"
           >
-            <CertificateCard certificate={certificate} onOpen={() => { setSelected(certificate); setIsOpen(true); }} />
-          </Reveal>
-        ))}
-      </ul>
+            {t('home.certificates.title')}
+          </h2>
+          <p className="mt-3 mx-auto max-w-xl text-sm md:text-base leading-relaxed text-muted-foreground">
+            {t('home.certificates.subtitle')}
+          </p>
 
-      {/* The dialog code is only downloaded the first time someone opens a certificate */}
+          {/* decorative stars */}
+          <div className="mt-5 flex items-center justify-center gap-1.5" aria-hidden="true">
+            {[...Array(5)].map((_, i) => (
+              <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400 opacity-80" />
+            ))}
+          </div>
+        </div>
+
+        {/* Marquee tracks — full-bleed (no container padding) */}
+        <div className="flex flex-col gap-4">
+          <MarqueeRow items={row1} onOpen={handleOpen} reverse={false} speed={12} />
+          {row2 && row2.length > 0 && (
+            <MarqueeRow items={row2} onOpen={handleOpen} reverse={true} speed={15} />
+          )}
+        </div>
+
+        {/* Edge fade masks */}
+        <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 start-0 w-24 md:w-40 z-10" style={{ background: 'linear-gradient(to right, #ffffff, transparent)' }} />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 end-0 w-24 md:w-40 z-10" style={{ background: 'linear-gradient(to left, #ffffff, transparent)' }} />
+      </section>
+
       {selected && (
         <Suspense fallback={null}>
           <CertificateDialog certificate={selected} open={isOpen} onOpenChange={setIsOpen} />
         </Suspense>
       )}
-    </section>
+    </>
   );
 }
