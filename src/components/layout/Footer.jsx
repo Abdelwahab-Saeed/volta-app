@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Input } from '../ui/input';
 import WhiteLogo from '../../assets/Logo-04 2.png';
 import { Facebook, Mail, MapPin, Instagram, Twitter, Youtube } from 'lucide-react';
 import { getSettings } from '../../api/settings.api';
@@ -41,6 +42,26 @@ export default function Footer() {
 
   return (
     <footer className="text-white">
+      {/* Newsletter Section */}
+      <div className="bg-secondary py-8">
+        <div className="container px-4">
+          {/* Input & Button Group */}
+          <div className="flex flex-col sm:flex-row justify-center max-w-2xl mx-auto overflow-hidden rounded-lg sm:h-12 gap-0">
+            <button className="bg-primary hover:bg-primary/90 py-3 px-6 font-semibold whitespace-nowrap h-12 sm:h-full order-2 sm:order-1">
+              {t('footer.subscribe')}
+            </button>
+            <Input
+              type="email"
+              placeholder={t('footer.email_placeholder')}
+              className="bg-white text-black text-base! flex-1 h-12 sm:h-full rounded-none border-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-base order-1 sm:order-2 text-start"
+            />
+          </div>
+          <h3 className="text-xl md:text-2xl text-center mt-4">
+            {t('footer.newsletter_title')}
+          </h3>
+        </div>
+      </div>
+
       {/* Main Footer Content */}
       <div className="bg-primary py-12">
         <div className="container mx-auto px-4 md:px-10 lg:px-20">
