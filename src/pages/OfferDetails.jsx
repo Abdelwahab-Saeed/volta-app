@@ -1,84 +1,35 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
     Clock, Tag, Package, ShoppingBag, ArrowLeft, Loader2,
-    CheckCircle, ShoppingCart, AlertTriangle
+    AlertTriangle, Gift, Minus, Plus
 } from 'lucide-react';
-import { getOfferDetails } from '@/api/offers.api';
-import { useLocalize } from '@/lib/localize';
+import { getOfferDetails, getOfferQuote } from '@/api/offers.api';
 import SafeImage from '@/components/common/SafeImage';
-import { useCartStore } from '@/stores/useCartStore';
-import { useAuthStore } from '@/stores/useAuthStore';
-import { toast } from 'sonner';
-
-const TYPE_CONFIG = {
-    percentage:    { label: 'نسبة خصم', labelEn: 'Discount %',   color: 'from-purple-500 to-purple-700', badge: 'bg-purple-100 text-purple-700 border border-purple-200' },
-    fixed:         { label: 'خصم ثابت', labelEn: 'Fixed Off',     color: 'from-blue-500 to-blue-700',     badge: 'bg-blue-100 text-blue-700 border border-blue-200' },
-    bundle:        { label: 'باقة',      labelEn: 'Bundle Deal',   color: 'from-orange-500 to-orange-700', badge: 'bg-orange-100 text-orange-700 border border-orange-200' },
-    buy_x_get_y:   { label: 'اشترِ X',  labelEn: 'Buy X Get Y',   color: 'from-green-500 to-green-700',   badge: 'bg-green-100 text-green-700 border border-green-200' },
-    spend_x_get_y: { label: 'اصرف X',   labelEn: 'Spend & Save',  color: 'from-pink-500 to-pink-700',     badge: 'bg-pink-100 text-pink-700 border border-pink-200' },
-};
-
-function getOfferDescription(offer, lang) {
-    const ar = {
-        percentage:    `احصل على خصم ${offer.value}% على كل منتج مشمول في هذا العرض.`,
-        fixed:         `احصل على خصم ${offer.value} ج.م على كل منتج مشمول في هذا العرض.`,
-        bundle:        `اشترِ جميع منتجات الباقة معاً واستمتع بسعر إجمالي خاص ${offer.bundle_price} ج.م.`,
-        buy_x_get_y:   `اشترِ ${offer.buy_quantity} قطع واحصل على ${offer.get_quantity} ${offer.get_product_id ? 'من منتج آخر' : 'من نفس المنتج'} مجاناً.`,
-        spend_x_get_y: `اصرف ${offer.min_spend} ج.م أو أكثر واحصل على خصم ${offer.discount_amount} ج.م فوراً.`,
-    };
-    const en = {
-        percentage:    `Get ${offer.value}% off on every included product.`,
-        fixed:         `Get EGP ${offer.value} off on every included product.`,
-        bundle:        `Buy all bundle products together and pay only EGP ${offer.bundle_price}.`,
-        buy_x_get_y:   `Buy ${offer.buy_quantity} items and get ${offer.get_quantity} ${offer.get_product_id ? 'of another product' : 'of the same product'} for free.`,
-        spend_x_get_y: `Spend EGP ${offer.min_spend} or more and instantly get EGP ${offer.discount_amount} off.`,
-    };
-    return lang === 'ar' ? (ar[offer.type] || '') : (en[offer.type] || '');
-}
+import { OFFER_BADGE, formatPrice, imageUrl, useCountdown } from '@/components/offers/offerUtils';
+import OfferPlaceholder from '@/components/offers/OfferPlaceholder';
 
 function Countdown({ expiresAt }) {
-    const { t, i18n } = useTranslation();
-    const [timeLeft, setTimeLeft] = useState({ d: 0, h: 0, m: 0, s: 0, expired: false });
+    const { t } = useTranslation();
+    const timeLeft = useCountdown(expiresAt);
 
-    useEffect(() => {
-        if (!expiresAt) return;
-        const update = () => {
-            const diff = new Date(expiresAt) - new Date();
-            if (diff <= 0) {
-                setTimeLeft({ expired: true });
-                return;
-            }
-            setTimeLeft({
-                expired: false,
-                d: Math.floor(diff / 86400000),
-                h: Math.floor((diff % 86400000) / 3600000),
-                m: Math.floor((diff % 3600000) / 60000),
-                s: Math.floor((diff % 60000) / 1000)
-            });
-        };
-        update();
-        const timer = setInterval(update, 1000);
-        return () => clearInterval(timer);
-    }, [expiresAt]);
+    if (!timeLeft) return null;
 
-    if (!expiresAt) return null;
-    
     if (timeLeft.expired) {
         return (
-            <div className="bg-red-50 text-red-600 px-4 py-3 rounded-xl font-bold flex items-center gap-2">
+            <div className="bg-white/90 text-red-600 px-4 py-3 rounded-xl font-bold flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5" />
-                {i18n.language === 'ar' ? 'انتهى العرض' : 'Offer Expired'}
+                {t('offers.ended')}
             </div>
         );
     }
 
     const units = [
-        { value: timeLeft.d, label: i18n.language === 'ar' ? 'يوم' : 'Days', show: timeLeft.d > 0 },
-        { value: timeLeft.h, label: i18n.language === 'ar' ? 'ساعة' : 'Hours', show: true },
-        { value: timeLeft.m, label: i18n.language === 'ar' ? 'دقيقة' : 'Mins', show: true },
-        { value: timeLeft.s, label: i18n.language === 'ar' ? 'ثانية' : 'Secs', show: true },
+        { value: timeLeft.d, label: t('offers.days'), show: timeLeft.d > 0 },
+        { value: timeLeft.h, label: t('offers.hours'), show: true },
+        { value: timeLeft.m, label: t('offers.minutes'), show: true },
+        { value: timeLeft.s, label: t('offers.seconds'), show: true },
     ].filter(u => u.show);
 
     return (
@@ -100,65 +51,73 @@ function Countdown({ expiresAt }) {
     );
 }
 
+/**
+ * Offer page. What the customer picks (how many times, which product) lives in the URL
+ * (?sets=2&product_id=5), so back/forward, refresh and shared links keep it. Prices come from the API quote.
+ * "Buy" goes to the offer checkout; the cart is never touched.
+ */
 export default function OfferDetails() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
     const { t, i18n } = useTranslation();
-    const tr = useLocalize();
-    const { addToCart, cartItems } = useCartStore();
-    const { isAuthenticated } = useAuthStore();
 
     const [offer, setOffer] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [adding, setAdding] = useState(false);
-    const [error, setError] = useState(null);
+    const [notFound, setNotFound] = useState(false);
+    const [quote, setQuote] = useState(null);
+    const [quoteLoading, setQuoteLoading] = useState(false);
 
+    const maxSets = offer?.purchase.max_sets || 20;
+    const sets = Math.min(Math.max(parseInt(searchParams.get('sets'), 10) || 1, 1), maxSets);
+    const productId = searchParams.get('product_id') ? Number(searchParams.get('product_id')) : null;
+    const requiresChoice = !!offer?.purchase.requires_product_choice;
+
+    const updateSelection = (changes) => {
+        const next = new URLSearchParams(searchParams);
+        Object.entries(changes).forEach(([key, value]) => (value ? next.set(key, value) : next.delete(key)));
+        setSearchParams(next, { replace: true });
+    };
+
+    // Offer texts are localized by the API, so refetch when the language changes.
     useEffect(() => {
-        const load = async () => {
-            setLoading(true);
-            try {
-                const res = await getOfferDetails(id);
-                setOffer(res.data?.data);
-            } catch (e) {
-                setError(true);
-            } finally {
-                setLoading(false);
-            }
-        };
-        load();
-    }, [id]);
+        let cancelled = false;
+        setLoading(true);
+        setNotFound(false);
+        getOfferDetails(id)
+            .then(res => { if (!cancelled) setOffer(res.data?.data); })
+            .catch(() => { if (!cancelled) setNotFound(true); })
+            .finally(() => { if (!cancelled) setLoading(false); });
+        return () => { cancelled = true; };
+    }, [id, i18n.language]);
 
-    const handleBuyNow = async () => {
-        if (!isAuthenticated) {
-            toast.error(i18n.language === 'ar' ? 'يجب تسجيل الدخول أولاً' : 'Please login first');
-            navigate('/login', { state: { from: `/offers/${offer.id}` } });
-            return;
+    // Offers with several products: preselect the first buyable one (or keep a valid choice from the URL).
+    useEffect(() => {
+        if (!offer || !requiresChoice) return;
+        const valid = offer.products.some(p => p.id === productId);
+        if (!valid) {
+            const first = offer.products.find(p => p.offer?.available) || offer.products[0];
+            if (first) updateSelection({ product_id: first.id });
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [offer, requiresChoice, productId]);
 
-        if (!offer?.products?.length) {
-            // No specific products — go directly to checkout with offer applied
-            navigate('/checkout', { state: { offer_id: offer.id, offer } });
-            return;
-        }
+    // Price for the current selection.
+    useEffect(() => {
+        if (!offer || (requiresChoice && !productId)) return;
+        let cancelled = false;
+        setQuoteLoading(true);
+        getOfferQuote(id, { sets, productId: requiresChoice ? productId : null })
+            .then(res => { if (!cancelled) setQuote(res.data?.data); })
+            .catch(() => { if (!cancelled) setQuote(null); })
+            .finally(() => { if (!cancelled) setQuoteLoading(false); });
+        return () => { cancelled = true; };
+    }, [id, offer, sets, productId, requiresChoice, i18n.language]);
 
-        setAdding(true);
-        try {
-            // Add each offer product to cart
-            const qty = offer.type === 'buy_x_get_y' ? (offer.buy_quantity || 1) : 1;
-
-            for (const product of offer.products) {
-                await addToCart(product, qty);
-            }
-
-            // Navigate to checkout with offer_id in state
-            navigate('/checkout', { state: { offer_id: offer.id, offer } });
-        } catch (e) {
-            console.error('Buy now error:', e);
-            // Even if add-to-cart had an issue, still try to go to checkout
-            navigate('/checkout', { state: { offer_id: offer.id, offer } });
-        } finally {
-            setAdding(false);
-        }
+    const handleBuyNow = () => {
+        const params = new URLSearchParams({ sets: String(sets) });
+        if (requiresChoice && productId) params.set('product_id', String(productId));
+        navigate(`/checkout/offer/${id}?${params}`);
     };
 
     if (loading) {
@@ -169,22 +128,20 @@ export default function OfferDetails() {
         );
     }
 
-    if (error || !offer) {
+    if (notFound || !offer) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-center px-4">
                 <AlertTriangle className="w-16 h-16 text-red-400" />
-                <h2 className="text-xl font-bold text-gray-700">
-                    {i18n.language === 'ar' ? 'العرض غير موجود أو انتهت صلاحيته' : 'Offer not found or expired'}
-                </h2>
-                <Link to="/offers" className="text-primary font-bold underline">
-                    {i18n.language === 'ar' ? 'العودة للعروض' : 'Back to Offers'}
-                </Link>
+                <h2 className="text-xl font-bold text-gray-700">{t('offers.not_found')}</h2>
+                <Link to="/offers" className="text-primary font-bold underline">{t('offers.back_to_offers')}</Link>
             </div>
         );
     }
 
-    const config = TYPE_CONFIG[offer.type] || TYPE_CONFIG.fixed;
-    const lang = i18n.language;
+    const canBuy = offer.purchase.available && quote?.purchasable && !quoteLoading;
+    const unavailableReason = !offer.purchase.available
+        ? offer.purchase.unavailable_reason
+        : (quote && !quote.purchasable ? quote.issues?.[0]?.message : null);
 
     return (
         <>
@@ -195,44 +152,33 @@ export default function OfferDetails() {
                     <span>/</span>
                     <Link to="/offers" className="hover:text-primary transition-colors">{t('offers.title')}</Link>
                     <span>/</span>
-                    <span className="text-gray-800 font-medium">{tr(offer, 'name')}</span>
+                    <span className="text-gray-800 font-medium">{offer.name}</span>
                 </div>
             </div>
 
             <div className="max-w-6xl mx-auto px-4 md:px-8 py-10">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                    {/* Left — Image */}
+                    {/* Image */}
                     <div className="space-y-4">
                         <div className="relative rounded-3xl overflow-hidden aspect-square bg-gray-100 shadow-lg">
                             {offer.image ? (
-                                <SafeImage
-                                    src={`${import.meta.env.VITE_IMAGES_URL}/${offer.image}`}
-                                    alt={tr(offer, 'name')}
-                                    className="w-full h-full object-cover"
-                                />
+                                <SafeImage src={imageUrl(offer.image)} alt={offer.name} className="w-full h-full object-cover" />
                             ) : (
-                                <div className={`w-full h-full bg-gradient-to-br ${config.color} flex items-center justify-center`}>
-                                    <Tag className="w-24 h-24 text-white/50" />
-                                </div>
+                                <OfferPlaceholder />
                             )}
-                            {/* Type badge overlay */}
                             <div className="absolute top-4 start-4">
-                                <span className={`px-4 py-1.5 rounded-full text-sm font-bold ${config.badge}`}>
-                                    {lang === 'ar' ? config.label : config.labelEn}
+                                <span className={`px-4 py-1.5 rounded-full text-sm font-bold ${OFFER_BADGE}`}>
+                                    {offer.display.type_label}
                                 </span>
                             </div>
                         </div>
 
                         {/* Product thumbnails */}
-                        {offer.products && offer.products.length > 0 && (
+                        {offer.products.length > 0 && (
                             <div className="grid grid-cols-4 gap-2">
                                 {offer.products.slice(0, 4).map(p => (
                                     <div key={p.id} className="aspect-square rounded-xl overflow-hidden border-2 border-gray-200 bg-gray-50">
-                                        <SafeImage
-                                            src={`${import.meta.env.VITE_IMAGES_URL}/${p.image}`}
-                                            alt={tr(p, 'name')}
-                                            className="w-full h-full object-cover"
-                                        />
+                                        <SafeImage src={imageUrl(p.image)} alt={p.name} className="w-full h-full object-cover" />
                                     </div>
                                 ))}
                                 {offer.products.length > 4 && (
@@ -244,119 +190,145 @@ export default function OfferDetails() {
                         )}
                     </div>
 
-                    {/* Right — Details */}
+                    {/* Details */}
                     <div className="flex flex-col gap-6">
-                        {/* Title & description */}
                         <div>
-                            <h1 className="text-3xl font-black text-gray-900 mb-3">{tr(offer, 'name')}</h1>
-                            {tr(offer, 'description') && (
-                                <p className="text-gray-600 leading-relaxed">{tr(offer, 'description')}</p>
-                            )}
+                            <h1 className="text-3xl font-black text-gray-900 mb-3">{offer.name}</h1>
+                            {offer.description && <p className="text-gray-600 leading-relaxed">{offer.description}</p>}
                         </div>
 
-                        {/* Offer benefit card */}
-                        <div className={`rounded-2xl p-5 bg-gradient-to-r ${config.color} text-white`}>
-                            <p className="font-bold text-lg leading-relaxed">
-                                {getOfferDescription(offer, lang)}
-                            </p>
+                        {/* What the offer gives (text from the API) */}
+                        <div className="rounded-2xl p-5 bg-gradient-to-r from-primary to-secondary text-white">
+                            <p className="font-bold text-lg leading-relaxed">{offer.display.summary}</p>
                         </div>
 
                         {/* Countdown */}
                         {offer.expires_at && (
-                            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-red-500 to-orange-500 p-6 shadow-lg shadow-orange-500/20">
-                                {/* Background design elements */}
-                                <div className="absolute -end-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
-                                <div className="absolute -start-10 -bottom-10 w-32 h-32 bg-yellow-400/20 rounded-full blur-2xl"></div>
-                                
+                            <div className="relative overflow-hidden rounded-2xl bg-primary p-6 shadow-lg shadow-primary/20">
+                                <div className="absolute -end-10 -top-10 w-40 h-40 bg-secondary-on-dark/25 rounded-full blur-2xl"></div>
+                                <div className="absolute -start-10 -bottom-10 w-32 h-32 bg-secondary/25 rounded-full blur-2xl"></div>
                                 <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-4">
                                     <div className="flex items-center gap-3">
                                         <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 animate-pulse">
                                             <Clock className="w-6 h-6 text-white" />
                                         </div>
                                         <div>
-                                            <p className="text-white font-black text-lg">
-                                                {lang === 'ar' ? 'ينتهي العرض قريباً!' : 'Offer ends soon!'}
-                                            </p>
-                                            <p className="text-white/80 text-sm font-medium">
-                                                {lang === 'ar' ? 'سارع بالطلب قبل نفاذ الكمية' : 'Hurry up before stock runs out'}
-                                            </p>
+                                            <p className="text-white font-black text-lg">{t('offers.ends_soon')}</p>
+                                            <p className="text-white/80 text-sm font-medium">{t('offers.hurry')}</p>
                                         </div>
                                     </div>
                                     <Countdown expiresAt={offer.expires_at} />
                                 </div>
                             </div>
                         )}
-                        
-                        {/* Bundle Price Summary */}
-                        {offer.type === 'bundle' && offer.products?.length > 0 && (
-                            <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5">
-                                {(() => {
-                                    const basePrice = offer.products.reduce((acc, p) => acc + parseFloat(p.discount_price || p.price || 0), 0);
-                                    const finalPrice = parseFloat(offer.bundle_price);
-                                    const discountValue = basePrice - finalPrice;
-                                    
-                                    return (
-                                        <div className="space-y-3">
-                                            <h3 className="font-bold text-blue-900 flex items-center gap-2 mb-4">
-                                                <Tag className="w-5 h-5 text-blue-500" />
-                                                {lang === 'ar' ? 'ملخص سعر الباقة' : 'Bundle Price Summary'}
-                                            </h3>
-                                            
-                                            <div className="flex justify-between text-gray-500 line-through decoration-red-400 opacity-80 text-sm">
-                                                <span>{lang === 'ar' ? 'السعر الأصلي للمنتجات' : 'Original Products Price'}</span>
-                                                <span>EGP {basePrice.toFixed(2)}</span>
-                                            </div>
-                                            
-                                            <div className="flex justify-between text-green-600 font-bold text-sm bg-green-100/50 p-2 rounded-lg">
-                                                <span>{lang === 'ar' ? 'قيمة التوفير (خصم)' : 'You Save (Discount)'}</span>
-                                                <span>-EGP {Math.max(0, discountValue).toFixed(2)}</span>
-                                            </div>
-                                            
-                                            <div className="flex justify-between font-black text-2xl text-blue-700 pt-3 border-t border-blue-200/60 mt-2">
-                                                <span>{lang === 'ar' ? 'سعر الباقة الإجمالي' : 'Total Bundle Price'}</span>
-                                                <span>EGP {finalPrice.toFixed(2)}</span>
-                                            </div>
-                                        </div>
-                                    );
-                                })()}
-                            </div>
-                        )}
 
-                        {/* Included products */}
-                        {offer.products && offer.products.length > 0 && (
+                        {/* Product choice (offers with several eligible products) */}
+                        {requiresChoice && (
                             <div className="bg-gray-50 rounded-2xl p-5">
                                 <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
                                     <Package className="w-5 h-5 text-primary" />
-                                    {lang === 'ar' ? `المنتجات المشمولة (${offer.products.length})` : `Included Products (${offer.products.length})`}
+                                    {t('offers.choose_product')}
                                 </h3>
-                                <div className="space-y-3 max-h-64 overflow-y-auto">
-                                    {offer.products.map(product => (
-                                        <Link
-                                            key={product.id}
-                                            to={`/product/${product.id}`}
-                                            className="flex items-center gap-3 bg-white p-3 rounded-xl hover:shadow-sm transition-all border border-gray-100 group"
-                                        >
-                                            <div className="w-12 h-12 rounded-lg overflow-hidden border border-gray-100 flex-shrink-0 bg-gray-50">
-                                                <SafeImage
-                                                    src={`${import.meta.env.VITE_IMAGES_URL}/${product.image}`}
-                                                    alt={tr(product, 'name')}
-                                                    className="w-full h-full object-cover"
-                                                />
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <p className="font-semibold text-gray-800 text-sm truncate group-hover:text-primary transition-colors">
-                                                    {tr(product, 'name')}
-                                                </p>
-                                                <p className="text-xs text-gray-500 mt-0.5">
-                                                    {product.discount_price > 0
-                                                        ? `EGP ${product.discount_price}`
-                                                        : `EGP ${product.price}`}
-                                                </p>
-                                            </div>
-                                            <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                                        </Link>
-                                    ))}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    {offer.products.map(product => {
+                                        const selected = product.id === productId;
+                                        const buyable = product.offer?.available;
+                                        return (
+                                            <button
+                                                key={product.id}
+                                                type="button"
+                                                disabled={!buyable}
+                                                onClick={() => updateSelection({ product_id: product.id })}
+                                                className={`flex items-center gap-3 p-3 rounded-xl border-2 text-start transition-all disabled:opacity-50 disabled:cursor-not-allowed ${selected ? 'border-secondary bg-secondary/5' : 'border-gray-100 bg-white hover:border-secondary/50'}`}
+                                            >
+                                                <div className="w-12 h-12 rounded-lg overflow-hidden border border-gray-100 flex-shrink-0 bg-gray-50">
+                                                    <SafeImage src={imageUrl(product.image)} alt={product.name} className="w-full h-full object-cover" />
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="font-semibold text-gray-800 text-sm truncate">{product.name}</p>
+                                                    {product.offer && (
+                                                        <p className="text-xs mt-0.5" dir="ltr">
+                                                            <span className="font-bold text-primary">{formatPrice(product.offer.offer_price)}</span>
+                                                            {product.offer.savings > 0 && (
+                                                                <span className="text-gray-400 line-through ms-2">{formatPrice(product.offer.regular_price)}</span>
+                                                            )}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </button>
+                                        );
+                                    })}
                                 </div>
+                            </div>
+                        )}
+
+                        {/* How many times */}
+                        <div className="flex items-center justify-between bg-gray-50 rounded-2xl p-5">
+                            <span className="font-bold text-gray-800">{t('offers.sets')}</span>
+                            <div className="flex items-center border border-gray-300 rounded-xl h-11 overflow-hidden bg-white">
+                                <button
+                                    type="button"
+                                    onClick={() => updateSelection({ sets: sets - 1 > 1 ? sets - 1 : null })}
+                                    disabled={sets <= 1}
+                                    aria-label={t('a11y.decrease_quantity')}
+                                    className="px-3 h-full hover:bg-gray-100 disabled:opacity-40"
+                                >
+                                    <Minus className="w-4 h-4" />
+                                </button>
+                                <span className="w-10 text-center font-bold tabular-nums">{sets}</span>
+                                <button
+                                    type="button"
+                                    onClick={() => updateSelection({ sets: sets + 1 })}
+                                    disabled={sets >= maxSets}
+                                    aria-label={t('a11y.increase_quantity')}
+                                    className="px-3 h-full hover:bg-gray-100 disabled:opacity-40"
+                                >
+                                    <Plus className="w-4 h-4" />
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* What the customer gets and pays (from the quote) */}
+                        <div className="bg-secondary/5 border border-secondary/20 rounded-2xl p-5 space-y-3">
+                            <h3 className="font-bold text-primary flex items-center gap-2">
+                                <Tag className="w-5 h-5 text-secondary" />
+                                {t('offers.includes')}
+                            </h3>
+
+                            {quoteLoading && !quote ? (
+                                <div className="flex justify-center py-4"><Loader2 className="w-6 h-6 text-primary animate-spin" /></div>
+                            ) : quote ? (
+                                <div className={`space-y-3 transition-opacity ${quoteLoading ? 'opacity-50' : ''}`}>
+                                    {quote.items.map(item => (
+                                        <div key={item.product_id} className="flex justify-between text-sm text-gray-700">
+                                            <span>{item.quantity} × {item.name}</span>
+                                            <span dir="ltr">{formatPrice(item.total)}</span>
+                                        </div>
+                                    ))}
+                                    {quote.gifts.map(gift => (
+                                        <div key={gift.product_id} className="flex justify-between text-sm text-green-700 font-bold">
+                                            <span className="flex items-center gap-1"><Gift className="w-4 h-4" />{gift.quantity} × {gift.name}</span>
+                                            <span>{t('offers.free')}</span>
+                                        </div>
+                                    ))}
+                                    {quote.discount > 0 && (
+                                        <div className="flex justify-between text-green-600 font-bold text-sm bg-green-100/50 p-2 rounded-lg">
+                                            <span>{t('offers.you_save')}</span>
+                                            <span dir="ltr">-{formatPrice(quote.discount)}</span>
+                                        </div>
+                                    )}
+                                    <div className="flex justify-between font-black text-2xl text-primary pt-3 border-t border-secondary/20">
+                                        <span>{t('offers.offer_price')}</span>
+                                        <span dir="ltr">{formatPrice(quote.subtotal - quote.discount)}</span>
+                                    </div>
+                                </div>
+                            ) : null}
+                        </div>
+
+                        {unavailableReason && (
+                            <div className="bg-red-50 text-red-600 px-4 py-3 rounded-xl font-bold flex items-center gap-2">
+                                <AlertTriangle className="w-5 h-5 flex-shrink-0" />
+                                {unavailableReason}
                             </div>
                         )}
 
@@ -364,31 +336,22 @@ export default function OfferDetails() {
                         <div className="flex flex-col sm:flex-row gap-3 pt-2">
                             <button
                                 onClick={handleBuyNow}
-                                disabled={adding}
-                                className="flex-1 py-4 bg-secondary text-white font-black text-lg rounded-2xl hover:bg-secondary/90 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 flex items-center justify-center gap-2"
+                                disabled={!canBuy}
+                                className="flex-1 py-4 bg-secondary text-white font-black text-lg rounded-2xl hover:bg-secondary/90 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                             >
-                                {adding ? (
-                                    <Loader2 className="w-5 h-5 animate-spin" />
-                                ) : (
-                                    <ShoppingBag className="w-5 h-5" />
-                                )}
-                                {lang === 'ar' ? 'اشترِ الآن بالعرض' : 'Buy Now with Offer'}
+                                <ShoppingBag className="w-5 h-5" />
+                                {t('offers.buy_now')}
                             </button>
                             <Link
                                 to="/offers"
                                 className="px-6 py-4 border-2 border-gray-200 text-gray-700 font-bold rounded-2xl hover:bg-gray-50 transition-all flex items-center justify-center gap-2"
                             >
                                 <ArrowLeft className="w-4 h-4 rtl:rotate-180" />
-                                {lang === 'ar' ? 'العروض الأخرى' : 'Other Offers'}
+                                {t('offers.other_offers')}
                             </Link>
                         </div>
 
-                        {/* Note about coupon stacking */}
-                        <p className="text-xs text-gray-400 text-center">
-                            {lang === 'ar'
-                                ? '* لا يمكن تطبيق كود خصم مع هذا العرض في نفس الوقت'
-                                : '* Coupon codes cannot be combined with this offer'}
-                        </p>
+                        <p className="text-xs text-gray-400 text-center">{t('offers.no_coupon_note')}</p>
                     </div>
                 </div>
             </div>

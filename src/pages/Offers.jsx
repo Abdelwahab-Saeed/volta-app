@@ -1,71 +1,28 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Clock, Tag, Package, ShoppingBag, ArrowLeft, Loader2 } from 'lucide-react';
+import { Clock, Package, ShoppingBag, ArrowLeft, Loader2 } from 'lucide-react';
 import { getOffers } from '@/api/offers.api';
-import { useLocalize } from '@/lib/localize';
 import SafeImage from '@/components/common/SafeImage';
-
-const TYPE_CONFIG = {
-    percentage:    { label: 'نسبة خصم', labelEn: 'Discount %',   color: 'from-purple-500 to-purple-700',  badge: 'bg-purple-100 text-purple-700' },
-    fixed:         { label: 'خصم ثابت', labelEn: 'Fixed Off',     color: 'from-blue-500 to-blue-700',      badge: 'bg-blue-100 text-blue-700' },
-    bundle:        { label: 'باقة',      labelEn: 'Bundle Deal',   color: 'from-orange-500 to-orange-700',  badge: 'bg-orange-100 text-orange-700' },
-    buy_x_get_y:   { label: 'اشترِ X',  labelEn: 'Buy X Get Y',   color: 'from-green-500 to-green-700',    badge: 'bg-green-100 text-green-700' },
-    spend_x_get_y: { label: 'اصرف X',   labelEn: 'Spend & Save',  color: 'from-pink-500 to-pink-700',      badge: 'bg-pink-100 text-pink-700' },
-};
-
-function getOfferSummary(offer, lang) {
-    switch (offer.type) {
-        case 'percentage':
-            return lang === 'ar' ? `خصم ${offer.value}% على المنتجات المختارة` : `${offer.value}% off on selected products`;
-        case 'fixed':
-            return lang === 'ar' ? `خصم ${offer.value} ج.م على المنتجات المختارة` : `EGP ${offer.value} off selected products`;
-        case 'bundle':
-            return lang === 'ar' ? `اشترِ الباقة كاملة بسعر ${offer.bundle_price} ج.م` : `Get the full bundle for EGP ${offer.bundle_price}`;
-        case 'buy_x_get_y':
-            return lang === 'ar'
-                ? `اشترِ ${offer.buy_quantity} واحصل على ${offer.get_quantity} مجاناً`
-                : `Buy ${offer.buy_quantity} get ${offer.get_quantity} free`;
-        case 'spend_x_get_y':
-            return lang === 'ar'
-                ? `اصرف ${offer.min_spend} ج.م واحصل على خصم ${offer.discount_amount} ج.م`
-                : `Spend EGP ${offer.min_spend} get EGP ${offer.discount_amount} off`;
-        default:
-            return '';
-    }
-}
+import { OFFER_BADGE, formatPrice, imageUrl, useCountdown, shortCountdownLabel } from '@/components/offers/offerUtils';
+import OfferPlaceholder from '@/components/offers/OfferPlaceholder';
 
 function Countdown({ expiresAt }) {
-    const [timeLeft, setTimeLeft] = useState('');
-
-    useEffect(() => {
-        if (!expiresAt) return;
-        const update = () => {
-            const diff = new Date(expiresAt) - new Date();
-            if (diff <= 0) { setTimeLeft('انتهى العرض'); return; }
-            const d = Math.floor(diff / 86400000);
-            const h = Math.floor((diff % 86400000) / 3600000);
-            const m = Math.floor((diff % 3600000) / 60000);
-            setTimeLeft(d > 0 ? `${d}ي ${h}س ${m}د` : `${h}س ${m}د`);
-        };
-        update();
-        const timer = setInterval(update, 60000);
-        return () => clearInterval(timer);
-    }, [expiresAt]);
-
-    if (!expiresAt || !timeLeft) return null;
+    const { t } = useTranslation();
+    const timeLeft = useCountdown(expiresAt, 60000);
+    const label = shortCountdownLabel(timeLeft, t);
+    if (!label) return null;
     return (
-        <div className="flex items-center gap-1 text-orange-600 text-xs font-bold">
+        <div className="flex items-center gap-1 text-secondary text-xs font-bold">
             <Clock className="w-3 h-3" />
-            <span>{timeLeft}</span>
+            <span>{label}</span>
         </div>
     );
 }
 
 function OfferCard({ offer }) {
-    const { i18n } = useTranslation();
-    const tr = useLocalize();
-    const config = TYPE_CONFIG[offer.type] || TYPE_CONFIG.fixed;
+    const { t } = useTranslation();
+    const { display } = offer;
 
     return (
         <Link
@@ -76,24 +33,22 @@ function OfferCard({ offer }) {
             <div className="relative overflow-hidden h-48">
                 {offer.image ? (
                     <SafeImage
-                        src={`${import.meta.env.VITE_IMAGES_URL}/${offer.image}`}
-                        alt={tr(offer, 'name')}
+                        src={imageUrl(offer.image)}
+                        alt={offer.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                 ) : (
-                    <div className={`w-full h-full bg-gradient-to-br ${config.color} flex items-center justify-center`}>
-                        <Tag className="w-16 h-16 text-white/60" />
-                    </div>
+                    <OfferPlaceholder />
                 )}
                 {/* Type badge */}
                 <div className="absolute top-3 start-3">
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${config.badge} backdrop-blur-sm`}>
-                        {i18n.language === 'ar' ? config.label : config.labelEn}
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${OFFER_BADGE}`}>
+                        {display.type_label}
                     </span>
                 </div>
                 {/* Products count */}
-                {offer.products && offer.products.length > 0 && (
-                    <div className="absolute top-3 end-3 bg-white/90 backdrop-blur-sm rounded-full px-2 py-1 flex items-center gap-1">
+                {offer.products?.length > 0 && (
+                    <div className="absolute top-3 end-3 bg-white/90 backdrop-blur-sm rounded-full px-2 py-1 flex items-center gap-1" title={t('offers.products_count', { count: offer.products.length })}>
                         <Package className="w-3 h-3 text-gray-600" />
                         <span className="text-xs font-bold text-gray-700">{offer.products.length}</span>
                     </div>
@@ -102,18 +57,27 @@ function OfferCard({ offer }) {
 
             {/* Content */}
             <div className="p-4 flex flex-col flex-1">
-                <h3 className="font-bold text-gray-900 text-lg mb-1 line-clamp-1">
-                    {tr(offer, 'name')}
-                </h3>
-                <p className="text-sm text-gray-500 mb-3 line-clamp-2 flex-1">
-                    {getOfferSummary(offer, i18n.language)}
-                </p>
+                <h3 className="font-bold text-gray-900 text-lg mb-1 line-clamp-1">{offer.name}</h3>
+                <p className="text-sm text-gray-500 mb-3 line-clamp-2 flex-1">{display.summary}</p>
+
+                {/* Prices (null when the customer picks a product first: each product has its own price) */}
+                {display.offer_price !== null && (
+                    <div className="flex items-baseline gap-2 mb-3" dir="ltr">
+                        <span className="text-lg font-black text-primary">{formatPrice(display.offer_price)}</span>
+                        {display.savings > 0 && (
+                            <span className="text-sm text-gray-400 line-through">{formatPrice(display.regular_price)}</span>
+                        )}
+                    </div>
+                )}
+                {!offer.purchase.available && (
+                    <p className="text-xs font-bold text-red-500 mb-3">{offer.purchase.unavailable_reason || t('offers.unavailable')}</p>
+                )}
 
                 <div className="flex items-center justify-between mt-auto pt-3 border-t border-gray-100">
                     <Countdown expiresAt={offer.expires_at} />
-                    <span className="text-primary text-sm font-bold flex items-center gap-1 group-hover:gap-2 transition-all">
-                        {i18n.language === 'ar' ? 'عرض التفاصيل' : 'View Offer'}
-                        <ArrowLeft className="w-4 h-4 rotate-180 rtl:rotate-0" />
+                    <span className="text-primary text-sm font-bold flex items-center gap-1 group-hover:gap-2 transition-all ms-auto">
+                        {t('offers.view_offer')}
+                        <ArrowLeft className="w-4 h-4 ltr:rotate-180" />
                     </span>
                 </div>
             </div>
@@ -125,27 +89,33 @@ export default function Offers() {
     const { t, i18n } = useTranslation();
     const [offers, setOffers] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
     const [page, setPage] = useState(1);
     const [lastPage, setLastPage] = useState(1);
+    const [total, setTotal] = useState(0);
 
     const loadOffers = useCallback(async (p = 1) => {
         setLoading(true);
+        setError(false);
         try {
             const res = await getOffers(p);
             const data = res.data?.data;
             if (data) {
                 setOffers(prev => p === 1 ? data.data : [...prev, ...data.data]);
                 setLastPage(data.last_page);
+                setTotal(data.total);
                 setPage(p);
             }
         } catch (e) {
             console.error(e);
+            setError(true);
         } finally {
             setLoading(false);
         }
     }, []);
 
-    useEffect(() => { loadOffers(1); }, [loadOffers]);
+    // Offer texts come localized from the API, so reload from page 1 when the language changes.
+    useEffect(() => { loadOffers(1); }, [loadOffers, i18n.language]);
 
     return (
         <>
@@ -158,9 +128,7 @@ export default function Offers() {
                         <span className="text-white">{t('offers.title')}</span>
                     </div>
                     <h1 className="text-3xl md:text-5xl font-black mb-3">{t('offers.title')}</h1>
-                    <p className="text-white/80 text-lg">
-                        {i18n.language === 'ar' ? 'اكتشف أفضل العروض والخصومات الحصرية' : 'Discover the best exclusive deals and discounts'}
-                    </p>
+                    <p className="text-white/80 text-lg">{t('offers.subtitle')}</p>
                 </div>
             </div>
 
@@ -170,22 +138,25 @@ export default function Offers() {
                     <div className="flex justify-center items-center py-24">
                         <Loader2 className="w-10 h-10 text-primary animate-spin" />
                     </div>
+                ) : error && offers.length === 0 ? (
+                    <div className="text-center py-24">
+                        <p className="text-gray-500 mb-4">{t('offers.load_error')}</p>
+                        <button onClick={() => loadOffers(1)} className="px-6 py-2 bg-primary text-white rounded-xl font-bold">
+                            {t('offers.retry')}
+                        </button>
+                    </div>
                 ) : offers.length === 0 ? (
                     <div className="text-center py-24">
                         <ShoppingBag className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                        <h2 className="text-xl font-bold text-gray-500">
-                            {i18n.language === 'ar' ? 'لا توجد عروض متاحة حالياً' : 'No active offers at the moment'}
-                        </h2>
-                        <p className="text-gray-400 mt-2">
-                            {i18n.language === 'ar' ? 'تابعنا لاحقاً للاطلاع على أفضل العروض' : 'Check back later for amazing deals'}
-                        </p>
+                        <h2 className="text-xl font-bold text-gray-500">{t('offers.none')}</h2>
+                        <p className="text-gray-400 mt-2">{t('offers.none_hint')}</p>
                     </div>
                 ) : (
                     <>
                         <div className="flex items-center justify-between mb-8">
                             <h2 className="text-2xl font-bold text-gray-800">
-                                {i18n.language === 'ar' ? 'العروض المتاحة' : t('offers.available_offers')}
-                                <span className="mr-2 text-lg font-normal text-gray-400">({offers.length})</span>
+                                {t('offers.available_offers')}
+                                <span className="ms-2 text-lg font-normal text-gray-400">({total})</span>
                             </h2>
                         </div>
 
@@ -204,7 +175,7 @@ export default function Offers() {
                                     className="px-8 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 transition-all disabled:opacity-50 flex items-center gap-2"
                                 >
                                     {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                                    {i18n.language === 'ar' ? 'تحميل المزيد' : 'Load More'}
+                                    {t('offers.load_more')}
                                 </button>
                             </div>
                         )}

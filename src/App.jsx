@@ -26,6 +26,7 @@ const OfferDetails   = lazy(() => import('./pages/OfferDetails'));
 const Comparison     = lazy(() => import('./pages/Comparison'));
 const Cart           = lazy(() => import('./pages/Cart'));
 const Checkout       = lazy(() => import('./pages/Checkout'));
+const OfferCheckout  = lazy(() => import('./pages/OfferCheckout'));
 const ProfileLayout  = lazy(() => import('./components/profile/ProfileLayout'));
 const Profile        = lazy(() => import('./pages/Profile'));
 const Orders         = lazy(() => import('./pages/Orders'));
@@ -116,6 +117,8 @@ function App() {
         <Route path='/comparison' element={<ProtectedRoute><Comparison /></ProtectedRoute>} />
         <Route path='/cart' element={<Cart />} />
         <Route path='/checkout' element={<Checkout />} />
+        {/* Offers are bought directly, never through the cart */}
+        <Route path='/checkout/offer/:id' element={<OfferCheckout />} />
         <Route path='/wishlist' element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
 
         <Route element={<ProtectedRoute><ProfileLayout /></ProtectedRoute>}>
