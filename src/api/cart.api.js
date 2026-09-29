@@ -14,5 +14,9 @@ export const updateCart = (id, data) =>
 export const removeFromCart = (id) =>
     api.delete(`/cart/${id}`);
 
+// Moves the guest cart (kept in the browser) into the account cart after login. items: [{ product_id, quantity }]
+export const mergeCart = (items) =>
+    api.post('/cart/merge', { items });
+
 export const clearCart = () =>
     api.delete('/cart/clear'); // Optional: Function to clear entire cart if backend supports it

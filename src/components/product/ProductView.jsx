@@ -150,33 +150,6 @@ export default function ProductView({
                 )}
 
                 <div className="flex flex-col gap-6 pt-6 border-t border-slate-100">
-                    {/* Bundle Offers */}
-                    {product.bundle_offers && product.bundle_offers.length > 0 && (
-                        <div className="space-y-3">
-                            <h3 className="font-bold text-slate-900 text-lg">{t('product.bundle_offers')}</h3>
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                                {product.bundle_offers.map((offer) => (
-                                    <div
-                                        key={offer.id}
-                                        onClick={() => setQuantity(offer.quantity)}
-                                        className={`cursor-pointer border-2 rounded-xl p-3 transition-all hover:shadow-md text-center ${quantity === offer.quantity
-                                            ? 'border-secondary bg-blue-50'
-                                            : 'border-slate-100 hover:border-secondary/50'
-                                            }`}
-                                    >
-                                        <p className="font-bold text-slate-800 text-lg">{offer.quantity} {t('product.pieces')}</p>
-                                        <p className="font-bold text-secondary text-base">
-                                            <span dir="ltr">{t('common.currency')} {Number(offer.bundle_price).toLocaleString()}</span>
-                                        </p>
-                                        <p className="text-xs text-slate-500 mt-1">
-                                            ({Math.round(offer.bundle_price / offer.quantity).toLocaleString()} / {t('product.per_piece')})
-                                        </p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
                     <div className="flex items-center gap-6">
                         <span className="font-bold text-slate-900">{t('product.quantity_label')}:</span>
                         <div className="flex items-center border border-slate-300 rounded-xl h-12 overflow-hidden">

@@ -1,27 +1,27 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { getCart, addToCart as addToCartApi, removeFromCart as removeFromCartApi, updateCart as updateCartApi } from '@/api/cart.api';
+import { getCart, mergeCart, addToCart as addToCartApi, removeFromCart as removeFromCartApi, updateCart as updateCartApi } from '@/api/cart.api';
 import { applyCoupon as applyCouponApi } from '@/api/coupons.api';
 import { toast } from 'sonner';
 import { useAuthStore } from './useAuthStore';
 import i18n from '@/i18n';
 
-// Helper to calculate bundle price for a single item
+// Line total for a cart item. final_price is the selling price the API already resolved (discount_price when set,
+// otherwise price). Quantity never changes the unit price: package deals are offers, bought from the offer page.
+// (discount_price can't be used directly: the product API sends 0, not null, when there is no discount.)
 const calculateItemPrice = (item) => {
-    const product = item.product;
-    const quantity = item.quantity;
-
-    if (product.bundle_offers && product.bundle_offers.length > 0) {
-        // Find exact match bundle
-        const bundle = product.bundle_offers.find(b => b.quantity === quantity && b.is_active);
-        if (bundle) {
-            return parseFloat(bundle.bundle_price); // This is the TOTAL for the bundle
-        }
-    }
-    // Fallback to regular price * quantity
-    const pricePerItem = product.discount_price ?? product.final_price;
-    return pricePerItem * quantity;
+    const product = item.product || {};
+    return parseFloat(product.final_price ?? product.price ?? 0) * item.quantity;
 };
+
+// Same rule as the backend (PriceCalculator::DEFAULT_SHIPPING): 30 EGP when no product has its own shipping cost.
+const DEFAULT_SHIPPING = 30;
+
+// Items added while logged out get a "local-" id (see addToCart); account items have the server's numeric id.
+const isGuestItem = (item) => String(item.id).startsWith('local-');
+
+// One merge request at a time: auth changes can trigger fetchCart more than once right after login.
+let mergeInFlight = null;
 
 export const useCartStore = create(
     persist(
@@ -42,11 +42,22 @@ export const useCartStore = create(
 
                 set({ cartLoading: true });
                 try {
-                    const response = await getCart();
+                    // Right after login the cart still holds what the customer added as a guest:
+                    // merge it into the account cart instead of replacing it with the server cart.
+                    const guestItems = get().cartItems.filter(isGuestItem);
+                    let response;
+                    if (guestItems.length > 0) {
+                        mergeInFlight ??= mergeCart(guestItems.map(item => ({ product_id: item.product_id, quantity: item.quantity })))
+                            .finally(() => { mergeInFlight = null; });
+                        response = await mergeInFlight;
+                    } else {
+                        response = await getCart();
+                    }
                     const resData = response.data.data;
                     const items = resData?.items || (Array.isArray(resData) ? resData : []);
                     set({ cartItems: Array.isArray(items) ? items : [] });
                 } catch (error) {
+                    // A failed merge keeps the guest items, so the next fetchCart tries again.
                     console.error('Error fetching cart:', error);
                 } finally {
                     set({ cartLoading: false });
@@ -222,7 +233,7 @@ export const useCartStore = create(
                 const { cartItems } = get();
                 if (!cartItems || cartItems.length === 0) return 0;
 
-                return cartItems.reduce((sum, item) => {
+                const shipping = cartItems.reduce((sum, item) => {
                     // Prioritize product-level shipping_cost as per user feedback
                     const pCost = item.product?.shipping_cost;
                     const iCost = item.shipping_cost;
@@ -232,6 +243,8 @@ export const useCartStore = create(
 
                     return sum + (shippingCost * (item.quantity || 1));
                 }, 0);
+
+                return shipping > 0 ? shipping : DEFAULT_SHIPPING;
             },
 
             getItemPrice: (item) => calculateItemPrice(item)

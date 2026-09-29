@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { checkout } from '@/api/orders.api';
 import { useCartStore } from './useCartStore'; // To clear cart
+import { useAuthStore } from './useAuthStore';
 import { toast } from 'sonner';
 import { trackEvent } from '@/lib/pixel';
 
@@ -33,9 +34,8 @@ export const useCheckoutStore = create((set) => ({
             // Clear cart
             useCartStore.getState().clearCart();
 
-            // Navigate to success page or orders page
-            // navigate('/orders'); // Or pass navigate function
-            if (navigate) navigate('/orders');
+            // Orders page for signed-in customers; /orders requires login, so guests go home (the toast confirms the order).
+            if (navigate) navigate(useAuthStore.getState().isAuthenticated ? '/orders' : '/', { replace: true });
 
         } catch (error) {
             console.error("Checkout Error:", error);

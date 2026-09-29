@@ -22,9 +22,11 @@ const Products       = lazy(() => import('./pages/Products'));
 const NotFoundPage   = lazy(() => import('./pages/NotFoundPage'));
 const SearchResults  = lazy(() => import('./pages/SearchResults'));
 const Offers         = lazy(() => import('./pages/Offers'));
+const OfferDetails   = lazy(() => import('./pages/OfferDetails'));
 const Comparison     = lazy(() => import('./pages/Comparison'));
 const Cart           = lazy(() => import('./pages/Cart'));
 const Checkout       = lazy(() => import('./pages/Checkout'));
+const OfferCheckout  = lazy(() => import('./pages/OfferCheckout'));
 const ProfileLayout  = lazy(() => import('./components/profile/ProfileLayout'));
 const Profile        = lazy(() => import('./pages/Profile'));
 const Orders         = lazy(() => import('./pages/Orders'));
@@ -110,10 +112,13 @@ function App() {
         {/* Protected Routes */}
         <Route path='/products' element={<Products />} />
         <Route path='/search' element={<SearchResults />} />
-        <Route path='/offers' element={<ProtectedRoute><Offers /></ProtectedRoute>} />
+        <Route path='/offers' element={<Offers />} />
+        <Route path='/offers/:id' element={<OfferDetails />} />
         <Route path='/comparison' element={<ProtectedRoute><Comparison /></ProtectedRoute>} />
         <Route path='/cart' element={<Cart />} />
         <Route path='/checkout' element={<Checkout />} />
+        {/* Offers are bought directly, never through the cart */}
+        <Route path='/checkout/offer/:id' element={<OfferCheckout />} />
         <Route path='/wishlist' element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
 
         <Route element={<ProtectedRoute><ProfileLayout /></ProtectedRoute>}>
