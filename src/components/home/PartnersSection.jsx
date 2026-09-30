@@ -164,7 +164,9 @@ export default function PartnersSection() {
         {showTabs && (
           <div className="mb-6 flex items-center justify-center px-4">
             <div className="inline-flex rounded-2xl border border-slate-200 bg-white p-1.5 shadow-sm gap-1">
-              {tabs.map(({ key, label, icon: Icon }) => (
+              {tabs.map(({ key, label, icon }) => {
+                const Icon = icon;
+                return (
                 <button key={key} type="button" onClick={() => setActiveTab(key)}
                   className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition-all duration-200 ${
                     activeTab === key
@@ -174,7 +176,8 @@ export default function PartnersSection() {
                 >
                   <Icon className="h-4 w-4" /> {label}
                 </button>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}

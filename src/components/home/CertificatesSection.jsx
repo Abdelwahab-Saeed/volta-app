@@ -65,7 +65,6 @@ function CertificateCard({ certificate, onOpen }) {
 function MarqueeRow({ items, onOpen, reverse = false, speed = 12 }) {
   const [paused, setPaused] = useState(false);
 
-  // Repeat 4× so the track always overfills any screen — no gaps ever.
   // translateX(-50%) moves exactly 2 sets, landing back at the identical view → seamless.
   const repeated = [...items, ...items, ...items, ...items];
 

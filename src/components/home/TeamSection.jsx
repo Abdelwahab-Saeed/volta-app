@@ -195,7 +195,7 @@ export default function TeamSection() {
 
           {/* Cards row */}
           <div className="flex items-center justify-center gap-4 overflow-hidden" style={{ maxWidth: 820 }}>
-            {visible.map(({ member, pos }, i) => (
+            {visible.map(({ member, pos }) => (
               <div
                 key={`${member.id}-${pos}`}
                 className="flex-none"
