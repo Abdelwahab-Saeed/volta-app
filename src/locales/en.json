@@ -52,6 +52,8 @@
     },
     "home": {
         "features": {
+            "shipping_title": "Nationwide Shipping",
+            "shipping_desc": "Delivery to all governorates",
             "offers_title": "Offers & Discounts",
             "offers_desc": "On selected products",
             "returns_title": "Returns & Refunds",

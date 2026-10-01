@@ -53,6 +53,8 @@
     },
     "home": {
         "features": {
+            "shipping_title": "شحن لجميع المحافظات",
+            "shipping_desc": "توصيل لكل محافظات مصر",
             "offers_title": "عروض وخصومات",
             "offers_desc": "عروض على بعض المنتجات",
             "returns_title": "الاسترجاع والاسترداد",
