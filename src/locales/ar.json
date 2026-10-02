@@ -172,7 +172,9 @@
         "per_piece": "قطعة",
         "no_description": "لا يوجد وصف متوفر لهذا المنتج حالياً.",
         "watch_video": "شاهد الفيديو",
-        "features_title": "مميزات المنتج"
+        "features_title": "مميزات المنتج",
+        "show_more": "عرض المزيد",
+        "show_less": "عرض أقل"
     },
     "checkout": {
         "shipping_info": "معلومات الشحن",

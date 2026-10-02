@@ -13,6 +13,7 @@ import { useLocalize } from '@/lib/localize';
 import SafeImage from './common/SafeImage';
 import { trackEvent } from '@/lib/pixel';
 
+const NAME_PREVIEW_LENGTH = 30;
 
 export default function SmallProductCard({ product }) {
   const addToCart = useCartStore((state) => state.addToCart);
@@ -28,8 +29,15 @@ export default function SmallProductCard({ product }) {
   const [addingStr, setAddingStr] = useState(false);
   const navigate = useNavigate();
 
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const tr = useLocalize();
+  // Long names are cut so every card in a row keeps the same height; "show more" reveals the rest.
+  const [nameExpanded, setNameExpanded] = useState(false);
+  const name = tr(product, 'name') || '';
+  const isLongName = name.length > NAME_PREVIEW_LENGTH;
+  const shownName = isLongName && !nameExpanded ? `${name.slice(0, NAME_PREVIEW_LENGTH).trimEnd()}…` : name;
+  // final_price is the selling price the API resolved (discount_price is 0, not null, when there is no discount).
+  const hasDiscount = product.final_price < product.price;
   const handleWishlistToggle = async (e) => {
     e.preventDefault();
     if (!isAuthenticated) {
@@ -78,8 +86,8 @@ export default function SmallProductCard({ product }) {
   };
 
   return (
-    <Card className="overflow-hidden border">
-      <CardContent className="p-4">
+    <Card className="h-full overflow-hidden border">
+      <CardContent className="flex flex-1 flex-col p-4">
         <div className="relative mb-4 overflow-hidden border-b">
           <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
             <button
@@ -109,20 +117,31 @@ export default function SmallProductCard({ product }) {
             />
           </Link>
         </div>
-        <Link to={`/product/${product.id}`}>
-          <h3 className="text-sm font-medium mb-2 line-clamp-2 text-right hover:text-secondary transition-colors">
-            {tr(product, 'name')}
-          </h3>
-        </Link>
+        {/* The carousel forces dir="ltr", so the name takes the page direction back. min-h keeps two lines reserved. */}
+        <h3 dir={i18n.dir()} className="text-sm font-medium mb-2 min-h-10 text-start">
+          <Link to={`/product/${product.id}`} className="hover:text-secondary transition-colors">
+            {shownName}
+          </Link>
+          {isLongName && (
+            <button
+              type="button"
+              onClick={() => setNameExpanded((expanded) => !expanded)}
+              aria-expanded={nameExpanded}
+              className="ms-1 text-xs font-semibold text-secondary hover:underline"
+            >
+              {t(nameExpanded ? 'product.show_less' : 'product.show_more')}
+            </button>
+          )}
+        </h3>
         <div className="flex items-center justify-between mb-3">
           <p className="text-lg font-bold text-red-600">
-            {(product.discount_price ?? product.final_price)?.toLocaleString()} EGP
+            {product.final_price?.toLocaleString()} EGP
           </p>
-          {(product.discount_price || product.discount > 0) ? (
+          {hasDiscount ? (
             <p className="text-md text-slate-400 line-through mr-2">EGP {product.price?.toLocaleString()}</p>
           ) : null}
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="mt-auto flex flex-col gap-2">
           <Button
             onClick={handleAddToCart}
             disabled={addingStr || isAdded}
