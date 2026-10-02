@@ -171,7 +171,9 @@
         "per_piece": "per piece",
         "no_description": "No description available for this product.",
         "watch_video": "Watch Video",
-        "features_title": "Product Features"
+        "features_title": "Product Features",
+        "show_more": "Show more",
+        "show_less": "Show less"
     },
     "checkout": {
         "shipping_info": "Shipping Information",

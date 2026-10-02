@@ -31,6 +31,8 @@ export default function ProductView({
     const { t } = useTranslation();
     const tr = useLocalize();
     const [selectedImage, setSelectedImage] = React.useState(product.image);
+    // final_price is the selling price the API resolved (discount_price is 0, not null, when there is no discount).
+    const hasDiscount = product.final_price < product.price;
 
     React.useEffect(() => {
         setSelectedImage(product.image);
@@ -54,12 +56,9 @@ export default function ProductView({
                         alt={tr(product, 'name')}
                         className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110"
                     />
-                    {(product.discount_price || product.discount > 0) && (
+                    {hasDiscount && (
                         <div className="absolute top-6 right-6 bg-red-500 text-white px-4 py-1.5 rounded-full font-bold shadow-lg text-lg">
-                            {product.discount_price
-                                ? `-${Math.round((1 - (product.discount_price / product.price)) * 100)}%`
-                                : `-${product.discount}%`
-                            }
+                            {`-${Math.round((1 - (product.final_price / product.price)) * 100)}%`}
                         </div>
                     )}
                     {product.preview_url && (
@@ -110,9 +109,9 @@ export default function ProductView({
 
                     <div className="flex items-center gap-4">
                         <span className="text-4xl font-black text-secondary">
-                            <span dir="ltr">{t('common.currency')} {(product.discount_price ?? product.final_price)?.toLocaleString()}</span>
+                            <span dir="ltr">{t('common.currency')} {product.final_price?.toLocaleString()}</span>
                         </span>
-                        {(product.discount_price || product.discount > 0) && (
+                        {hasDiscount && (
                             <span className="text-2xl text-slate-300 line-through">
                                 <span dir="ltr">{t('common.currency')} {product.price?.toLocaleString()}</span>
                             </span>
