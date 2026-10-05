@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
-import { GOVERNORATES } from "./useDeliveryForm";
+import { GOVERNORATES } from "@/lib/governorates";
 
 // Delivery fields shared by the cart checkout and the offer checkout. Form setup and pre-fill: useDeliveryForm.js.
 

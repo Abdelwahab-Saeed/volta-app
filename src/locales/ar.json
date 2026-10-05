@@ -131,6 +131,7 @@
         "applying": "جاري...",
         "enter_code": "ادخل الكود",
         "coupon_applied": "تم تطبيق الكوبون {{code}} بنجاح",
+        "discount": "الخصم",
         "product": "المنتج",
         "price": "السعر",
         "quantity": "الكمية",
