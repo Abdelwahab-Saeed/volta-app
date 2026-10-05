@@ -2,9 +2,10 @@ import { useTranslation } from 'react-i18next';
 import { MapPinHouse, Pencil, Trash2 } from 'lucide-react';
 import React from 'react';
 import { Card } from '../ui/card';
+import { governorateLabel } from '@/lib/governorates';
 
 export default function AddressCard({ address, onEdit, onDelete }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   return (
     <Card className="p-6 relative [box-shadow:0px_10px_27px_0px_#0000001A]">
       {/* Truck Icon */}
@@ -24,7 +25,7 @@ export default function AddressCard({ address, onEdit, onDelete }) {
 
         {/* Address */}
         <p className="text-sm text-gray-600">
-          {address.state} - {address.city}
+          {governorateLabel(address.state, i18n.language)} - {address.city}
         </p>
         <p className="text-sm text-gray-600">
           {address.address_line_1}

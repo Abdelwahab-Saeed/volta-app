@@ -11,9 +11,10 @@ import {
 } from '../ui/select';
 import { useAddressStore } from '@/stores/useAddressStore';
 import { toast } from 'sonner';
+import { GOVERNORATES, getMatchedGovernorate } from '@/lib/governorates';
 
 export default function AddressForm({ open, onClose, onSuccess, initialData }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { addNewAddress, updateUserAddress } = useAddressStore();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -30,7 +31,7 @@ export default function AddressForm({ open, onClose, onSuccess, initialData }) {
         recipient_name: initialData.recipient_name || '',
         phone_number: initialData.phone_number || '',
         city: initialData.city || '',
-        state: initialData.state || '',
+        state: getMatchedGovernorate(initialData.state),
         address_line_1: initialData.address_line_1 || '',
       });
     } else {
@@ -139,10 +140,11 @@ export default function AddressForm({ open, onClose, onSuccess, initialData }) {
                 <SelectValue placeholder={t('address.select_state')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="القاهرة">{t('checkout.cairo', { defaultValue: 'Cairo' })}</SelectItem>
-                <SelectItem value="الجيزة">{t('checkout.giza', { defaultValue: 'Giza' })}</SelectItem>
-                <SelectItem value="الفيوم">{t('checkout.fayoum', { defaultValue: 'Fayoum' })}</SelectItem>
-                <SelectItem value="بني سويف">{t('checkout.beni_suef', { defaultValue: 'Beni Suef' })}</SelectItem>
+                {GOVERNORATES.map((gov) => (
+                  <SelectItem key={gov.en} value={gov.en}>
+                    {i18n.language === 'ar' ? gov.ar : gov.en}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

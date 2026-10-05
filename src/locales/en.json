@@ -130,6 +130,7 @@
         "applying": "Applying...",
         "enter_code": "Enter code",
         "coupon_applied": "Coupon {{code}} applied",
+        "discount": "Discount",
         "product": "Product",
         "price": "Price",
         "quantity": "Quantity",
