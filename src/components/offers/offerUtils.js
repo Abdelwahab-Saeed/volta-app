@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import i18n from '@/i18n';
 
 // Offer texts (type label, summary, unavailable reason) and prices come from the API already localized,
 // and every offer uses the brand colours (navy primary, blue secondary), whatever its type.
@@ -6,9 +7,9 @@ import { useEffect, useState } from 'react';
 // Type badge over an image or the navy placeholder.
 export const OFFER_BADGE = 'bg-white/95 text-primary border border-white shadow-sm';
 
-// "EGP 1,250" / "EGP 249.5"
-export const formatPrice = (value, currency = 'EGP') =>
-    `${currency} ${Number(value || 0).toLocaleString('en-US', { maximumFractionDigits: 2 })}`;
+// "1,250 EGP" / "249.5 ج.م" (amount first, currency in the current language)
+export const formatPrice = (value, currency = i18n.t('common.currency')) =>
+    `${Number(value || 0).toLocaleString('en-US', { maximumFractionDigits: 2 })} ${currency}`;
 
 export const imageUrl = (path) => (path ? `${import.meta.env.VITE_IMAGES_URL}/${path}` : null);
 

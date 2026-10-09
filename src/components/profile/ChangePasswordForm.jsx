@@ -91,7 +91,7 @@ export default function ChangePasswordForm() {
               },
               maxLength: {
                 value: 255,
-                message: 'Password too long'
+                message: t('profile.password_too_long')
               }
             })}
             className={`w-full p-3 border rounded px-12 ${errors.password ? 'border-red-500' : 'border-gray-300'

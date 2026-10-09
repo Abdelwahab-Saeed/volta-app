@@ -44,7 +44,7 @@ const Vision = () => {
                         <div className="flex-1 bg-white p-2 rounded-2xl shadow-2xl skew-y-2">
                             <SafeImage
                                 src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop"
-                                alt="Vision"
+                                alt={t('vision_page.image_alt')}
                                 className="rounded-xl w-full h-[300px] object-cover -skew-y-2"
                             />
                         </div>

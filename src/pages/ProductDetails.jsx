@@ -83,7 +83,7 @@ export default function ProductDetails() {
     if (error || !product) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-                <p className="text-red-500 text-lg font-medium">{error || t('product.not_found')}</p>
+                <p className="text-red-500 text-lg font-medium">{t('product.not_found')}</p>
                 <Link to="/products" className="text-secondary hover:underline">
                     {t('product.back_to_products')}
                 </Link>

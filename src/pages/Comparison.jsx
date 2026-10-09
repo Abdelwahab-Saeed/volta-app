@@ -35,9 +35,9 @@ export default function Comparison() {
         setLoadingIds(prev => [...prev, product.id]);
         try {
             await addToCart(product);
-            toast.success(t('messages.cart_add_success', { defaultValue: 'Product added to cart' }));
+            toast.success(t('messages.added_to_cart'));
         } catch (error) {
-            toast.error(t('messages.cart_add_error', { defaultValue: 'Failed to add product to cart' }));
+            toast.error(t('messages.failed_to_add'));
         } finally {
             setLoadingIds(prev => prev.filter(id => id !== product.id));
         }
@@ -103,7 +103,7 @@ export default function Comparison() {
                         <TableCell className={`${borderStyle} bg-slate-50 font-bold`}>{t('comparison.price_label')}</TableCell>
                         {comparisonItems.map((product) => (
                             <TableCell key={product.id} className={`${borderStyle} font-bold text-secondary`}>
-                                <span dir="ltr">{t('common.currency')} {product.final_price?.toLocaleString()}</span>
+                                <span>{product.final_price?.toLocaleString()} {t('common.currency')}</span>
                             </TableCell>
                         ))}
                     </TableRow>

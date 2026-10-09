@@ -201,7 +201,7 @@ export const useCartStore = create(
                         coupon: { ...couponData, code },
                         discountAmount: Math.min(Number(discount_amount || 0), subtotal)
                     });
-                    toast.success(message || i18n.t('messages.coupon_applied', { code }));
+                    toast.success(message || i18n.t('cart.coupon_applied', { code }));
                     return true;
                 } catch (error) {
                     console.error('Apply coupon error:', error);

@@ -48,7 +48,7 @@ export default function Register() {
         .string()
         .trim()
         .min(3, t('checkout.full_name_required'))
-        .max(150, 'Name is too long'),
+        .max(150, t('auth.name_too_long')),
 
       email: z
         .email(t('checkout.email_invalid'))
@@ -57,17 +57,15 @@ export default function Register() {
       phone_number: z
         .string()
         .trim()
-        .optional()
-        .refine(
-          (val) => !val || /^01[0-2,5][0-9]{8}$/.test(val),
-          { message: t('checkout.phone_invalid') }
-        ),
+        .min(1, t('checkout.phone_required'))
+        .regex(/^01[0125][0-9]{8}$/, t('checkout.phone_invalid')),
 
       password: z
         .string()
+        .min(8, t('profile.password_too_short'))
         .regex(
           /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#]).+$/,
-          t('profile.password_too_short') // Or a more specific message if needed
+          t('auth.password_rules')
         ),
 
       password_confirmation: z.string(),
@@ -75,7 +73,7 @@ export default function Register() {
       terms: z
         .boolean()
         .refine((val) => val === true, {
-          message: t('auth.terms_required', { defaultValue: 'You must agree to the terms' }),
+          message: t('auth.terms_required'),
         }),
     })
     .refine((data) => data.password === data.password_confirmation, {
@@ -99,7 +97,7 @@ export default function Register() {
     setIsSubmitting(true);
     try {
       const response = await registerUser(values);
-      toast.success(response.data?.message || t('messages.register_success', { defaultValue: 'Account created successfully' }));
+      toast.success(response.data?.message || t('messages.register_success'));
       navigate('/');
     } catch (error) {
       console.error("Registration error", error);
@@ -172,11 +170,14 @@ export default function Register() {
 
             <Field>
               <FieldLabel htmlFor="phoneNumber" className="text-primary font-medium">
-                {t('auth.phone')} ({t('common.optional', { defaultValue: 'Optional' })})
+                {t('auth.phone')}
               </FieldLabel>
               <Input
                 id="phoneNumber"
-                placeholder={t('auth.phone')}
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel"
+                placeholder={t('common.phone_placeholder')}
                 className="mt-1 p-6"
                 {...form.register("phone_number")}
               />
@@ -251,7 +252,7 @@ export default function Register() {
                 />
 
                 <FieldLabel htmlFor="terms" className="text-primary font-medium cursor-pointer">
-                  {t('auth.terms_and_privacy', { defaultValue: 'I agree to the terms and privacy policy' })}
+                  {t('auth.terms_and_privacy')}
                 </FieldLabel>
               </div>
               <FieldError className="text-red-500 text-sm mt-2">

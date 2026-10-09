@@ -4,6 +4,7 @@ import { useCartStore } from './useCartStore'; // To clear cart
 import { useAuthStore } from './useAuthStore';
 import { toast } from 'sonner';
 import { trackEvent } from '@/lib/pixel';
+import i18n from '@/i18n';
 
 export const useCheckoutStore = create((set) => ({
     isLoading: false,
@@ -19,7 +20,7 @@ export const useCheckoutStore = create((set) => ({
             const response = await checkout(data);
             set({ success: true, orderData: response.data.data?.order || response.data.data, isLoading: false });
 
-            toast.success(response.data.message || 'تم إنشاء الطلب بنجاح');
+            toast.success(response.data.message || i18n.t('checkout.order_success'));
 
             // Meta Pixel: Track Purchase
             const cartStore = useCartStore.getState();
@@ -40,7 +41,7 @@ export const useCheckoutStore = create((set) => ({
         } catch (error) {
             console.error("Checkout Error:", error);
             const errorData = error.response?.data;
-            let errorMessage = 'فشل إنشاء الطلب';
+            let errorMessage = i18n.t('checkout.order_failed');
 
             // Handle specific error structures
             if (errorData) {
@@ -50,7 +51,7 @@ export const useCheckoutStore = create((set) => ({
 
                 // Stock errors
                 if (errorData.product && errorData.available !== undefined) {
-                    errorMessage = `مخزون غير كاف للمنتج ${errorData.product}. المتاح: ${errorData.available}`;
+                    errorMessage = i18n.t('checkout.insufficient_stock', { product: errorData.product, available: errorData.available });
                 }
             }
 

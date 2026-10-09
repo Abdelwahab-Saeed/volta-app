@@ -277,7 +277,7 @@ export default function Header() {
             )}
 
             {/* <Link to="/blog" className="cursor-pointer hover:text-secondary-on-dark whitespace-nowrap">
-              {t('header.blog') || 'Blog'}
+              {t('header.blog')}
             </Link> */}
           </ul>
 
@@ -357,7 +357,7 @@ export default function Header() {
               </li>
               <li className="text-gray-700 font-medium hover:text-secondary cursor-pointer">
                 <Link to="/blog" onClick={() => setIsMenuOpen(false)}>
-                  {t('header.blog') || 'Blog'}
+                  {t('header.blog')}
                 </Link>
               </li>
             </ul>

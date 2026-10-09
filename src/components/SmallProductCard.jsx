@@ -135,10 +135,10 @@ export default function SmallProductCard({ product }) {
         </h3>
         <div className="flex items-center justify-between mb-3">
           <p className="text-lg font-bold text-red-600">
-            {product.final_price?.toLocaleString()} EGP
+            {product.final_price?.toLocaleString()} {t('common.currency')}
           </p>
           {hasDiscount ? (
-            <p className="text-md text-slate-400 line-through mr-2">EGP {product.price?.toLocaleString()}</p>
+            <p className="text-md text-slate-400 line-through mr-2">{product.price?.toLocaleString()} {t('common.currency')}</p>
           ) : null}
         </div>
         <div className="mt-auto flex flex-col gap-2">

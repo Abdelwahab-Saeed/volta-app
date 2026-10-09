@@ -41,7 +41,7 @@ export default function DeliveryFields({ register, errors, setValue }) {
                     </Label>
                     <Input
                         id="phone_number"
-                        placeholder="01xxxxxxxxx"
+                        placeholder={t('common.phone_placeholder')}
                         className="text-start"
                         {...register("phone_number", {
                             required: t('checkout.phone_required'),
@@ -63,7 +63,7 @@ export default function DeliveryFields({ register, errors, setValue }) {
                     </Label>
                     <Input
                         id="phone_number_backup"
-                        placeholder="01xxxxxxxxx"
+                        placeholder={t('common.phone_placeholder')}
                         className="text-start"
                         {...register("phone_number_backup", {
                             pattern: {

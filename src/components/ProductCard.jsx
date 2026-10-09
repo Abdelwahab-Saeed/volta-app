@@ -145,9 +145,9 @@ export default function ProductCard({
 
         <div className="mt-3">
           <div className='my-6 flex items-center'>
-            <p className="text-lg font-semibold text-red-700">EGP {product.final_price?.toLocaleString()}</p>
+            <p className="text-lg font-semibold text-red-700">{product.final_price?.toLocaleString()} {t('common.currency')}</p>
             {hasDiscount ? (
-              <p className="text-md text-slate-400 line-through mr-2">EGP {product.price?.toLocaleString()}</p>
+              <p className="text-md text-slate-400 line-through mr-2">{product.price?.toLocaleString()} {t('common.currency')}</p>
             ) : null}
           </div>
           <div>

@@ -4,7 +4,10 @@
         "error": "Something went wrong",
         "confirm": "Confirm",
         "cancel": "Cancel",
-        "currency": "EGP"
+        "currency": "EGP",
+        "close": "Close",
+        "email_placeholder": "example@mail.com",
+        "phone_placeholder": "01xxxxxxxxx"
     },
     "header": {
         "home": "Home",
@@ -48,7 +51,9 @@
         "privacy_policy": "Privacy Policy",
         "have_questions": "Have questions? Contact us",
         "location": "Beni Suef - Egypt",
-        "blog": "Blog"
+        "blog": "Blog",
+        "developed_by": "Developed and maintained by",
+        "rights_reserved": "All rights reserved - Volta"
     },
     "home": {
         "features": {
@@ -68,7 +73,8 @@
         "hero": {
             "label": "Offers and announcements",
             "slide": "Slide {{current}} of {{total}}",
-            "go_to": "Go to slide {{number}}"
+            "go_to": "Go to slide {{number}}",
+            "banner_alt": "Banner {{number}}"
         },
         "categories": {
             "eyebrow": "Shop by category",
@@ -98,15 +104,13 @@
         },
         "partners": {
             "eyebrow": "Trusted by many",
-            "title": "Our partners & clients",
-            "subtitle": "We work with trusted brands, and clients across many sectors rely on us",
-            "partners_label": "Our partners",
-            "clients_label": "Some of our clients"
+            "title": "Success Partners",
+            "subtitle": "Brands and clients across many sectors who trust us"
         },
         "team": {
             "eyebrow": "The people behind Volta",
             "title": "Our team",
-            "subtitle": "Specialists who help you from choosing the right device through installation and maintenance",
+            "subtitle": "A team that brings together expertise, innovation and passion, working with one vision to deliver reliable electrical solutions that exceed our clients' expectations.",
             "linkedin": "{{name}}'s LinkedIn profile"
         },
         "contact": {
@@ -154,7 +158,15 @@
         "compare_added": "Added to comparison",
         "compare_removed": "Removed from comparison",
         "compare_full": "Comparison list is full (Max 2)",
-        "coupon_removed": "Coupon removed"
+        "coupon_removed": "Coupon removed",
+        "register_success": "Account created successfully",
+        "login_success": "Logged in successfully",
+        "recovery_sent": "Reset link sent successfully",
+        "password_reset_success": "Password reset successfully",
+        "failed_to_apply_coupon": "Couldn't apply the coupon",
+        "compare_failed": "Couldn't add to comparison",
+        "compare_remove_failed": "Couldn't remove from comparison",
+        "failed_to_update_wishlist": "Couldn't update your wishlist"
     },
     "product": {
         "add_to_cart": "Add to Cart",
@@ -174,7 +186,8 @@
         "watch_video": "Watch Video",
         "features_title": "Product Features",
         "show_more": "Show more",
-        "show_less": "Show less"
+        "show_less": "Show less",
+        "image_alt": "{{name}} - image {{index}}"
     },
     "checkout": {
         "shipping_info": "Shipping Information",
@@ -208,7 +221,12 @@
         "cairo": "Cairo",
         "giza": "Giza",
         "fayoum": "Fayoum",
-        "beni_suef": "Beni Suef"
+        "beni_suef": "Beni Suef",
+        "email_required": "Email is required",
+        "email_invalid": "Invalid email address",
+        "order_success": "Order placed successfully",
+        "order_failed": "Couldn't place the order",
+        "insufficient_stock": "Not enough stock for {{product}}. Available: {{available}}"
     },
     "profile": {
         "title": "Profile",
@@ -231,7 +249,9 @@
         "new_password_required": "New password is required",
         "confirm_password_required": "Confirm password is required",
         "password_mismatch": "Passwords do not match",
-        "password_too_short": "Password must be at least 8 characters"
+        "password_too_short": "Password must be at least 8 characters",
+        "password_too_long": "Password is too long",
+        "image_preview_alt": "Profile picture preview"
     },
     "address": {
         "title": "Addresses",
@@ -305,7 +325,12 @@
         "at_least_8_chars": "At least 8 characters",
         "verifying_identity": "Verifying identity...",
         "logout_confirm_title": "Do you want to logout?",
-        "logout_confirm_desc": "You will need to login again to access your account."
+        "logout_confirm_desc": "You will need to login again to access your account.",
+        "name_too_long": "Name is too long",
+        "password_rules": "Password must include upper and lower case letters, a number and a symbol (@$!%*?&#)",
+        "terms_required": "You must agree to the terms and privacy policy",
+        "terms_and_privacy": "I agree to the terms and privacy policy",
+        "reset_password_failed": "Failed to reset password"
     },
     "products_page": {
         "all_products": "All Products",
@@ -440,12 +465,14 @@
         "mission": {
             "title": "Our Mission",
             "text": "To provide effective and safe electrical solutions that simplify our customers’ lives, while delivering outstanding customer service and continuous technical support."
-        }
+        },
+        "image_alt": "Our vision"
     },
     "blog": {
         "no_posts": "No posts available",
         "read_more": "Read More",
-        "back_to_blog": "Back to Blog"
+        "back_to_blog": "Back to Blog",
+        "post_not_found": "Post not found"
     },
     "return_policy": {
         "title": "Return & Refund Policy",
@@ -600,7 +627,12 @@
         "add_to_compare": "Add to comparison",
         "remove_from_compare": "Remove from comparison",
         "remove_product": "Remove product",
-        "more_categories": "More categories"
+        "more_categories": "More categories",
+        "toggle_contact_menu": "Open or close contact options",
+        "go_to_member": "Go to team member {{number}}",
+        "carousel": "carousel",
+        "slide": "slide",
+        "logo_alt": "Volta logo"
     },
     "seo": {
         "home_title": "Volta | Voltage Stabilizers & Electrical Solutions in Egypt",

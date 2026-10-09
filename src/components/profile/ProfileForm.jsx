@@ -82,7 +82,7 @@ export default function ProfileForm() {
             {imagePreview ? (
               <img
                 src={imagePreview}
-                alt="Preview"
+                alt={t('profile.image_preview_alt')}
                 className="w-full h-full object-cover"
               />
             ) : user?.image ? (
@@ -147,7 +147,7 @@ export default function ProfileForm() {
           </label>
           <input
             type="email"
-            placeholder="example@mail.com"
+            placeholder={t('common.email_placeholder')}
             {...register('email', {
               required: false,
               pattern: {

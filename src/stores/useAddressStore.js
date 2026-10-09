@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { getAddresses, addAddress, updateAddress, deleteAddress } from '@/api/addresses.api';
 import { toast } from 'sonner';
+import i18n from '@/i18n';
 
 export const useAddressStore = create((set, get) => ({
     addresses: [],
@@ -64,10 +65,10 @@ export const useAddressStore = create((set, get) => ({
             set((state) => ({
                 addresses: state.addresses.filter((addr) => addr.id !== id)
             }));
-            toast.success(response.data.message || 'تم حذف العنوان بنجاح');
+            toast.success(response.data.message || i18n.t('address.success_delete'));
         } catch (error) {
             console.error("Error deleting address:", error);
-            toast.error(error.response?.data?.message || 'فشل حذف العنوان');
+            toast.error(error.response?.data?.message || i18n.t('address.failed_delete'));
             throw error;
         }
     }

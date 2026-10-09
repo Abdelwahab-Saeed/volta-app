@@ -91,7 +91,7 @@ export default function ProductView({
                             >
                                 <SafeImage
                                     src={`${import.meta.env.VITE_IMAGES_URL}/${img.image}`}
-                                    alt={`${tr(product, 'name')} shadow-${idx}`}
+                                    alt={t('product.image_alt', { name: tr(product, 'name'), index: idx + 1 })}
                                     className="w-full h-full object-contain"
                                 />
                             </button>
@@ -109,11 +109,11 @@ export default function ProductView({
 
                     <div className="flex items-center gap-4">
                         <span className="text-4xl font-black text-secondary">
-                            <span dir="ltr">{t('common.currency')} {product.final_price?.toLocaleString()}</span>
+                            <span>{product.final_price?.toLocaleString()} {t('common.currency')}</span>
                         </span>
                         {hasDiscount && (
                             <span className="text-2xl text-slate-300 line-through">
-                                <span dir="ltr">{t('common.currency')} {product.price?.toLocaleString()}</span>
+                                <span>{product.price?.toLocaleString()} {t('common.currency')}</span>
                             </span>
                         )}
                     </div>
@@ -121,7 +121,7 @@ export default function ProductView({
                     {product.shipping_cost > 0 && (
                         <div className="flex items-center gap-2 text-slate-500 font-medium mt-2">
                             <span className="bg-slate-100 px-2 py-1 rounded text-xs">
-                                {t('checkout.shipping_fee')}: EGP {product.shipping_cost}
+                                {t('checkout.shipping_fee')}: {product.shipping_cost} {t('common.currency')}
                             </span>
                         </div>
                     )}

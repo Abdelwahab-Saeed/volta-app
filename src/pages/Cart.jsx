@@ -120,14 +120,14 @@ export default function Cart() {
                                                     <span className="font-medium text-base md:text-lg text-primary">{tr(item.product, 'name')}</span>
                                                     {(item.shipping_cost || item.product?.shipping_cost) > 0 && (
                                                         <span className="text-xs text-slate-500">
-                                                            {t('checkout.shipping_fee')}: EGP {item.shipping_cost || item.product?.shipping_cost}
+                                                            {t('checkout.shipping_fee')}: {item.shipping_cost || item.product?.shipping_cost} {t('common.currency')}
                                                         </span>
                                                     )}
                                                 </div>
                                             </div>
                                         </TableCell>
                                         <TableCell className="text-start text-primary text-base md:text-lg">
-                                            EGP{(useCartStore.getState().getItemPrice(item) / item.quantity).toFixed(2)}
+                                            {(useCartStore.getState().getItemPrice(item) / item.quantity).toFixed(2)} {t('common.currency')}
                                         </TableCell>
                                         <TableCell className="text-start">
                                             <div className="inline-flex items-center border border-gray-300 rounded-md">
@@ -151,7 +151,7 @@ export default function Cart() {
                                             </div>
                                         </TableCell>
                                         <TableCell className="text-start font-semibold text-primary text-base md:text-lg">
-                                            EGP{useCartStore.getState().getItemPrice(item).toFixed(2)}
+                                            {useCartStore.getState().getItemPrice(item).toFixed(2)} {t('common.currency')}
                                         </TableCell>
                                     </TableRow>
                                 ))}
@@ -175,24 +175,24 @@ export default function Cart() {
 
                         <div className="flex justify-between items-center mb-3">
                             <span className="text-lg text-gray-600">{t('cart.subtotal')}</span>
-                            <span className="text-lg font-bold text-primary">EGP{subtotal.toFixed(2)}</span>
+                            <span className="text-lg font-bold text-primary">{subtotal.toFixed(2)} {t('common.currency')}</span>
                         </div>
 
                         {discountAmount > 0 && (
                             <div className="flex justify-between items-center mb-3 text-green-600">
                                 <span className="text-lg">{t('cart.discount')}</span>
-                                <span className="text-lg font-bold">-EGP{discountAmount.toFixed(2)}</span>
+                                <span className="text-lg font-bold"><span dir="ltr">-{discountAmount.toFixed(2)}</span> {t('common.currency')}</span>
                             </div>
                         )}
 
                         <div className="flex justify-between items-center mb-3">
                             <span className="text-lg text-gray-600 font-semibold">{t('checkout.shipping_fee')}</span>
-                            <span className="text-lg font-bold text-primary">EGP{shippingTotal.toFixed(2)}</span>
+                            <span className="text-lg font-bold text-primary">{shippingTotal.toFixed(2)} {t('common.currency')}</span>
                         </div>
 
                         <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-300 pt-2">
                             <span className="text-xl font-bold text-primary">{t('cart.total')}</span>
-                            <span className="text-xl font-bold text-primary">EGP{total.toFixed(2)}</span>
+                            <span className="text-xl font-bold text-primary">{total.toFixed(2)} {t('common.currency')}</span>
                         </div>
 
                         <Link to="/checkout" className={`block w-full ${cartItems.length === 0 ? 'pointer-events-none' : ''}`}>

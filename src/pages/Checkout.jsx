@@ -194,7 +194,7 @@ export default function Checkout() {
                                         <div className="flex-1 text-start">
                                             <p className="font-medium text-gray-800 line-clamp-2">{tr(item.product, 'name')}</p>
                                             <p className="text-sm text-gray-600 mt-1">
-                                                {item.quantity} x EGP{(useCartStore.getState().getItemPrice(item) / item.quantity).toFixed(2)}
+                                                {item.quantity} x {(useCartStore.getState().getItemPrice(item) / item.quantity).toFixed(2)} {t('common.currency')}
                                             </p>
                                         </div>
                                     </div>
@@ -246,21 +246,21 @@ export default function Checkout() {
                             <div className="space-y-3 pt-4 border-t">
                                 <div className="flex justify-between text-gray-600">
                                     <span className="text-start">{t('cart.subtotal')}</span>
-                                    <span>EGP{subtotal.toFixed(2)}</span>
+                                    <span>{subtotal.toFixed(2)} {t('common.currency')}</span>
                                 </div>
                                 {discountAmount > 0 && (
                                     <div className="flex justify-between text-green-600">
                                         <span className="text-start">{t('cart.discount')}</span>
-                                        <span>-EGP{discountAmount.toFixed(2)}</span>
+                                        <span><span dir="ltr">-{discountAmount.toFixed(2)}</span> {t('common.currency')}</span>
                                     </div>
                                 )}
                                 <div className="flex justify-between text-gray-600">
                                     <span className="text-start">{t('checkout.shipping_fee')}</span>
-                                    <span>EGP{shippingFee.toFixed(2)}</span>
+                                    <span>{shippingFee.toFixed(2)} {t('common.currency')}</span>
                                 </div>
                                 <div className="flex justify-between text-lg font-bold text-gray-800 pt-3 border-t">
                                     <span className="text-start">{t('cart.total')}</span>
-                                    <span>EGP{finalTotal.toFixed(2)}</span>
+                                    <span>{finalTotal.toFixed(2)} {t('common.currency')}</span>
                                 </div>
                             </div>
                         </div>

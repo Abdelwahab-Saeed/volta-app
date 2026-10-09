@@ -84,7 +84,7 @@ export default function Login() {
       } else {
         localStorage.removeItem('remembered_identifier');
       }
-      toast.success(response.data?.message || t('messages.login_success', { defaultValue: 'Logged in successfully' }));
+      toast.success(response.data?.message || t('messages.login_success'));
       navigate('/');
     } catch (error) {
       console.error("Login error", error);
