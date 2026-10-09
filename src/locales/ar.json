@@ -4,7 +4,10 @@
         "error": "حدث خطأ ما",
         "confirm": "تأكيد",
         "cancel": "إلغاء",
-        "currency": "EGP"
+        "currency": "ج.م",
+        "close": "إغلاق",
+        "email_placeholder": "example@mail.com",
+        "phone_placeholder": "01xxxxxxxxx"
     },
     "header": {
         "home": "الرئيسية",
@@ -49,7 +52,9 @@
         "have_questions": "هل لديك أسئلة؟ اتصل بنا",
         "location": "بني سويف - مصر",
         "about_us_title": "من نحن",
-        "blog": "المدونة"
+        "blog": "المدونة",
+        "developed_by": "تطوير وصيانة",
+        "rights_reserved": "جميع الحقوق محفوظة - فولتا"
     },
     "home": {
         "features": {
@@ -69,7 +74,8 @@
         "hero": {
             "label": "العروض والإعلانات",
             "slide": "شريحة {{current}} من {{total}}",
-            "go_to": "الانتقال إلى الشريحة {{number}}"
+            "go_to": "الانتقال إلى الشريحة {{number}}",
+            "banner_alt": "بانر {{number}}"
         },
         "categories": {
             "eyebrow": "تسوق حسب القسم",
@@ -99,15 +105,13 @@
         },
         "partners": {
             "eyebrow": "ثقة نعتز بها",
-            "title": "شركاؤنا وعملاؤنا",
-            "subtitle": "نعمل مع علامات موثوقة، ويثق بنا عملاء من مختلف القطاعات",
-            "partners_label": "شركاء النجاح",
-            "clients_label": "من عملائنا"
+            "title": "شركاء النجاح",
+            "subtitle": "نفخر بثقة شركائنا وعملائنا من مختلف القطاعات"
         },
         "team": {
             "eyebrow": "الناس وراء فولتا",
             "title": "فريق العمل",
-            "subtitle": "فريق من المتخصصين يساعدك من اختيار الجهاز المناسب وحتى التركيب والصيانة",
+            "subtitle": "فريق يجمع بين الخبرة والابتكار والشغف، يعمل برؤية واحدة لتقديم حلول كهربائية موثوقة ترتقي بتوقعات عملائنا.",
             "linkedin": "حساب {{name}} على لينكدإن"
         },
         "contact": {
@@ -155,7 +159,15 @@
         "compare_added": "تمت إضافة المنتج للمقارنة",
         "compare_removed": "تم حذف المنتج من المقارنة",
         "compare_full": "قائمة المقارنة ممتلئة. الحد الأقصى هو منتجين فقط",
-        "coupon_removed": "تم حذف الكوبون"
+        "coupon_removed": "تم حذف الكوبون",
+        "register_success": "تم إنشاء الحساب بنجاح",
+        "login_success": "تم تسجيل الدخول بنجاح",
+        "recovery_sent": "تم إرسال رابط إعادة التعيين بنجاح",
+        "password_reset_success": "تمت إعادة تعيين كلمة المرور بنجاح",
+        "failed_to_apply_coupon": "تعذر تطبيق الكوبون",
+        "compare_failed": "تعذرت الإضافة إلى المقارنة",
+        "compare_remove_failed": "تعذر الحذف من المقارنة",
+        "failed_to_update_wishlist": "تعذر تحديث قائمة الأمنيات"
     },
     "product": {
         "add_to_cart": "أضف إلى السلة",
@@ -175,7 +187,8 @@
         "watch_video": "شاهد الفيديو",
         "features_title": "مميزات المنتج",
         "show_more": "عرض المزيد",
-        "show_less": "عرض أقل"
+        "show_less": "عرض أقل",
+        "image_alt": "{{name}} - صورة {{index}}"
     },
     "checkout": {
         "shipping_info": "معلومات الشحن",
@@ -209,7 +222,12 @@
         "cairo": "القاهرة",
         "giza": "الجيزة",
         "fayoum": "الفيوم",
-        "beni_suef": "بني سويف"
+        "beni_suef": "بني سويف",
+        "email_required": "البريد الإلكتروني مطلوب",
+        "email_invalid": "البريد الإلكتروني غير صحيح",
+        "order_success": "تم إنشاء الطلب بنجاح",
+        "order_failed": "فشل إنشاء الطلب",
+        "insufficient_stock": "مخزون غير كافٍ للمنتج {{product}}. المتاح: {{available}}"
     },
     "profile": {
         "title": "الملف الشخصي",
@@ -232,7 +250,9 @@
         "new_password_required": "كلمة المرور الجديدة مطلوبة",
         "confirm_password_required": "تأكيد كلمة المرور مطلوب",
         "password_mismatch": "كلمة المرور غير متطابقة",
-        "password_too_short": "كلمة المرور يجب أن تكون 8 أحرف على الأقل"
+        "password_too_short": "كلمة المرور يجب أن تكون 8 أحرف على الأقل",
+        "password_too_long": "كلمة المرور طويلة جدًا",
+        "image_preview_alt": "معاينة الصورة الشخصية"
     },
     "address": {
         "title": "العناوين",
@@ -306,7 +326,12 @@
         "at_least_8_chars": "8 أحرف على الأقل",
         "verifying_identity": "جاري التحقق من الهوية...",
         "logout_confirm_title": "هل تريد تسجيل الخروج؟",
-        "logout_confirm_desc": "سوف تحتاج إلى تسجيل الدخول مرة أخرى للوصول إلى حسابك."
+        "logout_confirm_desc": "سوف تحتاج إلى تسجيل الدخول مرة أخرى للوصول إلى حسابك.",
+        "name_too_long": "الاسم طويل جدًا",
+        "password_rules": "يجب أن تحتوي كلمة المرور على حرف كبير وحرف صغير ورقم ورمز (@$!%*?&#)",
+        "terms_required": "يجب الموافقة على الشروط وسياسة الخصوصية",
+        "terms_and_privacy": "أوافق على الشروط وسياسة الخصوصية",
+        "reset_password_failed": "فشلت عملية إعادة تعيين كلمة المرور"
     },
     "products_page": {
         "all_products": "جميع المنتجات",
@@ -441,12 +466,14 @@
         "mission": {
             "title": "رسالتنا",
             "text": "تقديم حلول كهربائية فعالة وآمنة لتسهيل حياة العميل ، مع توفير خدمة عملاء متميزة ودعم فني مستمر."
-        }
+        },
+        "image_alt": "رؤيتنا"
     },
     "blog": {
         "no_posts": "لا توجد مقالات متاحة",
         "read_more": "اقرأ المزيد",
-        "back_to_blog": "العودة إلى المدونة"
+        "back_to_blog": "العودة إلى المدونة",
+        "post_not_found": "المقال غير موجود"
     },
     "return_policy": {
         "title": "سياسة الاسترجاع والاسترداد",
@@ -601,7 +628,12 @@
         "add_to_compare": "إضافة إلى المقارنة",
         "remove_from_compare": "إزالة من المقارنة",
         "remove_product": "حذف المنتج",
-        "more_categories": "المزيد من الأقسام"
+        "more_categories": "المزيد من الأقسام",
+        "toggle_contact_menu": "فتح أو إغلاق خيارات التواصل",
+        "go_to_member": "الانتقال إلى عضو الفريق {{number}}",
+        "carousel": "عرض متحرك",
+        "slide": "شريحة",
+        "logo_alt": "شعار فولتا"
     },
     "seo": {
         "home_title": "فولتا | مثبتات الجهد الكهربائي وحلول الكهرباء في مصر",

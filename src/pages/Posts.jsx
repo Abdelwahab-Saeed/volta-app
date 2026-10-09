@@ -31,7 +31,7 @@ export default function Posts() {
                 setError(null);
             } catch (err) {
                 console.error('Error fetching posts:', err);
-                setError(t('common.error_loading_data') || 'Error loading posts');
+                setError(t('common.error'));
             } finally {
                 setLoading(false);
             }
@@ -49,12 +49,12 @@ export default function Posts() {
             <div className="bg-light-background px-4 md:px-10 lg:px-40 py-8">
                 <div>
                     <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4">
-                        {t('footer.blog') || 'Blog'}
+                        {t('footer.blog')}
                     </h1>
                     <div className="flex gap-2 items-center text-primary text-sm md:text-base">
                         <Link to="/" className="hover:underline">{t('header.home')}</Link>
                         <Square fill='true' size={8} />
-                        <span> {t('footer.blog') || 'Blog'} </span>
+                        <span> {t('footer.blog')} </span>
                     </div>
                 </div>
             </div>
@@ -74,7 +74,7 @@ export default function Posts() {
 
                 {!loading && !error && posts.length === 0 && (
                     <div className="text-center py-20">
-                        <p className="text-slate-500 text-lg">{t('blog.no_posts') || 'No posts available'}</p>
+                        <p className="text-slate-500 text-lg">{t('blog.no_posts')}</p>
                     </div>
                 )}
 
@@ -101,7 +101,7 @@ export default function Posts() {
                                             to={`/blog/${post.id}`}
                                             className="inline-flex items-center text-secondary font-semibold hover:text-blue-700 transition-colors"
                                         >
-                                            {t('blog.read_more') || 'Read More'}
+                                            {t('blog.read_more')}
                                             <ChevronRight size={18} className="ml-1 rtl:rotate-180" />
                                         </Link>
                                     </div>

@@ -47,7 +47,7 @@ export default function Footer() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 text-start">
             {/* Logo and Description */}
             <div className="flex flex-col items-center sm:items-start text-center sm:text-start">
-              <SafeImage src={WhiteLogo} alt="Volra White Logo" className="mb-4 w-48 md:w-56" />
+              <SafeImage src={WhiteLogo} alt={t('a11y.logo_alt')} className="mb-4 w-48 md:w-56" />
               <p className="max-w-xs text-sm md:text-base opacity-90 leading-relaxed">
                 {t('footer.description')}
               </p>
@@ -138,7 +138,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <Link to="/blog" className="hover:underline hover:text-secondary-on-dark transition-colors text-sm md:text-base">
-                    {t('footer.blog') || 'Blog'}
+                    {t('footer.blog')}
                   </Link>
                 </li>
                 <li>
@@ -186,9 +186,9 @@ export default function Footer() {
       <div className="bg-primary border-t border-white/10 py-4">
         <div className="container mx-auto px-4 text-center">
           <p className="text-sm opacity-70">
-            Developed and Maintained by <a href='https://falak-innovation.com/' target='blank' className="hover:underline hover:text-secondary-on-dark transition-colors" >
+            {t('footer.developed_by')} <a href='https://falak-innovation.com/' target='blank' className="hover:underline hover:text-secondary-on-dark transition-colors" >
               Falak Innovation
-            </a> © All Rights Reserved - Volta
+            </a> © {t('footer.rights_reserved')}
           </p>
         </div>
       </div>

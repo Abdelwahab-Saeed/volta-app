@@ -170,9 +170,9 @@ export default function Products() {
                   className="mb-6"
                 />
                 <div className="flex items-center justify-between mt-2 text-slate-600 font-medium text-sm md:text-base">
-                  <span dir="ltr">{t('common.currency')} {priceRange[0].toLocaleString()}</span>
+                  <span>{priceRange[0].toLocaleString()} {t('common.currency')}</span>
                   <span>—</span>
-                  <span dir="ltr">{t('common.currency')} {priceRange[1].toLocaleString()}</span>
+                  <span>{priceRange[1].toLocaleString()} {t('common.currency')}</span>
                 </div>
               </div>
             </div>
@@ -231,7 +231,7 @@ export default function Products() {
           {/* Error State */}
           {error && !loading && (
             <div className="text-center py-20">
-              <p className="text-red-500 text-lg">{error}</p>
+              <p className="text-red-500 text-lg">{t('common.error')}</p>
             </div>
           )}
 

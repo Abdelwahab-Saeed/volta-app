@@ -1,10 +1,12 @@
-import { useRef, useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linkedin, ChevronLeft, ChevronRight, Users } from 'lucide-react';
 import SafeImage from '../common/SafeImage';
 import useApiList from '@/hooks/useApiList';
 import { getTeam } from '@/api/company.api';
 import { useLocalize } from '@/lib/localize';
+import { isRTL } from '@/i18n';
+import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 
 function initials(name) {
   const words = name.trim().split(/\s+/);
@@ -112,10 +114,12 @@ function MemberCard({ member, colorIndex, active }) {
 
 /* ─── section ──────────────────────────────────────────────────── */
 export default function TeamSection() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { items } = useApiList(getTeam);
   const [current, setCurrent] = useState(0);
-  const timerRef = useRef(null);
+  const [paused, setPaused] = useState(false);
+  const reducedMotion = usePrefersReducedMotion();
+  const rtl = isRTL(i18n.language);
 
   const total = items.length;
 
@@ -126,17 +130,15 @@ export default function TeamSection() {
   const prev = () => go(current - 1);
   const next = useCallback(() => go(current + 1), [current, go]);
 
-  // Auto-advance every 4 s
+  // Auto-advance every 4 s; stops while the pointer or keyboard focus is on the carousel and for
+  // visitors who asked for less motion. `next` changes with every slide, so a manual step also
+  // restarts the countdown.
+  const running = total > 1 && !paused && !reducedMotion;
   useEffect(() => {
-    if (total < 2) return;
-    timerRef.current = setInterval(() => next(), 4000);
-    return () => clearInterval(timerRef.current);
-  }, [next, total]);
-
-  const resetTimer = () => {
-    clearInterval(timerRef.current);
-    timerRef.current = setInterval(() => next(), 4000);
-  };
+    if (!running) return undefined;
+    const timer = setInterval(next, 4000);
+    return () => clearInterval(timer);
+  }, [next, running]);
 
   if (total === 0) return null;
 
@@ -155,6 +157,8 @@ export default function TeamSection() {
   };
 
   const visible = getVisible();
+  const PrevIcon = rtl ? ChevronRight : ChevronLeft;
+  const NextIcon = rtl ? ChevronLeft : ChevronRight;
 
   return (
     <>
@@ -181,16 +185,22 @@ export default function TeamSection() {
         </div>
 
         {/* ── Carousel ── */}
-        <div className="relative flex items-center justify-center gap-4 px-4 md:px-10">
+        <div
+          className="relative flex items-center justify-center gap-4 px-4 md:px-10"
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+          onFocus={() => setPaused(true)}
+          onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setPaused(false); }}
+        >
 
-          {/* Left arrow */}
+          {/* Previous (start side) */}
           <button
             type="button"
-            onClick={() => { prev(); resetTimer(); }}
+            onClick={prev}
             className="flex-none z-10 flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-primary shadow-sm transition-all duration-200 hover:bg-primary hover:text-white hover:shadow-md active:scale-95"
-            aria-label="previous member"
+            aria-label={t('a11y.previous')}
           >
-            <ChevronLeft className="h-5 w-5" />
+            <PrevIcon className="h-5 w-5" />
           </button>
 
           {/* Cards row */}
@@ -213,14 +223,14 @@ export default function TeamSection() {
             ))}
           </div>
 
-          {/* Right arrow */}
+          {/* Next (end side) */}
           <button
             type="button"
-            onClick={() => { next(); resetTimer(); }}
+            onClick={next}
             className="flex-none z-10 flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-primary shadow-sm transition-all duration-200 hover:bg-primary hover:text-white hover:shadow-md active:scale-95"
-            aria-label="next member"
+            aria-label={t('a11y.next')}
           >
-            <ChevronRight className="h-5 w-5" />
+            <NextIcon className="h-5 w-5" />
           </button>
         </div>
 
@@ -231,8 +241,9 @@ export default function TeamSection() {
               <button
                 key={i}
                 type="button"
-                onClick={() => { go(i); resetTimer(); }}
-                aria-label={`Go to member ${i + 1}`}
+                onClick={() => go(i)}
+                aria-label={t('a11y.go_to_member', { number: i + 1 })}
+                aria-current={i === current ? 'true' : undefined}
                 className="rounded-full transition-all duration-300"
                 style={{
                   width:  i === current ? 28 : 8,

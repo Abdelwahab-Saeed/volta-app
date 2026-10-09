@@ -55,13 +55,13 @@ export default function ResetPassword() {
                 token,
                 email
             });
-            toast.success(t('messages.password_reset_success', { defaultValue: 'Password reset successfully' }));
+            toast.success(t('messages.password_reset_success'));
             setTimeout(() => {
                 navigate('/login');
             }, 3000);
         } catch (error) {
             console.error("Reset password error", error);
-            const message = error.response?.data?.message || 'فشلت عملية إعادة تعيين كلمة المرور';
+            const message = error.response?.data?.message || t('auth.reset_password_failed');
             toast.error(message);
         } finally {
             setIsSubmitting(false);

@@ -24,7 +24,7 @@ export default function PostDetails() {
                 setError(null);
             } catch (err) {
                 console.error('Error fetching post details:', err);
-                setError(t('common.error_loading_data') || 'Error loading post details');
+                setError(t('common.error'));
             } finally {
                 setLoading(false);
             }
@@ -43,14 +43,14 @@ export default function PostDetails() {
     if (error || !post) {
         return (
             <div className="text-center py-40 px-4">
-                <p className="text-red-500 text-lg mb-6">{error || 'Post not found'}</p>
+                <p className="text-red-500 text-lg mb-6">{error || t('blog.post_not_found')}</p>
                 <Link
                     to="/blog"
                     className="inline-flex items-center text-primary font-semibold hover:underline"
                 >
                     <ArrowLeft size={20} className="mr-2 rtl:hidden" />
                     <ArrowLeft size={20} className="ml-2 hidden rtl:block rotate-180" />
-                    {t('blog.back_to_blog') || 'Back to Blog'}
+                    {t('blog.back_to_blog')}
                 </Link>
             </div>
         );
@@ -66,7 +66,7 @@ export default function PostDetails() {
                     <div className="flex flex-wrap gap-2 items-center text-primary text-sm md:text-base">
                         <Link to="/" className="hover:underline">{t('header.home')}</Link>
                         <Square fill='true' size={8} />
-                        <Link to="/blog" className="hover:underline">{t('footer.blog') || 'Blog'}</Link>
+                        <Link to="/blog" className="hover:underline">{t('footer.blog')}</Link>
                         <Square fill='true' size={8} />
                         <span className="text-slate-500 truncate max-w-[200px] md:max-w-md"> {tr(post, 'title')} </span>
                     </div>
@@ -81,7 +81,7 @@ export default function PostDetails() {
                     >
                         <ArrowLeft size={20} className="mr-2 rtl:hidden" />
                         <ArrowLeft size={20} className="ml-2 hidden rtl:block rotate-180" />
-                        {t('blog.back_to_blog') || 'Back to Blog'}
+                        {t('blog.back_to_blog')}
                     </Link>
 
                     <div className="rounded-3xl overflow-hidden shadow-lg border border-slate-100 mb-10">

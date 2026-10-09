@@ -5,6 +5,7 @@ import SafeImage from '../common/SafeImage';
 import useApiList from '@/hooks/useApiList';
 import { getCertificates } from '@/api/company.api';
 import { useLocalize } from '@/lib/localize';
+import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 
 const CertificateDialog = lazy(() => import('./CertificateDialog'));
 
@@ -64,12 +65,15 @@ function CertificateCard({ certificate, onOpen }) {
 /* ─── marquee row ──────────────────────────────────────────────── */
 function MarqueeRow({ items, onOpen, reverse = false, speed = 12 }) {
   const [paused, setPaused] = useState(false);
+  const reducedMotion = usePrefersReducedMotion();
 
   // translateX(-50%) moves exactly 2 sets, landing back at the identical view → seamless.
   const repeated = [...items, ...items, ...items, ...items];
 
   return (
+    // Always LTR: the -50% loop assumes the track grows to the right, in Arabic it would slide into empty space.
     <div
+      dir="ltr"
       className="relative overflow-hidden"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
@@ -77,7 +81,9 @@ function MarqueeRow({ items, onOpen, reverse = false, speed = 12 }) {
       <div
         className="flex gap-4"
         style={{
-          animation: `cert-scroll-${reverse ? 'reverse' : 'forward'} ${items.length * speed}s linear infinite`,
+          animation: reducedMotion
+            ? 'none'
+            : `cert-scroll-${reverse ? 'reverse' : 'forward'} ${items.length * speed}s linear infinite`,
           animationPlayState: paused ? 'paused' : 'running',
           width: 'max-content',
         }}

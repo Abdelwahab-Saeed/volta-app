@@ -34,7 +34,7 @@ export default function ForgotPassword() {
         try {
             await forgotPasswordAction(values);
             setIsSent(true);
-            toast.success(t('messages.recovery_sent', { defaultValue: 'Reset link sent successfully' }));
+            toast.success(t('messages.recovery_sent'));
         } catch (error) {
             console.error("Forgot password error", error);
             const message = error.response?.data?.message || t('common.error');
@@ -94,7 +94,7 @@ export default function ForgotPassword() {
                                     </FieldLabel>
                                     <Input
                                         id="email"
-                                        placeholder="example@mail.com"
+                                        placeholder={t('common.email_placeholder')}
                                         className="mt-1 p-6"
                                         type="email"
                                         {...form.register("email")}

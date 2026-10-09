@@ -82,7 +82,7 @@ export default function Links() {
                     onClick={toggleMenu}
                     className={`w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all duration-500 z-20 ${isOpen ? 'bg-red-500 rotate-90 scale-110' : 'bg-secondary hover:scale-110'
                         } text-white`}
-                    aria-label="Toggle contact menu"
+                    aria-label={t('a11y.toggle_contact_menu')}
                 >
                     {isOpen ? <X size={28} /> : <MessageCircleMore size={28} />}
                 </button>

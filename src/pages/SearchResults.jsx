@@ -93,7 +93,7 @@ export default function SearchResults() {
                 {/* Error State */}
                 {error && !loading && (
                     <div className="text-center py-20">
-                        <p className="text-red-500 text-lg">{error}</p>
+                        <p className="text-red-500 text-lg">{t('common.error')}</p>
                     </div>
                 )}
 

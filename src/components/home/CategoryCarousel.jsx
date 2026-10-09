@@ -1,12 +1,14 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import useEmblaCarousel from 'embla-carousel-react';
+import Autoplay from 'embla-carousel-autoplay';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import SafeImage from '../common/SafeImage';
 import SectionHeading from './SectionHeading';
 import { isRTL } from '@/i18n';
 import { useLocalize } from '@/lib/localize';
+import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 
 function NavButton({ onClick, disabled, label, children }) {
   return (
@@ -27,12 +29,22 @@ export default function CategoryCarousel({ categories, loading = false }) {
   const tr = useLocalize();
   const rtl = isRTL(i18n.language);
 
+  const reducedMotion = usePrefersReducedMotion();
+
+  // Moves one category at a time and wraps around; pauses while the pointer is over it. No autoplay
+  // for skeleton slides or when the visitor asked for less motion.
+  const autoplay = useRef(Autoplay({ delay: 3500, stopOnInteraction: false, stopOnMouseEnter: true }));
+  const plugins = useMemo(
+    () => (reducedMotion || loading ? [] : [autoplay.current]),
+    [reducedMotion, loading],
+  );
+
   // Embla scrolls in the page direction, so "previous" is always the start side.
   const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: true,
     align: 'start',
-    containScroll: 'trimSnaps',
     direction: rtl ? 'rtl' : 'ltr',
-  });
+  }, plugins);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(false);
 
@@ -51,8 +63,15 @@ export default function CategoryCarousel({ categories, loading = false }) {
     };
   }, [emblaApi]);
 
-  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
-  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
+  // A manual step restarts the countdown so the carousel doesn't move again right after a click.
+  const scrollPrev = useCallback(() => {
+    emblaApi?.scrollPrev();
+    emblaApi?.plugins().autoplay?.reset();
+  }, [emblaApi]);
+  const scrollNext = useCallback(() => {
+    emblaApi?.scrollNext();
+    emblaApi?.plugins().autoplay?.reset();
+  }, [emblaApi]);
 
   if (!loading && (!categories || categories.length === 0)) return null;
 

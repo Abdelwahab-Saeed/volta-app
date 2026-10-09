@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -8,16 +9,34 @@ import SafeImage from '../common/SafeImage';
 import { useLocalize } from '@/lib/localize';
 import { cn } from '@/lib/utils';
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
+import useMediaQuery from '@/hooks/useMediaQuery';
 
 // One place for the banner box size: the skeleton, the slides and the images all use it, so the page
-// does not jump when the banners arrive. Heights (not an aspect ratio) keep the crop admins already
-// designed their banners for.
-const BANNER_HEIGHT = 'h-[200px] md:h-[400px]';
+// does not jump when the banners arrive. The box has the shape of the image shown in it, so a banner
+// made at the size the admin form asks for shows whole on every screen: `image_mobile` (1080×630)
+// on phones, `image` (1920×600) from md up. Keep these sizes in step with the admin banner form.
+const BANNER_SIZE = 'aspect-[1080/630] md:aspect-[1920/600]';
+const DESKTOP_QUERY = '(min-width: 768px)'; // Tailwind md
+
+// Where a banner leads, mirroring what the admin form accepts: "/path" is a page in the store (opened
+// in the app), "https://…" an outside site (new tab). Anything else, or no link, leaves the banner
+// as a plain image.
+function BannerLink({ url, children }) {
+  const className = 'block h-full focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-white';
+  if (typeof url === 'string' && /^\/(?![/\\])/.test(url)) {
+    return <Link to={url} className={className}>{children}</Link>;
+  }
+  if (typeof url === 'string' && /^https?:\/\//i.test(url)) {
+    return <a href={url} target="_blank" rel="noopener noreferrer" className={className}>{children}</a>;
+  }
+  return children;
+}
 
 export default function HomeCarousel({ banners, loading }) {
   const { t } = useTranslation();
   const tr = useLocalize();
   const reducedMotion = usePrefersReducedMotion();
+  const desktop = useMediaQuery(DESKTOP_QUERY);
 
   // Pauses while the pointer is over the banner so nobody loses a slide they are reading.
   const autoplay = useRef(Autoplay({ delay: 5000, stopOnInteraction: false, stopOnMouseEnter: true }));
@@ -42,7 +61,7 @@ export default function HomeCarousel({ banners, loading }) {
 
   if (loading) {
     return (
-      <div className={cn('mt-4 md:mt-6 w-full', BANNER_HEIGHT)}>
+      <div className={cn('mt-4 md:mt-6 w-full', BANNER_SIZE)}>
         <Skeleton className="h-full w-full rounded-2xl md:rounded-3xl" />
       </div>
     );
@@ -57,33 +76,36 @@ export default function HomeCarousel({ banners, loading }) {
   return (
     <section
       dir="ltr"
-      aria-roledescription="carousel"
+      aria-roledescription={t('a11y.carousel')}
       aria-label={t('home.hero.label')}
       className="group relative mt-4 md:mt-6 overflow-hidden rounded-2xl md:rounded-3xl bg-slate-100 shadow-[0_20px_50px_-25px_rgba(30,39,73,0.45)]"
     >
       <div ref={emblaRef} className="overflow-hidden">
-        <div className={cn('flex', BANNER_HEIGHT)}>
+        <div className={cn('flex', BANNER_SIZE)}>
           {banners.map((banner, index) => {
-            const imageUrl = typeof banner === 'string' ? banner : banner.image;
+            // Phones get the phone image when there is one; without it the computer image is cropped to fit.
+            const imageUrl = typeof banner === 'string' ? banner : (!desktop && banner.image_mobile) || banner.image;
             return (
               <div
                 key={banner.id ?? index}
                 className="min-w-0 shrink-0 grow-0 basis-full"
                 role="group"
-                aria-roledescription="slide"
+                aria-roledescription={t('a11y.slide')}
                 aria-label={t('home.hero.slide', { current: index + 1, total: banners.length })}
               >
-                <SafeImage
-                  src={imageUrl ? `${import.meta.env.VITE_IMAGES_URL}/${imageUrl}` : undefined}
-                  alt={tr(banner, 'title') || `Banner ${index + 1}`}
-                  // The first banner is the LCP element: load it eagerly and at
-                  // high priority. Embla keeps every slide in the DOM, so the
-                  // rest must be lazy or they compete for bandwidth with it.
-                  loading={index === 0 ? 'eager' : 'lazy'}
-                  fetchPriority={index === 0 ? 'high' : 'auto'}
-                  decoding={index === 0 ? 'sync' : 'async'}
-                  className={cn('w-full object-cover', BANNER_HEIGHT)}
-                />
+                <BannerLink url={banner.redirect_url}>
+                  <SafeImage
+                    src={imageUrl ? `${import.meta.env.VITE_IMAGES_URL}/${imageUrl}` : undefined}
+                    alt={tr(banner, 'title') || t('home.hero.banner_alt', { number: index + 1 })}
+                    // The first banner is the LCP element: load it eagerly and at
+                    // high priority. Embla keeps every slide in the DOM, so the
+                    // rest must be lazy or they compete for bandwidth with it.
+                    loading={index === 0 ? 'eager' : 'lazy'}
+                    fetchPriority={index === 0 ? 'high' : 'auto'}
+                    decoding={index === 0 ? 'sync' : 'async'}
+                    className="h-full w-full object-cover"
+                  />
+                </BannerLink>
               </div>
             );
           })}

@@ -199,15 +199,15 @@ export default function WideProductCard({ product }) {
                 {hasDiscount ? (
                   <>
                     <span className="text-sm text-slate-400 line-through order-2 sm:order-1">
-                      EGP {product.price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      {product.price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {t('common.currency')}
                     </span>
                     <span className="text-2xl sm:text-3xl font-bold text-red-600 order-1 sm:order-2">
-                      EGP {product.final_price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      {product.final_price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {t('common.currency')}
                     </span>
                   </>
                 ) : (
                   <span className="text-2xl sm:text-3xl font-bold text-red-600">
-                    EGP {product.final_price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    {product.final_price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {t('common.currency')}
                   </span>
                 )}
               </div>
