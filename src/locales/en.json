@@ -31,7 +31,9 @@
         "visit_profile": "Visit Profile",
         "login_prompt": "Login to your account",
         "featured_products": "Featured Products",
-        "blog": "Blog"
+        "blog": "Blog",
+        "contact_bar": "Contact us",
+        "social_link": "Volta on {{network}}"
     },
     "layout": {
         "call_us": "Call Us",
@@ -118,6 +120,23 @@
             "subtitle": "Talk to us and our technical team will help you pick the right capacity for your home or business.",
             "whatsapp": "Chat on WhatsApp",
             "call": "Call us"
+        },
+        "stats": {
+            "eyebrow": "Volta in numbers",
+            "title": "Numbers that speak for our customers' trust",
+            "subtitle": "Years of protecting your appliances have earned a trust we value every day.",
+            "clients": {
+                "label": "Customers trust us",
+                "description": "Homes, offices and shops that rely on Volta"
+            },
+            "satisfaction": {
+                "label": "Customer satisfaction",
+                "description": "With product quality and after-sales service"
+            },
+            "orders": {
+                "label": "Purchase orders",
+                "description": "Prepared and delivered to our customers"
+            }
         }
     },
     "cart": {
@@ -187,7 +206,11 @@
         "features_title": "Product Features",
         "show_more": "Show more",
         "show_less": "Show less",
-        "image_alt": "{{name}} - image {{index}}"
+        "image_alt": "{{name}} - image {{index}}",
+        "video_title": "Product video",
+        "video_subtitle": "See it in action before you buy",
+        "play_video": "Play the video of {{name}}",
+        "video_iframe_title": "Video of {{name}}"
     },
     "checkout": {
         "shipping_info": "Shipping Information",
@@ -642,5 +665,91 @@
         "vision_description": "Our vision and mission: leading voltage stabilization systems and energy solutions in Egypt through continuous innovation and the highest quality standards.",
         "blog_description": "News, guides and articles from Volta on electrical protection and voltage stabilization.",
         "default_description": "Volta Stabilizer & Electrical Solutions - voltage stabilizers and integrated electrical solutions in Egypt."
+    },
+    "distributor": {
+        "nav_link": "Become a distributor",
+        "page_title": "Become a Volta distributor",
+        "page_subtitle": "Join the Volta distributor network and offer your customers reliable electrical protection products. Send your details and our team will contact you.",
+        "seo_description": "Send your details to become an authorised distributor of Volta voltage stabilizers and protection devices in your area.",
+        "form_title": "Send your details",
+        "form_subtitle": "Fill in the form and our sales team will contact you.",
+        "why_title": "Why become a Volta distributor?",
+        "benefits": {
+            "pricing": {
+                "title": "Distributor pricing",
+                "text": "Wholesale prices that leave you a good margin."
+            },
+            "support": {
+                "title": "Technical support",
+                "text": "A team that helps you choose products and answer your customers’ questions."
+            },
+            "products": {
+                "title": "Trusted products with warranty",
+                "text": "Stabilizers and protection devices customers trust, with warranty and after-sales service."
+            }
+        },
+        "steps_title": "How to start",
+        "steps": {
+            "send": {
+                "title": "Send your details",
+                "text": "Fill in the form in under a minute."
+            },
+            "call": {
+                "title": "Our team calls you",
+                "text": "We call to learn what you need and explain the distribution terms."
+            },
+            "sell": {
+                "title": "Start selling",
+                "text": "Receive Volta products and start selling to your customers."
+            }
+        },
+        "home": {
+            "eyebrow": "Partner with Volta",
+            "title": "Become a Volta distributor in your area",
+            "text": "Own a shop or a trading business? Join Volta’s distributors and offer your customers electrical protection products.",
+            "cta": "Send your details",
+            "cta_hint": "Takes under a minute"
+        },
+        "form": {
+            "optional": "optional",
+            "required_hint": "Fields marked * are required.",
+            "name": "Name",
+            "name_placeholder": "Your full name",
+            "phone": "Phone number",
+            "phone_hint": "11-digit mobile number starting with 01",
+            "governorate": "Governorate",
+            "governorate_placeholder": "Choose a governorate",
+            "center": "Center (markaz)",
+            "center_placeholder": "e.g. Belbeis",
+            "area": "Village or district",
+            "area_placeholder": "e.g. El Zawamel village",
+            "has_commercial_register": "Do you have a commercial register?",
+            "has_shop": "Do you have a shop?",
+            "yes": "Yes",
+            "no": "No",
+            "notes": "Notes",
+            "notes_placeholder": "Anything you’d like to add, such as your business type or the products you’re interested in",
+            "submit": "Send request",
+            "submitting": "Sending…"
+        },
+        "errors": {
+            "summary_title": "Please fix the following:",
+            "name_required": "Please enter your name",
+            "phone_required": "Please enter your phone number",
+            "phone_invalid": "Enter a valid 11-digit mobile number starting with 01",
+            "governorate_required": "Please choose your governorate",
+            "center_required": "Please enter your center",
+            "area_required": "Please enter your village or district",
+            "choice_required": "Please choose yes or no",
+            "too_long": "This text is too long",
+            "too_many": "You sent several requests in a short time. Please try again a little later.",
+            "failed": "We couldn’t send your request. Check your connection and try again."
+        },
+        "success": {
+            "title": "We received your request!",
+            "text": "Thank you for your interest in becoming a Volta distributor. Our team will contact you soon on",
+            "whatsapp": "Chat on WhatsApp",
+            "home": "Back to home"
+        }
     }
 }

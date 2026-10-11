@@ -118,6 +118,7 @@ export default function TeamSection() {
   const { items } = useApiList(getTeam);
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [touchX, setTouchX] = useState(null);
   const reducedMotion = usePrefersReducedMotion();
   const rtl = isRTL(i18n.language);
 
@@ -159,6 +160,17 @@ export default function TeamSection() {
   const visible = getVisible();
   const PrevIcon = rtl ? ChevronRight : ChevronLeft;
   const NextIcon = rtl ? ChevronLeft : ChevronRight;
+  const arrowClass = 'flex-none z-10 h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-primary shadow-sm transition-all duration-200 hover:bg-primary hover:text-white hover:shadow-md active:scale-95';
+
+  // Swipe on touch screens: towards the start goes to the next member (mirrored in RTL).
+  const onTouchStart = (e) => setTouchX(e.touches[0].clientX);
+  const onTouchEnd = (e) => {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    setTouchX(null);
+    if (Math.abs(dx) < 40) return;
+    if ((dx < 0) !== rtl) next(); else prev();
+  };
 
   return (
     <>
@@ -191,28 +203,25 @@ export default function TeamSection() {
           onMouseLeave={() => setPaused(false)}
           onFocus={() => setPaused(true)}
           onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setPaused(false); }}
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
         >
 
-          {/* Previous (start side) */}
-          <button
-            type="button"
-            onClick={prev}
-            className="flex-none z-10 flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-primary shadow-sm transition-all duration-200 hover:bg-primary hover:text-white hover:shadow-md active:scale-95"
-            aria-label={t('a11y.previous')}
-          >
-            <PrevIcon className="h-5 w-5" />
-          </button>
+          {/* Previous (start side) — on small screens the arrows sit under the card, next to the dots */}
+          {total > 1 && (
+            <button type="button" onClick={prev} className={`hidden md:flex ${arrowClass}`} aria-label={t('a11y.previous')}>
+              <PrevIcon className="h-5 w-5" />
+            </button>
+          )}
 
-          {/* Cards row */}
-          <div className="flex items-center justify-center gap-4 overflow-hidden" style={{ maxWidth: 820 }}>
+          {/* Cards row: only the active card below lg, faded neighbours beside it from lg up */}
+          <div className="flex w-full md:w-auto items-center justify-center gap-4 overflow-hidden py-2" style={{ maxWidth: 820 }}>
             {visible.map(({ member, pos }) => (
               <div
                 key={`${member.id}-${pos}`}
-                className="flex-none"
-                style={{
-                  width: pos === 'center' ? 280 : 220,
-                  transition: 'width 0.4s ease',
-                }}
+                className={pos === 'center'
+                  ? 'w-full max-w-75 md:w-70 md:flex-none'
+                  : 'hidden lg:block lg:w-55 lg:flex-none'}
               >
                 <MemberCard
                   member={member}
@@ -224,19 +233,19 @@ export default function TeamSection() {
           </div>
 
           {/* Next (end side) */}
-          <button
-            type="button"
-            onClick={next}
-            className="flex-none z-10 flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-primary shadow-sm transition-all duration-200 hover:bg-primary hover:text-white hover:shadow-md active:scale-95"
-            aria-label={t('a11y.next')}
-          >
-            <NextIcon className="h-5 w-5" />
-          </button>
+          {total > 1 && (
+            <button type="button" onClick={next} className={`hidden md:flex ${arrowClass}`} aria-label={t('a11y.next')}>
+              <NextIcon className="h-5 w-5" />
+            </button>
+          )}
         </div>
 
-        {/* ── Dot indicators ── */}
+        {/* ── Dot indicators (with the arrows on small screens) ── */}
         {total > 1 && (
           <div className="mt-8 flex items-center justify-center gap-2">
+            <button type="button" onClick={prev} className={`flex md:hidden me-2 ${arrowClass}`} aria-label={t('a11y.previous')}>
+              <PrevIcon className="h-5 w-5" />
+            </button>
             {items.map((_, i) => (
               <button
                 key={i}
@@ -252,6 +261,9 @@ export default function TeamSection() {
                 }}
               />
             ))}
+            <button type="button" onClick={next} className={`flex md:hidden ms-2 ${arrowClass}`} aria-label={t('a11y.next')}>
+              <NextIcon className="h-5 w-5" />
+            </button>
           </div>
         )}
       </section>

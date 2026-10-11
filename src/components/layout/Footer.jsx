@@ -1,43 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import WhiteLogo from '../../assets/Logo-04 2.png';
 import { Facebook, Mail, MapPin, Instagram, Twitter, Youtube } from 'lucide-react';
-import { getSettings } from '../../api/settings.api';
+import { useSettingsStore } from '@/stores/useSettingsStore';
+import { TikTokIcon } from '@/components/icons/BrandIcons';
 import { useTranslation } from 'react-i18next';
 import SafeImage from '../common/SafeImage';
 import { useLocalize } from '@/lib/localize';
 
-// lucide-react has no TikTok icon, so use the brand glyph as an inline SVG
-function TikTokIcon({ size = 24, className = '' }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      className={className}
-      aria-hidden="true"
-    >
-      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
-    </svg>
-  );
-}
-
 export default function Footer() {
   const { t } = useTranslation();
   const tr = useLocalize();
-  const [settings, setSettings] = useState({});
+  const settings = useSettingsStore((state) => state.settings);
+  const fetchSettings = useSettingsStore((state) => state.fetchSettings);
 
   useEffect(() => {
-    getSettings()
-      .then((res) => {
-        setSettings(res.data);
-      })
-      .catch((err) => {
-        console.error('Failed to fetch settings', err);
-      });
-  }, []);
+    fetchSettings();
+  }, [fetchSettings]);
 
   return (
     <footer className="text-white">
@@ -139,6 +118,11 @@ export default function Footer() {
                 <li>
                   <Link to="/blog" className="hover:underline hover:text-secondary-on-dark transition-colors text-sm md:text-base">
                     {t('footer.blog')}
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/become-distributor" className="hover:underline hover:text-secondary-on-dark transition-colors text-sm md:text-base">
+                    {t('distributor.nav_link')}
                   </Link>
                 </li>
                 <li>

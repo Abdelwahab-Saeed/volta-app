@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import EGflag from "../../assets/Eg-flag.png";
 import logo from "../../assets/site-logo.png";
 import {
@@ -10,14 +10,11 @@ import {
   ArrowLeftRight,
   Menu,
   X,
-  PhoneCall,
   ArrowUpDown,
   Handbag,
-  MoreHorizontal
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useNavigate, Link } from "react-router-dom";
-import { useCategoryStore } from "@/stores/useCategoryStore";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useCartStore } from "@/stores/useCartStore";
 import { useWishlistStore } from "@/stores/useWishlistStore";
@@ -26,17 +23,10 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "@/components/common/LanguageSwitcher";
 import SafeImage from "@/components/common/SafeImage";
-import { useLocalize } from '@/lib/localize';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import ContactBar from "./ContactBar";
 
 export default function Header() {
   const { t } = useTranslation();
-  const tr = useLocalize();
   const user = useAuthStore((state) => state.user);
   const cartCount = useCartStore((state) => state.cartItems?.length || 0);
   const wishlistCount = useWishlistStore((state) => state.wishlistItems?.length || 0);
@@ -45,9 +35,6 @@ export default function Header() {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
-  const categories = useCategoryStore((state) => state.categories);
-  const categoriesLoading = useCategoryStore((state) => state.loading);
-  const fetchCategories = useCategoryStore((state) => state.fetchCategories);
 
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -77,12 +64,9 @@ export default function Header() {
     }
   };
 
-  useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
-
   return (
-    <header className="w-full font-sans border-b">
+    // Sticky on phones so the menu and search stay one tap away while scrolling.
+    <header className="sticky top-0 z-40 w-full font-sans border-b bg-white shadow-sm md:static md:shadow-none">
       {/* --- Top Bar (Hidden on Mobile) --- */}
       <div className="hidden md:flex justify-between items-center bg-[#1e2749] text-white px-4 lg:px-10 py-4 text-xs">
         <div className="flex items-center gap-4">
@@ -92,7 +76,7 @@ export default function Header() {
       </div>
 
       {/* --- Main Header --- */}
-      <div className="flex items-center justify-between h-[117px] px-4 lg:px-10 py-4 bg-white gap-4 md:gap-8">
+      <div className="flex items-center justify-between h-16 md:h-[117px] px-4 lg:px-10 py-2 md:py-4 bg-white gap-4 md:gap-8">
 
         {/* Mobile Menu Toggle */}
         <button
@@ -104,7 +88,7 @@ export default function Header() {
         </button>
 
         {/* Logo */}
-        <div className="w-55">
+        <div className="w-36 md:w-55">
           <Link to='/'>
             <SafeImage src={logo} alt="Volta" loading="eager" fetchPriority="high" className="w-full h-auto" />
           </Link>
@@ -200,7 +184,7 @@ export default function Header() {
       </div>
 
       {/* --- Mobile Search (Visible only on Mobile) --- */}
-      <div className="md:hidden px-4 pb-4">
+      <div className="md:hidden px-4 pb-3">
         <div className="flex items-center border-2 border-secondary rounded-lg overflow-hidden h-10">
           <Input
             type="text"
@@ -220,85 +204,14 @@ export default function Header() {
         </div>
       </div>
 
-      {/* --- Desktop Navigation (Hidden on Mobile) --- */}
-      <nav className="hidden md:block bg-[#1e2749] text-white px-4 py-2 lg:px-10">
-        <div className="flex items-center justify-between">
-          {/* min-h-11 holds the bar at its final height while the categories
-              request is in flight. Without it the nav collapses to padding-only
-              on first paint and pushes the entire page down when data lands -
-              a layout shift at the very top of the viewport, which is the most
-              expensive kind CLS measures. */}
-          <ul className="flex items-center gap-4 lg:gap-7 text-[12px] lg:text-[13px] font-medium py-3 min-h-11 overflow-x-auto no-scrollbar">
-            {categoriesLoading &&
-              Array.from({ length: 8 }).map((_, i) => (
-                <li
-                  key={`cat-skeleton-${i}`}
-                  aria-hidden="true"
-                  className="h-3 w-16 shrink-0 animate-pulse rounded bg-white/15"
-                />
-              ))}
-
-            {/* A <ul> may only contain <li> (plus <script>/<template>), so the
-                links and the overflow menu each need an <li> wrapper - screen
-                readers otherwise fail to announce the list and its item count. */}
-            {categories.slice(0, 13).map((cat) => (
-              <li key={cat.id} className="shrink-0">
-                <Link to={`/products?category=${cat.id}`} className="cursor-pointer hover:text-secondary-on-dark whitespace-nowrap">
-                  {tr(cat, 'name')}
-                </Link>
-              </li>
-            ))}
-
-            {categories.length > 13 && (
-              <li className="shrink-0">
-              <DropdownMenu>
-                {/* Renders a <button> containing only an icon, so it needs an
-                    explicit name - a screen reader would otherwise announce it
-                    as just "button". */}
-                <DropdownMenuTrigger
-                  aria-label={t('a11y.more_categories')}
-                  className="flex items-center gap-1 cursor-pointer hover:text-secondary-on-dark outline-none"
-                >
-                  <MoreHorizontal size={18} />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="bg-[#1e2749] text-white border-0 min-w-[200px] py-1 shadow-xl">
-                  {categories.slice(13).map((cat) => (
-                    <DropdownMenuItem
-                      key={cat.id}
-                      className="cursor-pointer hover:bg-secondary/20 focus:bg-secondary/20 text-white rounded-none border-0"
-                      onClick={() => navigate(`/products?category=${cat.id}`)}
-                    >
-                      {tr(cat, 'name')}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-              </li>
-            )}
-
-            {/* <Link to="/blog" className="cursor-pointer hover:text-secondary-on-dark whitespace-nowrap">
-              {t('header.blog')}
-            </Link> */}
-          </ul>
-
-          {/* Offers quick link — always visible, pinned to the end */}
-          {/* <Link
-            to="/offers"
-            className="shrink-0 flex items-center gap-1.5 px-3 py-1 bg-secondary rounded-full text-white text-xs font-bold hover:bg-secondary/90 transition-colors ms-auto"
-          >
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-            </svg>
-            {t('header.offers')}
-          </Link> */}
-        </div>
-      </nav>
+      {/* --- Contact & social links --- */}
+      <ContactBar />
 
       {/* --- Mobile Sidebar Overlay --- */}
       {isMenuOpen && (
         <div className="fixed inset-0 z-50 flex md:hidden">
           <div className="fixed inset-0 bg-black/50" onClick={() => setIsMenuOpen(false)} />
-          <div className="relative w-72 max-w-[80%] bg-white h-full shadow-xl flex flex-col p-6 animate-in slide-in-from-inline-end">
+          <div className="relative w-72 max-w-[80%] bg-white h-full shadow-xl flex flex-col p-6 overflow-y-auto animate-in slide-in-from-inline-end">
             <button onClick={() => setIsMenuOpen(false)} className="self-end mb-6" aria-label={t('a11y.close_menu')}><X /></button>
 
             <div className="flex items-center gap-3 mb-8 pb-6 border-b">
@@ -335,15 +248,8 @@ export default function Header() {
               )}
             </div>
 
-            <ul className="space-y-4 overflow-y-auto">
-              {categories.map((cat) => (
-                <li key={cat.id} className="text-gray-700 font-medium hover:text-secondary cursor-pointer">
-                  <Link to={`/products?category=${cat.id}`} onClick={() => setIsMenuOpen(false)}>
-                    {tr(cat, 'name')}
-                  </Link>
-                </li>
-              ))}
-              <li className="text-[#1e2749] font-bold hover:text-secondary cursor-pointer border-t pt-3">
+            <ul className="space-y-4">
+              <li className="text-[#1e2749] font-bold hover:text-secondary cursor-pointer">
                 <Link
                   to="/offers"
                   onClick={() => setIsMenuOpen(false)}
@@ -360,14 +266,17 @@ export default function Header() {
                   {t('header.blog')}
                 </Link>
               </li>
+              <li className="text-gray-700 font-medium hover:text-secondary cursor-pointer">
+                <Link to="/become-distributor" onClick={() => setIsMenuOpen(false)}>
+                  {t('distributor.nav_link')}
+                </Link>
+              </li>
             </ul>
 
-            <div className="mt-auto pt-6 border-t flex flex-col gap-4">
-              <div className="flex justify-between items-center text-secondary">
-                <div className="flex items-center gap-2">
-                  <PhoneCall size={18} />
-                  <a href="tel:+201222245464" className="hover:underline">{t('header.contact')}</a>
-                </div>
+            <div className="mt-auto pt-6 border-t flex flex-col gap-6">
+              <div>
+                <p className="mb-3 text-xs font-bold text-slate-500">{t('header.contact_bar')}</p>
+                <ContactBar variant="menu" />
               </div>
               <div className="flex justify-center">
                 <LanguageSwitcher />

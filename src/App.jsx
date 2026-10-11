@@ -42,6 +42,7 @@ const ShippingPolicy = lazy(() => import('./pages/ShippingPolicy'));
 const Posts          = lazy(() => import('./pages/Posts'));
 const PostDetails    = lazy(() => import('./pages/PostDetails'));
 const PrivacyPolicy  = lazy(() => import('./pages/PrivacyPolicy'));
+const BecomeDistributor = lazy(() => import('./pages/BecomeDistributor'));
 import ScrollToTop from './components/layout/ScrollToTop';
 import { trackPageView } from './lib/pixel';
 import { useLocation } from 'react-router-dom';
@@ -128,6 +129,7 @@ function App() {
         </Route>
 
         <Route path="/about-us" element={<AboutUs />} />
+        <Route path="/become-distributor" element={<BecomeDistributor />} />
         <Route path="/vision" element={<Vision />} />
         <Route path="/return-policy" element={<ReturnPolicy />} />
         <Route path="/shipping-policy" element={<ShippingPolicy />} />
