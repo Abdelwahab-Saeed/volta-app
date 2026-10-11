@@ -8,12 +8,14 @@ import {
     Check,
     Loader2,
     Play,
-    Video
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from 'react-i18next';
 import { useLocalize } from '@/lib/localize';
 import SafeImage from '../common/SafeImage';
+import ProductVideo from './ProductVideo';
+import { parseVideoUrl } from '@/lib/videoEmbed';
+import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion';
 
 export default function ProductView({
     product,
@@ -28,8 +30,10 @@ export default function ProductView({
     isAdded,
     addingLoading
 }) {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const tr = useLocalize();
+    const reducedMotion = usePrefersReducedMotion();
+    const video = React.useMemo(() => parseVideoUrl(product.preview_url, i18n.language), [product.preview_url, i18n.language]);
     const [selectedImage, setSelectedImage] = React.useState(product.image);
     // final_price is the selling price the API resolved (discount_price is 0, not null, when there is no discount).
     const hasDiscount = product.final_price < product.price;
@@ -63,9 +67,16 @@ export default function ProductView({
                     )}
                     {product.preview_url && (
                         <a
-                            href={product.preview_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                            {...(video
+                                // Embeddable: jump to the player below the thumbnails
+                                ? {
+                                    href: '#product-video',
+                                    onClick: (e) => {
+                                        e.preventDefault();
+                                        document.getElementById('product-video')?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'center' });
+                                    },
+                                }
+                                : { href: product.preview_url, target: '_blank', rel: 'noopener noreferrer' })}
                             className="absolute bottom-6 left-6 bg-white/90 backdrop-blur-sm text-secondary p-3 rounded-full shadow-lg hover:scale-110 transition-transform flex items-center gap-2 group/video"
                         >
                             <Play size={24} fill="currentColor" />
@@ -98,6 +109,8 @@ export default function ProductView({
                         ))}
                     </div>
                 )}
+
+                {video && <ProductVideo key={video.embedUrl} video={video} title={tr(product, 'name')} />}
             </div>
 
             {/* Info Section */}

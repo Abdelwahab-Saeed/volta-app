@@ -5,9 +5,11 @@ import CategoryCarousel from '../components/home/CategoryCarousel';
 import FeaturesSection from '../components/home/FeaturesSection';
 import HomeOffersSection from '../components/home/HomeOffersSection';
 import AboutSection from '../components/home/AboutSection';
+import DistributorCta from '../components/home/DistributorCta';
 import CertificatesSection from '../components/home/CertificatesSection';
 import PartnersSection from '../components/home/PartnersSection';
 import TeamSection from '../components/home/TeamSection';
+import StatsSection from '../components/home/StatsSection';
 import ContactCta from '../components/home/ContactCta';
 import { useCategoryStore } from '@/stores/useCategoryStore';
 import { useBannerStore } from '@/stores/useBannerStore';
@@ -66,6 +68,7 @@ export default function Home() {
       </div>
 
       <div className={CONTAINER}>
+        <DistributorCta />
         <CertificatesSection />
       </div>
 
@@ -77,6 +80,15 @@ export default function Home() {
 
       <div className={CONTAINER}>
         <TeamSection />
+      </div>
+
+      <div className="bg-light-background/60">
+        <div className={CONTAINER}>
+          <StatsSection />
+        </div>
+      </div>
+
+      <div className={CONTAINER}>
         <ContactCta />
       </div>
     </div>
