@@ -14,7 +14,6 @@ import ContactCta from '../components/home/ContactCta';
 import { useCategoryStore } from '@/stores/useCategoryStore';
 import { useBannerStore } from '@/stores/useBannerStore';
 import useSeo from '@/hooks/useSeo';
-import api from '@/api/axios';
 
 // Every section sits in this container; full-width tinted bands wrap it from outside. Bands carry no
 // padding of their own, so a section with no content (e.g. no partners yet) leaves no empty stripe.
@@ -44,11 +43,6 @@ export default function Home() {
     fetchBanners();
     fetchCategories();
   }, [fetchBanners, fetchCategories]);
-
-  useEffect(() => {
-    // Send Home PageView to the backend for Meta integration
-    api.post('/track/pageview', { url: window.location.href }).catch(() => {});
-  }, []);
 
   const hasBanner = bannersLoading || banners?.length > 0;
 
