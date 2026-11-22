@@ -20,6 +20,10 @@ The API is the separate `volta-back` repo; its `docs/offers-and-money.md` explai
   Shipping mirrors the backend: product shipping × quantity, or 30 EGP when that is 0.
 - Guest cart items have `local-` ids; on login `fetchCart` merges them into the account cart (`POST /cart/merge`)
   instead of replacing them. Logout clears the cart (App.jsx auth subscription).
+- Meta Pixel (`src/lib/pixel.js`): each event is sent once from the browser; a Conversions API Gateway in Meta copies
+  it server side. Purchase passes `eventID` = order id because the backend also sends Purchase with that id. Don't
+  add backend copies of other events. Codeless rules in Events Manager (Event Setup Tool) also create events: one
+  once turned every "شراء الآن" click into a Purchase, so check there first when counts look doubled.
 - Colours: brand only — `primary` (navy), `secondary` (blue), `secondary-on-dark` (blue on navy). Green only for
   savings/free, red only for problems. Offers without an image use `OfferPlaceholder`.
 - Layout must work in RTL and LTR: use `start`/`end`/`ms`/`me` utilities and `rtl:`/`ltr:` variants, not left/right.
